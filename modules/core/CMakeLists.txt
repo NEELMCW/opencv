@@ -25,7 +25,7 @@ if(DEFINED WINRT AND NOT DEFINED ENABLE_WINRT_MODE_NATIVE)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /ZW")
 endif()
 
-if(HAVE_CUDA)
+if(HAVE_HIP)
   ocv_warnings_disable(CMAKE_CXX_FLAGS -Wundef -Wenum-compare -Wunused-function -Wshadow)
 endif()
 
@@ -77,7 +77,7 @@ ocv_target_link_libraries(${the_module} LINK_PRIVATE
     "${OPENCV_HAL_LINKER_LIBS}"
 )
 
-if(HAVE_CUDA)
+if(HAVE_HIP)
   ocv_target_compile_definitions(${the_module} PUBLIC OPENCV_TRAITS_ENABLE_DEPRECATED)
 endif()
 

@@ -18,12 +18,12 @@
 #  undef max
 #endif
 
-#if !defined(HAVE_CUDA) || !defined(HAVE_TBB)
+#if !defined(HAVE_HIP) || !defined(HAVE_TBB)
 
 int main()
 {
-#if !defined(HAVE_CUDA)
-    std::cout << "CUDA support is required (CMake key 'WITH_CUDA' must be true).\n";
+#if !defined(HAVE_HIP)
+    std::cout << "CUDA support is required (CMake key 'WITH_HIP' must be true).\n";
 #endif
 
 #if !defined(HAVE_TBB)

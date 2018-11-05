@@ -44,7 +44,7 @@
 
 #ifdef HAVE_OPENGL
 #  include "gl_core_3_1.hpp"
-#  ifdef HAVE_CUDA
+#  ifdef HAVE_HIP
 #    include <cuda_gl_interop.h>
 #  endif
 #else // HAVE_OPENGL
@@ -107,7 +107,7 @@ void cv::cuda::setGlDevice(int device)
     (void) device;
     throw_no_ogl();
 #else
-    #ifndef HAVE_CUDA
+    #ifndef HAVE_HIP
         (void) device;
         throw_no_cuda();
     #else
@@ -121,7 +121,7 @@ void cv::cuda::setGlDevice(int device)
 ////////////////////////////////////////////////////////////////////////
 // CudaResource
 
-#if defined(HAVE_OPENGL) && defined(HAVE_CUDA)
+#if defined(HAVE_OPENGL) && defined(HAVE_HIP)
 
 namespace
 {
@@ -318,7 +318,7 @@ public:
     void* mapHost(GLenum access);
     void unmapHost();
 
-#ifdef HAVE_CUDA
+#ifdef HAVE_HIP
     void copyFrom(const void* src, size_t spitch, size_t width, size_t height, hipStream_t stream = 0);
     void copyTo(void* dst, size_t dpitch, size_t width, size_t height, hipStream_t stream = 0) const;
 
@@ -336,7 +336,7 @@ private:
     GLuint bufId_;
     bool autoRelease_;
 
-#ifdef HAVE_CUDA
+#ifdef HAVE_HIP
     mutable CudaResource cudaResource_;
 #endif
 };
@@ -431,7 +431,7 @@ void cv::ogl::Buffer::Impl::unmapHost()
     gl::UnmapBuffer(gl::COPY_READ_BUFFER);
 }
 
-#ifdef HAVE_CUDA
+#ifdef HAVE_HIP
 
 void cv::ogl::Buffer::Impl::copyFrom(const void* src, size_t spitch, size_t width, size_t height, hipStream_t stream)
 {
@@ -456,7 +456,7 @@ void cv::ogl::Buffer::Impl::unmapDevice(hipStream_t stream)
     cudaResource_.unmap(stream);
 }
 
-#endif // HAVE_CUDA
+#endif // HAVE_HIP
 
 #endif // HAVE_OPENGL
 
@@ -602,7 +602,7 @@ void cv::ogl::Buffer::copyFrom(InputArray arr, Target target, bool autoRelease)
 
     case _InputArray::CUDA_GPU_MAT:
         {
-            #ifndef HAVE_CUDA
+            #ifndef HAVE_HIP
                 throw_no_cuda();
             #else
                 GpuMat dmat = arr.getGpuMat();
@@ -631,7 +631,7 @@ void cv::ogl::Buffer::copyFrom(InputArray arr, cuda::Stream& stream, Target targ
     (void) autoRelease;
     throw_no_ogl();
 #else
-    #ifndef HAVE_CUDA
+    #ifndef HAVE_HIP
         (void) arr;
         (void) stream;
         (void) target;
@@ -665,7 +665,7 @@ void cv::ogl::Buffer::copyTo(OutputArray arr) const
 
     case _InputArray::CUDA_GPU_MAT:
         {
-            #ifndef HAVE_CUDA
+            #ifndef HAVE_HIP
                 throw_no_cuda();
             #else
                 GpuMat& dmat = arr.getGpuMatRef();
@@ -694,7 +694,7 @@ void cv::ogl::Buffer::copyTo(OutputArray arr, cuda::Stream& stream) const
     (void) stream;
     throw_no_ogl();
 #else
-    #ifndef HAVE_CUDA
+    #ifndef HAVE_HIP
         (void) arr;
         (void) stream;
         throw_no_cuda();
@@ -764,7 +764,7 @@ GpuMat cv::ogl::Buffer::mapDevice()
 #ifndef HAVE_OPENGL
     throw_no_ogl();
 #else
-    #ifndef HAVE_CUDA
+    #ifndef HAVE_HIP
         throw_no_cuda();
     #else
         return GpuMat(rows_, cols_, type_, impl_->mapDevice());
@@ -777,7 +777,7 @@ void cv::ogl::Buffer::unmapDevice()
 #ifndef HAVE_OPENGL
     throw_no_ogl();
 #else
-    #ifndef HAVE_CUDA
+    #ifndef HAVE_HIP
         throw_no_cuda();
     #else
         impl_->unmapDevice();
@@ -791,7 +791,7 @@ cuda::GpuMat cv::ogl::Buffer::mapDevice(cuda::Stream& stream)
     (void) stream;
     throw_no_ogl();
 #else
-    #ifndef HAVE_CUDA
+    #ifndef HAVE_HIP
         (void) stream;
         throw_no_cuda();
     #else
@@ -806,7 +806,7 @@ void cv::ogl::Buffer::unmapDevice(cuda::Stream& stream)
     (void) stream;
     throw_no_ogl();
 #else
-    #ifndef HAVE_CUDA
+    #ifndef HAVE_HIP
         (void) stream;
         throw_no_cuda();
     #else
@@ -1019,7 +1019,7 @@ cv::ogl::Texture2D::Texture2D(InputArray arr, bool autoRelease) : rows_(0), cols
 
     case _InputArray::CUDA_GPU_MAT:
         {
-            #ifndef HAVE_CUDA
+            #ifndef HAVE_HIP
                 throw_no_cuda();
             #else
                 GpuMat dmat = arr.getGpuMat();
@@ -1133,7 +1133,7 @@ void cv::ogl::Texture2D::copyFrom(InputArray arr, bool autoRelease)
 
     case _InputArray::CUDA_GPU_MAT:
         {
-            #ifndef HAVE_CUDA
+            #ifndef HAVE_HIP
                 throw_no_cuda();
             #else
                 GpuMat dmat = arr.getGpuMat();
@@ -1185,7 +1185,7 @@ void cv::ogl::Texture2D::copyTo(OutputArray arr, int ddepth, bool autoRelease) c
 
     case _InputArray::CUDA_GPU_MAT:
         {
-            #ifndef HAVE_CUDA
+            #ifndef HAVE_HIP
                 throw_no_cuda();
             #else
                 ogl::Buffer buf(rows_, cols_, CV_MAKE_TYPE(ddepth, cn), ogl::Buffer::PIXEL_PACK_BUFFER);

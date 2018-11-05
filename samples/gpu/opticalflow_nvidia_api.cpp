@@ -19,7 +19,7 @@
 #include "opencv2/core/core_c.h" // FIXIT legacy API
 #include "opencv2/highgui/highgui_c.h" // FIXIT legacy API
 
-#if !defined(HAVE_CUDA)
+#if !defined(HAVE_HIP)
 int main( int, const char** )
 {
     std::cout << "Please compile the library with CUDA support" << std::endl;

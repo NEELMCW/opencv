@@ -17,12 +17,12 @@ using namespace std;
 using namespace cv;
 
 
-#if !defined(HAVE_CUDA) || defined(__arm__)
+#if !defined(HAVE_HIP) || defined(__arm__)
 
 int main( int, const char** )
 {
-#if !defined(HAVE_CUDA)
-    std::cout << "CUDA support is required (CMake key 'WITH_CUDA' must be true)." << std::endl;
+#if !defined(HAVE_HIP)
+    std::cout << "CUDA support is required (CMake key 'WITH_HIP' must be true)." << std::endl;
 #endif
 
 #if defined(__arm__)
@@ -386,4 +386,4 @@ int main(int argc, const char** argv)
     return 0;
 }
 
-#endif //!defined(HAVE_CUDA)
+#endif //!defined(HAVE_HIP)

@@ -47,7 +47,7 @@ using namespace cv::cuda;
 
 int cv::cuda::getCudaEnabledDeviceCount()
 {
-#ifndef HAVE_CUDA
+#ifndef HAVE_HIP
     return 0;
 #else
     int count;
@@ -66,7 +66,7 @@ int cv::cuda::getCudaEnabledDeviceCount()
 
 void cv::cuda::setDevice(int device)
 {
-#ifndef HAVE_CUDA
+#ifndef HAVE_HIP
     (void) device;
     throw_no_cuda();
 #else
@@ -77,7 +77,7 @@ void cv::cuda::setDevice(int device)
 
 int cv::cuda::getDevice()
 {
-#ifndef HAVE_CUDA
+#ifndef HAVE_HIP
     throw_no_cuda();
 #else
     int device;
@@ -88,7 +88,7 @@ int cv::cuda::getDevice()
 
 void cv::cuda::resetDevice()
 {
-#ifndef HAVE_CUDA
+#ifndef HAVE_HIP
     throw_no_cuda();
 #else
     cudaSafeCall( hipDeviceReset() );
@@ -97,7 +97,7 @@ void cv::cuda::resetDevice()
 
 bool cv::cuda::deviceSupports(FeatureSet feature_set)
 {
-#ifndef HAVE_CUDA
+#ifndef HAVE_HIP
     (void) feature_set;
     throw_no_cuda();
 #else
@@ -130,7 +130,7 @@ bool cv::cuda::deviceSupports(FeatureSet feature_set)
 ////////////////////////////////////////////////////////////////////////
 // TargetArchs
 
-#ifdef HAVE_CUDA
+#ifdef HAVE_HIP
 
 namespace
 {
@@ -226,7 +226,7 @@ namespace
 
 bool cv::cuda::TargetArchs::builtWith(cv::cuda::FeatureSet feature_set)
 {
-#ifndef HAVE_CUDA
+#ifndef HAVE_HIP
     (void) feature_set;
     throw_no_cuda();
 #else
@@ -236,7 +236,7 @@ bool cv::cuda::TargetArchs::builtWith(cv::cuda::FeatureSet feature_set)
 
 bool cv::cuda::TargetArchs::hasPtx(int major, int minor)
 {
-#ifndef HAVE_CUDA
+#ifndef HAVE_HIP
     (void) major;
     (void) minor;
     throw_no_cuda();
@@ -247,7 +247,7 @@ bool cv::cuda::TargetArchs::hasPtx(int major, int minor)
 
 bool cv::cuda::TargetArchs::hasBin(int major, int minor)
 {
-#ifndef HAVE_CUDA
+#ifndef HAVE_HIP
     (void) major;
     (void) minor;
     throw_no_cuda();
@@ -258,7 +258,7 @@ bool cv::cuda::TargetArchs::hasBin(int major, int minor)
 
 bool cv::cuda::TargetArchs::hasEqualOrLessPtx(int major, int minor)
 {
-#ifndef HAVE_CUDA
+#ifndef HAVE_HIP
     (void) major;
     (void) minor;
     throw_no_cuda();
@@ -269,7 +269,7 @@ bool cv::cuda::TargetArchs::hasEqualOrLessPtx(int major, int minor)
 
 bool cv::cuda::TargetArchs::hasEqualOrGreaterPtx(int major, int minor)
 {
-#ifndef HAVE_CUDA
+#ifndef HAVE_HIP
     (void) major;
     (void) minor;
     throw_no_cuda();
@@ -280,7 +280,7 @@ bool cv::cuda::TargetArchs::hasEqualOrGreaterPtx(int major, int minor)
 
 bool cv::cuda::TargetArchs::hasEqualOrGreaterBin(int major, int minor)
 {
-#ifndef HAVE_CUDA
+#ifndef HAVE_HIP
     (void) major;
     (void) minor;
     throw_no_cuda();
@@ -292,7 +292,7 @@ bool cv::cuda::TargetArchs::hasEqualOrGreaterBin(int major, int minor)
 ////////////////////////////////////////////////////////////////////////
 // DeviceInfo
 
-#ifdef HAVE_CUDA
+#ifdef HAVE_HIP
 
 namespace
 {
@@ -340,7 +340,7 @@ namespace
 
 const char* cv::cuda::DeviceInfo::name() const
 {
-#ifndef HAVE_CUDA
+#ifndef HAVE_HIP
     throw_no_cuda();
 #else
     return deviceProps().get(device_id_)->name;
@@ -349,7 +349,7 @@ const char* cv::cuda::DeviceInfo::name() const
 
 size_t cv::cuda::DeviceInfo::totalGlobalMem() const
 {
-#ifndef HAVE_CUDA
+#ifndef HAVE_HIP
     throw_no_cuda();
 #else
     return deviceProps().get(device_id_)->totalGlobalMem;
@@ -358,7 +358,7 @@ size_t cv::cuda::DeviceInfo::totalGlobalMem() const
 
 size_t cv::cuda::DeviceInfo::sharedMemPerBlock() const
 {
-#ifndef HAVE_CUDA
+#ifndef HAVE_HIP
     throw_no_cuda();
 #else
     return deviceProps().get(device_id_)->sharedMemPerBlock;
@@ -367,7 +367,7 @@ size_t cv::cuda::DeviceInfo::sharedMemPerBlock() const
 
 int cv::cuda::DeviceInfo::regsPerBlock() const
 {
-#ifndef HAVE_CUDA
+#ifndef HAVE_HIP
     throw_no_cuda();
 #else
     return deviceProps().get(device_id_)->regsPerBlock;
@@ -376,7 +376,7 @@ int cv::cuda::DeviceInfo::regsPerBlock() const
 
 int cv::cuda::DeviceInfo::warpSize() const
 {
-#ifndef HAVE_CUDA
+#ifndef HAVE_HIP
     throw_no_cuda();
 #else
     return deviceProps().get(device_id_)->warpSize;
@@ -385,7 +385,7 @@ int cv::cuda::DeviceInfo::warpSize() const
 
 size_t cv::cuda::DeviceInfo::memPitch() const
 {
-#ifndef HAVE_CUDA
+#ifndef HAVE_HIP
     throw_no_cuda();
 #else
 #ifdef HIP_TO_DO
@@ -398,7 +398,7 @@ size_t cv::cuda::DeviceInfo::memPitch() const
 
 int cv::cuda::DeviceInfo::maxThreadsPerBlock() const
 {
-#ifndef HAVE_CUDA
+#ifndef HAVE_HIP
     throw_no_cuda();
 #else
     return deviceProps().get(device_id_)->maxThreadsPerBlock;
@@ -407,7 +407,7 @@ int cv::cuda::DeviceInfo::maxThreadsPerBlock() const
 
 Vec3i cv::cuda::DeviceInfo::maxThreadsDim() const
 {
-#ifndef HAVE_CUDA
+#ifndef HAVE_HIP
     throw_no_cuda();
 #else
     return Vec3i(deviceProps().get(device_id_)->maxThreadsDim);
@@ -416,7 +416,7 @@ Vec3i cv::cuda::DeviceInfo::maxThreadsDim() const
 
 Vec3i cv::cuda::DeviceInfo::maxGridSize() const
 {
-#ifndef HAVE_CUDA
+#ifndef HAVE_HIP
     throw_no_cuda();
 #else
     return Vec3i(deviceProps().get(device_id_)->maxGridSize);
@@ -425,7 +425,7 @@ Vec3i cv::cuda::DeviceInfo::maxGridSize() const
 
 int cv::cuda::DeviceInfo::clockRate() const
 {
-#ifndef HAVE_CUDA
+#ifndef HAVE_HIP
     throw_no_cuda();
 #else
     return deviceProps().get(device_id_)->clockRate;
@@ -434,7 +434,7 @@ int cv::cuda::DeviceInfo::clockRate() const
 
 size_t cv::cuda::DeviceInfo::totalConstMem() const
 {
-#ifndef HAVE_CUDA
+#ifndef HAVE_HIP
     throw_no_cuda();
 #else
     return deviceProps().get(device_id_)->totalConstMem;
@@ -443,7 +443,7 @@ size_t cv::cuda::DeviceInfo::totalConstMem() const
 
 int cv::cuda::DeviceInfo::majorVersion() const
 {
-#ifndef HAVE_CUDA
+#ifndef HAVE_HIP
     throw_no_cuda();
 #else
     return deviceProps().get(device_id_)->major;
@@ -452,7 +452,7 @@ int cv::cuda::DeviceInfo::majorVersion() const
 
 int cv::cuda::DeviceInfo::minorVersion() const
 {
-#ifndef HAVE_CUDA
+#ifndef HAVE_HIP
     throw_no_cuda();
 #else
     return deviceProps().get(device_id_)->minor;
@@ -461,7 +461,7 @@ int cv::cuda::DeviceInfo::minorVersion() const
 
 size_t cv::cuda::DeviceInfo::textureAlignment() const
 {
-#ifndef HAVE_CUDA
+#ifndef HAVE_HIP
     throw_no_cuda();
 #else
 #ifdef HIP_TO_DO
@@ -474,7 +474,7 @@ size_t cv::cuda::DeviceInfo::textureAlignment() const
 
 size_t cv::cuda::DeviceInfo::texturePitchAlignment() const
 {
-#ifndef HAVE_CUDA
+#ifndef HAVE_HIP
     throw_no_cuda();
 #else
 #ifdef HIP_TO_DO
@@ -487,7 +487,7 @@ size_t cv::cuda::DeviceInfo::texturePitchAlignment() const
 
 int cv::cuda::DeviceInfo::multiProcessorCount() const
 {
-#ifndef HAVE_CUDA
+#ifndef HAVE_HIP
     throw_no_cuda();
 #else
     return deviceProps().get(device_id_)->multiProcessorCount;
@@ -496,7 +496,7 @@ int cv::cuda::DeviceInfo::multiProcessorCount() const
 
 bool cv::cuda::DeviceInfo::kernelExecTimeoutEnabled() const
 {
-#ifndef HAVE_CUDA
+#ifndef HAVE_HIP
     throw_no_cuda();
 #else
 #ifdef HIP_TO_DO
@@ -509,7 +509,7 @@ bool cv::cuda::DeviceInfo::kernelExecTimeoutEnabled() const
 
 bool cv::cuda::DeviceInfo::integrated() const
 {
-#ifndef HAVE_CUDA
+#ifndef HAVE_HIP
     throw_no_cuda();
 #else
     return deviceProps().get(device_id_)->integrated != 0;
@@ -518,7 +518,7 @@ bool cv::cuda::DeviceInfo::integrated() const
 
 bool cv::cuda::DeviceInfo::canMapHostMemory() const
 {
-#ifndef HAVE_CUDA
+#ifndef HAVE_HIP
     throw_no_cuda();
 #else
     return deviceProps().get(device_id_)->canMapHostMemory != 0;
@@ -527,7 +527,7 @@ bool cv::cuda::DeviceInfo::canMapHostMemory() const
 
 DeviceInfo::ComputeMode cv::cuda::DeviceInfo::computeMode() const
 {
-#ifndef HAVE_CUDA
+#ifndef HAVE_HIP
     throw_no_cuda();
 #else
     static const ComputeMode tbl[] =
@@ -544,7 +544,7 @@ DeviceInfo::ComputeMode cv::cuda::DeviceInfo::computeMode() const
 
 int cv::cuda::DeviceInfo::maxTexture1D() const
 {
-#ifndef HAVE_CUDA
+#ifndef HAVE_HIP
     throw_no_cuda();
 #else
 #ifdef HIP_TO_DO
@@ -557,7 +557,7 @@ int cv::cuda::DeviceInfo::maxTexture1D() const
 
 int cv::cuda::DeviceInfo::maxTexture1DMipmap() const
 {
-#ifndef HAVE_CUDA
+#ifndef HAVE_HIP
     throw_no_cuda();
 #else
     #if CUDA_VERSION >= 5000
@@ -575,7 +575,7 @@ int cv::cuda::DeviceInfo::maxTexture1DMipmap() const
 
 int cv::cuda::DeviceInfo::maxTexture1DLinear() const
 {
-#ifndef HAVE_CUDA
+#ifndef HAVE_HIP
     throw_no_cuda();
 #else
 #ifdef HIP_TO_DO
@@ -588,7 +588,7 @@ int cv::cuda::DeviceInfo::maxTexture1DLinear() const
 
 Vec2i cv::cuda::DeviceInfo::maxTexture2D() const
 {
-#ifndef HAVE_CUDA
+#ifndef HAVE_HIP
     throw_no_cuda();
 #else
 #ifdef HIP_TO_DO
@@ -601,7 +601,7 @@ Vec2i cv::cuda::DeviceInfo::maxTexture2D() const
 
 Vec2i cv::cuda::DeviceInfo::maxTexture2DMipmap() const
 {
-#ifndef HAVE_CUDA
+#ifndef HAVE_HIP
     throw_no_cuda();
 #else
     #if CUDA_VERSION >= 5000
@@ -619,7 +619,7 @@ Vec2i cv::cuda::DeviceInfo::maxTexture2DMipmap() const
 
 Vec3i cv::cuda::DeviceInfo::maxTexture2DLinear() const
 {
-#ifndef HAVE_CUDA
+#ifndef HAVE_HIP
     throw_no_cuda();
 #else
 #ifdef HIP_TO_DO
@@ -632,7 +632,7 @@ Vec3i cv::cuda::DeviceInfo::maxTexture2DLinear() const
 
 Vec2i cv::cuda::DeviceInfo::maxTexture2DGather() const
 {
-#ifndef HAVE_CUDA
+#ifndef HAVE_HIP
     throw_no_cuda();
 #else
 #ifdef HIP_TO_DO
@@ -645,7 +645,7 @@ Vec2i cv::cuda::DeviceInfo::maxTexture2DGather() const
 
 Vec3i cv::cuda::DeviceInfo::maxTexture3D() const
 {
-#ifndef HAVE_CUDA
+#ifndef HAVE_HIP
     throw_no_cuda();
 #else
 #ifdef HIP_TO_DO
@@ -658,7 +658,7 @@ Vec3i cv::cuda::DeviceInfo::maxTexture3D() const
 
 int cv::cuda::DeviceInfo::maxTextureCubemap() const
 {
-#ifndef HAVE_CUDA
+#ifndef HAVE_HIP
     throw_no_cuda();
 #else
 #ifdef HIP_TO_DO
@@ -671,7 +671,7 @@ int cv::cuda::DeviceInfo::maxTextureCubemap() const
 
 Vec2i cv::cuda::DeviceInfo::maxTexture1DLayered() const
 {
-#ifndef HAVE_CUDA
+#ifndef HAVE_HIP
     throw_no_cuda();
 #else
 #ifdef HIP_TO_DO
@@ -684,7 +684,7 @@ Vec2i cv::cuda::DeviceInfo::maxTexture1DLayered() const
 
 Vec3i cv::cuda::DeviceInfo::maxTexture2DLayered() const
 {
-#ifndef HAVE_CUDA
+#ifndef HAVE_HIP
     throw_no_cuda();
 #else
 #ifdef HIP_TO_DO
@@ -697,7 +697,7 @@ Vec3i cv::cuda::DeviceInfo::maxTexture2DLayered() const
 
 Vec2i cv::cuda::DeviceInfo::maxTextureCubemapLayered() const
 {
-#ifndef HAVE_CUDA
+#ifndef HAVE_HIP
     throw_no_cuda();
 #else
 #ifdef HIP_TO_DO
@@ -710,7 +710,7 @@ Vec2i cv::cuda::DeviceInfo::maxTextureCubemapLayered() const
 
 int cv::cuda::DeviceInfo::maxSurface1D() const
 {
-#ifndef HAVE_CUDA
+#ifndef HAVE_HIP
     throw_no_cuda();
 #else
 #ifdef HIP_TO_DO
@@ -723,7 +723,7 @@ int cv::cuda::DeviceInfo::maxSurface1D() const
 
 Vec2i cv::cuda::DeviceInfo::maxSurface2D() const
 {
-#ifndef HAVE_CUDA
+#ifndef HAVE_HIP
     throw_no_cuda();
 #else
 #ifdef HIP_TO_DO
@@ -736,7 +736,7 @@ Vec2i cv::cuda::DeviceInfo::maxSurface2D() const
 
 Vec3i cv::cuda::DeviceInfo::maxSurface3D() const
 {
-#ifndef HAVE_CUDA
+#ifndef HAVE_HIP
     throw_no_cuda();
 #else
 #ifdef HIP_TO_DO
@@ -749,7 +749,7 @@ Vec3i cv::cuda::DeviceInfo::maxSurface3D() const
 
 Vec2i cv::cuda::DeviceInfo::maxSurface1DLayered() const
 {
-#ifndef HAVE_CUDA
+#ifndef HAVE_HIP
     throw_no_cuda();
 #else
 #ifdef HIP_TO_DO
@@ -762,7 +762,7 @@ Vec2i cv::cuda::DeviceInfo::maxSurface1DLayered() const
 
 Vec3i cv::cuda::DeviceInfo::maxSurface2DLayered() const
 {
-#ifndef HAVE_CUDA
+#ifndef HAVE_HIP
     throw_no_cuda();
 #else
 #ifdef HIP_TO_DO
@@ -775,7 +775,7 @@ Vec3i cv::cuda::DeviceInfo::maxSurface2DLayered() const
 
 int cv::cuda::DeviceInfo::maxSurfaceCubemap() const
 {
-#ifndef HAVE_CUDA
+#ifndef HAVE_HIP
     throw_no_cuda();
 #else
 #ifdef HIP_TO_DO
@@ -788,7 +788,7 @@ int cv::cuda::DeviceInfo::maxSurfaceCubemap() const
 
 Vec2i cv::cuda::DeviceInfo::maxSurfaceCubemapLayered() const
 {
-#ifndef HAVE_CUDA
+#ifndef HAVE_HIP
     throw_no_cuda();
 #else
 #ifdef HIP_TO_DO
@@ -801,7 +801,7 @@ Vec2i cv::cuda::DeviceInfo::maxSurfaceCubemapLayered() const
 
 size_t cv::cuda::DeviceInfo::surfaceAlignment() const
 {
-#ifndef HAVE_CUDA
+#ifndef HAVE_HIP
     throw_no_cuda();
 #else
 #ifdef HIP_TO_DO
@@ -814,7 +814,7 @@ size_t cv::cuda::DeviceInfo::surfaceAlignment() const
 
 bool cv::cuda::DeviceInfo::concurrentKernels() const
 {
-#ifndef HAVE_CUDA
+#ifndef HAVE_HIP
     throw_no_cuda();
 #else
     return deviceProps().get(device_id_)->concurrentKernels != 0;
@@ -823,7 +823,7 @@ bool cv::cuda::DeviceInfo::concurrentKernels() const
 
 bool cv::cuda::DeviceInfo::ECCEnabled() const
 {
-#ifndef HAVE_CUDA
+#ifndef HAVE_HIP
     throw_no_cuda();
 #else
 #ifdef HIP_TO_DO
@@ -836,7 +836,7 @@ bool cv::cuda::DeviceInfo::ECCEnabled() const
 
 int cv::cuda::DeviceInfo::pciBusID() const
 {
-#ifndef HAVE_CUDA
+#ifndef HAVE_HIP
     throw_no_cuda();
 #else
     return deviceProps().get(device_id_)->pciBusID;
@@ -845,7 +845,7 @@ int cv::cuda::DeviceInfo::pciBusID() const
 
 int cv::cuda::DeviceInfo::pciDeviceID() const
 {
-#ifndef HAVE_CUDA
+#ifndef HAVE_HIP
     throw_no_cuda();
 #else
     return deviceProps().get(device_id_)->pciDeviceID;
@@ -854,7 +854,7 @@ int cv::cuda::DeviceInfo::pciDeviceID() const
 
 int cv::cuda::DeviceInfo::pciDomainID() const
 {
-#ifndef HAVE_CUDA
+#ifndef HAVE_HIP
     throw_no_cuda();
 #else
     return deviceProps().get(device_id_)->pciDomainID;
@@ -863,7 +863,7 @@ int cv::cuda::DeviceInfo::pciDomainID() const
 
 bool cv::cuda::DeviceInfo::tccDriver() const
 {
-#ifndef HAVE_CUDA
+#ifndef HAVE_HIP
     throw_no_cuda();
 #else
 #ifdef HIP_TO_DO
@@ -876,7 +876,7 @@ bool cv::cuda::DeviceInfo::tccDriver() const
 
 int cv::cuda::DeviceInfo::asyncEngineCount() const
 {
-#ifndef HAVE_CUDA
+#ifndef HAVE_HIP
     throw_no_cuda();
 #else
 #ifdef HIP_TO_DO
@@ -889,7 +889,7 @@ int cv::cuda::DeviceInfo::asyncEngineCount() const
 
 bool cv::cuda::DeviceInfo::unifiedAddressing() const
 {
-#ifndef HAVE_CUDA
+#ifndef HAVE_HIP
     throw_no_cuda();
 #else
 #ifdef HIP_TO_DO
@@ -902,7 +902,7 @@ bool cv::cuda::DeviceInfo::unifiedAddressing() const
 
 int cv::cuda::DeviceInfo::memoryClockRate() const
 {
-#ifndef HAVE_CUDA
+#ifndef HAVE_HIP
     throw_no_cuda();
 #else
     return deviceProps().get(device_id_)->memoryClockRate;
@@ -911,7 +911,7 @@ int cv::cuda::DeviceInfo::memoryClockRate() const
 
 int cv::cuda::DeviceInfo::memoryBusWidth() const
 {
-#ifndef HAVE_CUDA
+#ifndef HAVE_HIP
     throw_no_cuda();
 #else
     return deviceProps().get(device_id_)->memoryBusWidth;
@@ -920,7 +920,7 @@ int cv::cuda::DeviceInfo::memoryBusWidth() const
 
 int cv::cuda::DeviceInfo::l2CacheSize() const
 {
-#ifndef HAVE_CUDA
+#ifndef HAVE_HIP
     throw_no_cuda();
 #else
     return deviceProps().get(device_id_)->l2CacheSize;
@@ -929,7 +929,7 @@ int cv::cuda::DeviceInfo::l2CacheSize() const
 
 int cv::cuda::DeviceInfo::maxThreadsPerMultiProcessor() const
 {
-#ifndef HAVE_CUDA
+#ifndef HAVE_HIP
     throw_no_cuda();
 #else
     return deviceProps().get(device_id_)->maxThreadsPerMultiProcessor;
@@ -938,7 +938,7 @@ int cv::cuda::DeviceInfo::maxThreadsPerMultiProcessor() const
 
 void cv::cuda::DeviceInfo::queryMemory(size_t& _totalMemory, size_t& _freeMemory) const
 {
-#ifndef HAVE_CUDA
+#ifndef HAVE_HIP
     (void) _totalMemory;
     (void) _freeMemory;
     throw_no_cuda();
@@ -956,7 +956,7 @@ void cv::cuda::DeviceInfo::queryMemory(size_t& _totalMemory, size_t& _freeMemory
 
 bool cv::cuda::DeviceInfo::isCompatible() const
 {
-#ifndef HAVE_CUDA
+#ifndef HAVE_HIP
     throw_no_cuda();
 #else
     // Check PTX compatibility
@@ -975,7 +975,7 @@ bool cv::cuda::DeviceInfo::isCompatible() const
 ////////////////////////////////////////////////////////////////////////
 // print info
 
-#ifdef HAVE_CUDA
+#ifdef HAVE_HIP
 
 namespace
 {
@@ -1005,7 +1005,7 @@ namespace
 
 void cv::cuda::printCudaDeviceInfo(int device)
 {
-#ifndef HAVE_CUDA
+#ifndef HAVE_HIP
     (void) device;
     throw_no_cuda();
 #else
@@ -1097,7 +1097,7 @@ void cv::cuda::printCudaDeviceInfo(int device)
 
 void cv::cuda::printShortCudaDeviceInfo(int device)
 {
-#ifndef HAVE_CUDA
+#ifndef HAVE_HIP
     (void) device;
     throw_no_cuda();
 #else
@@ -1134,7 +1134,7 @@ void cv::cuda::printShortCudaDeviceInfo(int device)
 ////////////////////////////////////////////////////////////////////////
 // Error handling
 
-#ifdef HAVE_CUDA
+#ifdef HAVE_HIP
 
 namespace
 {
@@ -1311,7 +1311,7 @@ namespace
 
 String cv::cuda::getNppErrorMessage(int code)
 {
-#ifndef HAVE_CUDA
+#ifndef HAVE_HIP
     (void) code;
     return String();
 #else
@@ -1321,7 +1321,7 @@ String cv::cuda::getNppErrorMessage(int code)
 
 String cv::cuda::getCudaDriverApiErrorMessage(int code)
 {
-#ifndef HAVE_CUDA
+#ifndef HAVE_HIP
     (void) code;
     return String();
 #else

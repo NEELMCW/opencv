@@ -27,7 +27,7 @@ else()
 endif()
 
 if(HIP_FOUND)
-  set(HAVE_CUDA 1)
+  set(HAVE_HIP 1)
 
   if(WITH_CUFFT)
     set(HAVE_CUFFT 1)
@@ -269,7 +269,7 @@ else()
   unset(CUDA_ARCH_PTX CACHE)
 endif()
 
-if(HAVE_CUDA)
+if(HAVE_HIP)
   set(CUDA_LIBS_PATH "/usr/local/cuda/lib64/")
   set(CUDA_LIBRARIES "cudart" "cuda")
   foreach(p ${CUDA_LIBRARIES} ${CUDA_npp_LIBRARY})
