@@ -22,6 +22,7 @@
 /* Compile for 'virtual' NVIDIA PTX architectures */
 #define CUDA_ARCH_PTX "${OPENCV_CUDA_ARCH_PTX}"
 
+
 /* AVFoundation video libraries */
 #cmakedefine HAVE_AVFOUNDATION
 

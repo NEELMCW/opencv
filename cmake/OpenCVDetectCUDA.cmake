@@ -258,7 +258,7 @@ if(HIP_FOUND)
     HIP_COMPILE(${VAR} ${ARGN})
     INCLUDE_DIRECTORIES("/opt/rocm/hip/include/" "/usr/local/cuda/include/")
     LINK_DIRECTORIES("/opt/rocm/hip/lib/" "/usr/local/cuda/lib64/")
-
+    ADD_DEFINITIONS(-D__HIP_PLATFORM_NVCC__ )
     foreach(var CMAKE_CXX_FLAGS CMAKE_CXX_FLAGS_RELEASE CMAKE_CXX_FLAGS_DEBUG)
       set(${var} "${${var}_backup_in_cuda_compile_}")
       unset(${var}_backup_in_cuda_compile_)
