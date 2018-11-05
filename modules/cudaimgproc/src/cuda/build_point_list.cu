@@ -1,3 +1,4 @@
+#include "hip/hip_runtime.h"
 /*M///////////////////////////////////////////////////////////////////////////////////////
 //
 //  IMPORTANT: READ BEFORE DOWNLOADING, COPYING, INSTALLING OR USING.
@@ -113,22 +114,25 @@ namespace cv { namespace cuda { namespace device
             const int PIXELS_PER_THREAD = 16;
 
             void* counterPtr;
+#ifdef HIP_TO_DO 
             cudaSafeCall( cudaGetSymbolAddress(&counterPtr, g_counter) );
+#endif
 
-            cudaSafeCall( cudaMemset(counterPtr, 0, sizeof(int)) );
+            cudaSafeCall( hipMemset(counterPtr, 0, sizeof(int)) );
 
             const dim3 block(32, 4);
             const dim3 grid(divUp(src.cols, block.x * PIXELS_PER_THREAD), divUp(src.rows, block.y));
+#ifdef HIP_TO_DO
+            cudaSafeCall( hipFuncSetCacheConfig(buildPointList<PIXELS_PER_THREAD>, hipFuncCachePreferShared) );
+#endif
 
-            cudaSafeCall( cudaFuncSetCacheConfig(buildPointList<PIXELS_PER_THREAD>, cudaFuncCachePreferShared) );
+            hipLaunchKernelGGL((buildPointList<PIXELS_PER_THREAD>), dim3(grid), dim3(block), 0, 0, src, list);
+            cudaSafeCall( hipGetLastError() );
 
-            buildPointList<PIXELS_PER_THREAD><<<grid, block>>>(src, list);
-            cudaSafeCall( cudaGetLastError() );
-
-            cudaSafeCall( cudaDeviceSynchronize() );
+            cudaSafeCall( hipDeviceSynchronize() );
 
             int totalCount;
-            cudaSafeCall( cudaMemcpy(&totalCount, counterPtr, sizeof(int), cudaMemcpyDeviceToHost) );
+            cudaSafeCall( hipMemcpy(&totalCount, counterPtr, sizeof(int), hipMemcpyDeviceToHost) );
 
             return totalCount;
         }
