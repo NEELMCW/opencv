@@ -240,7 +240,7 @@ if(HIP_FOUND)
     endif()
 
     if(UNIX OR APPLE)
-      set(HIP_HIPCC_FLAGS ${HIP_HIPCC_FLAGS} ""-Xcompiler -fPIC)
+      set(HIP_HIPCC_FLAGS ${HIP_HIPCC_FLAGS} -Xcompiler -fPIC)
     endif()
     if(APPLE)
       set(HIP_HIPCC_FLAGS ${HIP_HIPCC_FLAGS} -Xcompiler -fno-finite-math-only)
