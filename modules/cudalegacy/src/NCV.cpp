@@ -269,7 +269,7 @@ NCVStatus memSegCopyHelper2D(void *dst, Ncv32u dstPitch, NCVMemoryType dstType,
         case NCVMemoryTypeDevice:
             if (cuStream != 0)
             {
-                ncvAssertCUDAReturn(cudaMemcpy2DAsync(dst, dstPitch, src, srcPitch, widthbytes, height, hipMemcpyDeviceToHost, cuStream), NCV_CUDA_ERROR);
+                ncvAssertCUDAReturn(hipMemcpy2D(dst, dstPitch, src, srcPitch, widthbytes, height, hipMemcpyDeviceToHost, cuStream), NCV_CUDA_ERROR);
             }
             else
             {
@@ -288,7 +288,7 @@ NCVStatus memSegCopyHelper2D(void *dst, Ncv32u dstPitch, NCVMemoryType dstType,
         case NCVMemoryTypeHostPinned:
             if (cuStream != 0)
             {
-                ncvAssertCUDAReturn(cudaMemcpy2DAsync(dst, dstPitch, src, srcPitch, widthbytes, height, hipMemcpyHostToDevice, cuStream), NCV_CUDA_ERROR);
+                ncvAssertCUDAReturn(hipMemcpy2D(dst, dstPitch, src, srcPitch, widthbytes, height, hipMemcpyHostToDevice, cuStream), NCV_CUDA_ERROR);
             }
             else
             {
@@ -299,7 +299,7 @@ NCVStatus memSegCopyHelper2D(void *dst, Ncv32u dstPitch, NCVMemoryType dstType,
         case NCVMemoryTypeDevice:
             if (cuStream != 0)
             {
-                ncvAssertCUDAReturn(cudaMemcpy2DAsync(dst, dstPitch, src, srcPitch, widthbytes, height, hipMemcpyDeviceToDevice, cuStream), NCV_CUDA_ERROR);
+                ncvAssertCUDAReturn(hipMemcpy2DAsync(dst, dstPitch, src, srcPitch, widthbytes, height, hipMemcpyDeviceToDevice, cuStream), NCV_CUDA_ERROR);
             }
             else
             {

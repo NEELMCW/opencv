@@ -67,7 +67,7 @@
 #include "opencv2/cudalegacy/NPP_staging.hpp"
 #include "opencv2/cudalegacy/NCVBroxOpticalFlow.hpp"
 
-
+#ifdef HIP_TO_DO
 typedef NCVVectorAlloc<Ncv32f> FloatVector;
 
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -830,10 +830,10 @@ NCVStatus NCVBroxOpticalFlow(const NCVBroxOpticalFlowDescriptor desc,
         size_t src_width_in_bytes = kSourceWidth * sizeof(float);
         size_t src_pitch_in_bytes = frame0.pitch();
 
-        ncvAssertCUDAReturn( cudaMemcpy2DAsync(pI0->ptr(), dst_width_in_bytes, frame0.ptr(),
+        ncvAssertCUDAReturn( hipMemcpy2D(pI0->ptr(), dst_width_in_bytes, frame0.ptr(),
             src_pitch_in_bytes, src_width_in_bytes, kSourceHeight, hipMemcpyDeviceToDevice, stream), NCV_CUDA_ERROR );
 
-        ncvAssertCUDAReturn( cudaMemcpy2DAsync(pI1->ptr(), dst_width_in_bytes, frame1.ptr(),
+        ncvAssertCUDAReturn( hipMemcpy2D(pI1->ptr(), dst_width_in_bytes, frame1.ptr(),
             src_pitch_in_bytes, src_width_in_bytes, kSourceHeight, hipMemcpyDeviceToDevice, stream), NCV_CUDA_ERROR );
     }
 
@@ -911,8 +911,8 @@ NCVStatus NCVBroxOpticalFlow(const NCVBroxOpticalFlowDescriptor desc,
 
         //select images with lowest resolution
         size_t pitch = alignUp(pyr.w.back(), kStrideAlignmentFloat) * sizeof(float);
-        ncvAssertCUDAReturn(cudaBindTexture2D(0, tex_I0, pyr.img0.back()->ptr(), channel_desc, pyr.w.back(), pyr.h.back(), pitch), NCV_CUDA_ERROR);
-        ncvAssertCUDAReturn(cudaBindTexture2D(0, tex_I1, pyr.img1.back()->ptr(), channel_desc, pyr.w.back(), pyr.h.back(), pitch), NCV_CUDA_ERROR);
+        ncvAssertCUDAReturn(hipBindTexture2D(0, tex_I0, pyr.img0.back()->ptr(), channel_desc, pyr.w.back(), pyr.h.back(), pitch), NCV_CUDA_ERROR);
+        ncvAssertCUDAReturn(hipBindTexture2D(0, tex_I1, pyr.img1.back()->ptr(), channel_desc, pyr.w.back(), pyr.h.back(), pitch), NCV_CUDA_ERROR);
         ncvAssertCUDAReturn(hipStreamSynchronize(stream), NCV_CUDA_ERROR);
 
         FloatVector* ptrU = &u;
@@ -951,8 +951,8 @@ NCVStatus NCVBroxOpticalFlow(const NCVBroxOpticalFlowDescriptor desc,
             ++img0Iter;
             ++img1Iter;
 
-            ncvAssertCUDAReturn(cudaBindTexture2D(0, tex_I0, I0->ptr(), ch_desc, kLevelWidth, kLevelHeight, kLevelStride*sizeof(float)), NCV_CUDA_ERROR);
-            ncvAssertCUDAReturn(cudaBindTexture2D(0, tex_I1, I1->ptr(), ch_desc, kLevelWidth, kLevelHeight, kLevelStride*sizeof(float)), NCV_CUDA_ERROR);
+            ncvAssertCUDAReturn(hipBindTexture2D(0, tex_I0, I0->ptr(), ch_desc, kLevelWidth, kLevelHeight, kLevelStride*sizeof(float)), NCV_CUDA_ERROR);
+            ncvAssertCUDAReturn(hipBindTexture2D(0, tex_I1, I1->ptr(), ch_desc, kLevelWidth, kLevelHeight, kLevelStride*sizeof(float)), NCV_CUDA_ERROR);
 
             //compute derivatives
             dim3 dBlocks(iDivUp(kLevelWidth, 32), iDivUp(kLevelHeight, 6));
@@ -992,13 +992,13 @@ NCVStatus NCVBroxOpticalFlow(const NCVBroxOpticalFlowDescriptor desc,
             ncvAssertReturnNcvStat( nppiStFilterRowBorder_32f_C1R (Iy.ptr(), srcSize, nSrcStep, Ixy.ptr(), srcSize, nSrcStep, oROI,
                 nppStBorderMirror, derivativeFilter.ptr(), kDFilterSize, kDFilterSize/2, 1.0f/12.0f) );
 
-            ncvAssertCUDAReturn(cudaBindTexture2D(0, tex_Ix,  Ix.ptr(),  ch_desc, kLevelWidth, kLevelHeight, kPitchTex), NCV_CUDA_ERROR);
-            ncvAssertCUDAReturn(cudaBindTexture2D(0, tex_Ixx, Ixx.ptr(), ch_desc, kLevelWidth, kLevelHeight, kPitchTex), NCV_CUDA_ERROR);
-            ncvAssertCUDAReturn(cudaBindTexture2D(0, tex_Ix0, Ix0.ptr(), ch_desc, kLevelWidth, kLevelHeight, kPitchTex), NCV_CUDA_ERROR);
-            ncvAssertCUDAReturn(cudaBindTexture2D(0, tex_Iy,  Iy.ptr(),  ch_desc, kLevelWidth, kLevelHeight, kPitchTex), NCV_CUDA_ERROR);
-            ncvAssertCUDAReturn(cudaBindTexture2D(0, tex_Iyy, Iyy.ptr(), ch_desc, kLevelWidth, kLevelHeight, kPitchTex), NCV_CUDA_ERROR);
-            ncvAssertCUDAReturn(cudaBindTexture2D(0, tex_Iy0, Iy0.ptr(), ch_desc, kLevelWidth, kLevelHeight, kPitchTex), NCV_CUDA_ERROR);
-            ncvAssertCUDAReturn(cudaBindTexture2D(0, tex_Ixy, Ixy.ptr(), ch_desc, kLevelWidth, kLevelHeight, kPitchTex), NCV_CUDA_ERROR);
+            ncvAssertCUDAReturn(hipBindTexture2D(0, tex_Ix,  Ix.ptr(),  ch_desc, kLevelWidth, kLevelHeight, kPitchTex), NCV_CUDA_ERROR);
+            ncvAssertCUDAReturn(hipBindTexture2D(0, tex_Ixx, Ixx.ptr(), ch_desc, kLevelWidth, kLevelHeight, kPitchTex), NCV_CUDA_ERROR);
+            ncvAssertCUDAReturn(hipBindTexture2D(0, tex_Ix0, Ix0.ptr(), ch_desc, kLevelWidth, kLevelHeight, kPitchTex), NCV_CUDA_ERROR);
+            ncvAssertCUDAReturn(hipBindTexture2D(0, tex_Iy,  Iy.ptr(),  ch_desc, kLevelWidth, kLevelHeight, kPitchTex), NCV_CUDA_ERROR);
+            ncvAssertCUDAReturn(hipBindTexture2D(0, tex_Iyy, Iyy.ptr(), ch_desc, kLevelWidth, kLevelHeight, kPitchTex), NCV_CUDA_ERROR);
+            ncvAssertCUDAReturn(hipBindTexture2D(0, tex_Iy0, Iy0.ptr(), ch_desc, kLevelWidth, kLevelHeight, kPitchTex), NCV_CUDA_ERROR);
+            ncvAssertCUDAReturn(hipBindTexture2D(0, tex_Ixy, Ixy.ptr(), ch_desc, kLevelWidth, kLevelHeight, kPitchTex), NCV_CUDA_ERROR);
 
             //    flow
             ncvAssertCUDAReturn(hipBindTexture(0, tex_u, ptrU->ptr(), ch_desc, kLevelSizeInBytes), NCV_CUDA_ERROR);
@@ -1147,11 +1147,11 @@ NCVStatus NCVBroxOpticalFlow(const NCVBroxOpticalFlowDescriptor desc,
         // end of warping iterations
         ncvAssertCUDAReturn(hipStreamSynchronize(stream), (int)NCV_CUDA_ERROR);
 
-        ncvAssertCUDAReturn( cudaMemcpy2DAsync
+        ncvAssertCUDAReturn( hipMemcpy2D
             (uOut.ptr(), uOut.pitch(), ptrU->ptr(),
             kSourcePitch, kSourceWidth*sizeof(float), kSourceHeight, hipMemcpyDeviceToDevice, stream), (int)NCV_CUDA_ERROR );
 
-        ncvAssertCUDAReturn( cudaMemcpy2DAsync
+        ncvAssertCUDAReturn( hipMemcpy2D
             (vOut.ptr(), vOut.pitch(), ptrV->ptr(),
             kSourcePitch, kSourceWidth*sizeof(float), kSourceHeight, hipMemcpyDeviceToDevice, stream), (int)NCV_CUDA_ERROR );
 
@@ -1160,3 +1160,4 @@ NCVStatus NCVBroxOpticalFlow(const NCVBroxOpticalFlowDescriptor desc,
 
     return NCV_SUCCESS;
 }
+#endif //HIP_TO_DO

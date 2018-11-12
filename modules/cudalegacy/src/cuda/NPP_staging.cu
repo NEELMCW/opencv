@@ -73,10 +73,10 @@ hipStream_t nppStGetActiveCUDAstream(void)
 
 
 
-hipStream_t nppStSetActiveCUDAstream(hipStream_t cudaStream)
+hipStream_t nppStSetActiveCUDAstream(hipStream_t hipStream)
 {
     hipStream_t tmp = nppStream;
-    nppStream = cudaStream;
+    nppStream = hipStream;
     return tmp;
 }
 
@@ -1917,7 +1917,7 @@ __global__ void BlendFramesKernel(const float *u, const float *v,   // forward f
     }
 }
 
-
+#ifdef HIP_TO_DO
 NCVStatus BlendFrames(const Ncv32f *src0,
                       const Ncv32f *src1,
                       const Ncv32f *ufi,
@@ -1944,8 +1944,8 @@ NCVStatus BlendFrames(const Ncv32f *src0,
 
     hipChannelFormatDesc desc = hipCreateChannelDesc <float> ();
     const Ncv32u pitch = stride * sizeof (float);
-    ncvAssertCUDAReturn (cudaBindTexture2D (0, tex_src1, src1, desc, width, height, pitch), NPPST_TEXTURE_BIND_ERROR);
-    ncvAssertCUDAReturn (cudaBindTexture2D (0, tex_src0, src0, desc, width, height, pitch), NPPST_TEXTURE_BIND_ERROR);
+    ncvAssertCUDAReturn (hipBindTexture2D (0, tex_src1, src1, desc, width, height, pitch), NPPST_TEXTURE_BIND_ERROR);
+    ncvAssertCUDAReturn (hipBindTexture2D (0, tex_src0, src0, desc, width, height, pitch), NPPST_TEXTURE_BIND_ERROR);
 
     dim3 threads (32, 4);
     dim3 blocks (iDivUp (width, threads.x), iDivUp (height, threads.y));
@@ -1956,7 +1956,7 @@ NCVStatus BlendFrames(const Ncv32f *src0,
 
     return NPPST_SUCCESS;
 }
-
+#endif // HIP_TO_DO
 
 NCVStatus nppiStGetInterpolationBufferSize(NcvSize32u srcSize,
                                            Ncv32u nStep,
@@ -2320,7 +2320,7 @@ NCVStatus nppiStVectorWarp_PSF2x2_32f_C1(const Ncv32f *pSrc,
 //
 //==============================================================================
 
-
+#ifdef HIP_TO_DO
 texture <float, 2, hipReadModeElementType> texSrc2D;
 
 
@@ -2551,7 +2551,7 @@ NCVStatus nppiStResize_32f_C1R(const Ncv32f *pSrc,
 
         hipChannelFormatDesc desc = hipCreateChannelDesc <float> ();
 
-        cudaBindTexture2D (0, texSrc2D, pSrc, desc, srcSize.width, srcSize.height,
+        hipBindTexture2D (0, texSrc2D, pSrc, desc, srcSize.width, srcSize.height,
             nSrcStep);
 
         dim3 ctaSize (32, 6);
@@ -2569,5 +2569,7 @@ NCVStatus nppiStResize_32f_C1R(const Ncv32f *pSrc,
 
     return status;
 }
+
+#endif //HIP_TO_DO
 
 #endif /* CUDA_DISABLER */

@@ -50,11 +50,11 @@
 
 using namespace cv::cuda;
 using namespace cv::cuda::device;
-
+#ifdef HIP_TO_DO
 namespace optflowbm
 {
-    texture<uchar, cudaTextureType2D, hipReadModeElementType> tex_prev(false, hipFilterModePoint, hipAddressModeClamp);
-    texture<uchar, cudaTextureType2D, hipReadModeElementType> tex_curr(false, hipFilterModePoint, hipAddressModeClamp);
+    texture<uchar, hipTextureType2D, hipReadModeElementType> tex_prev(false, hipFilterModePoint, hipAddressModeClamp);
+    texture<uchar, hipTextureType2D, hipReadModeElementType> tex_curr(false, hipFilterModePoint, hipAddressModeClamp);
 
     __device__ int cmpBlocks(int X1, int Y1, int X2, int Y2, int2 blockSize)
     {
@@ -166,5 +166,5 @@ namespace optflowbm
             cudaSafeCall( hipDeviceSynchronize() );
     }
 }
-
+#endif // HIP_TO_DO
 #endif // !defined CUDA_DISABLER

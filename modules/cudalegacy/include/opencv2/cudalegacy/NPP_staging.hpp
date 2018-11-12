@@ -69,7 +69,7 @@ hipStream_t nppStGetActiveCUDAstream();
  * \return CUDA stream used before
  */
 CV_EXPORTS
-hipStream_t nppStSetActiveCUDAstream(hipStream_t cudaStream);
+hipStream_t nppStSetActiveCUDAstream(hipStream_t hipStream);
 
 
 /*@}*/
