@@ -73,12 +73,12 @@ namespace cv { namespace cudev {
     { \
         return makeExpr(transformPtr(src, functor<T>())); \
     } \
-    template <typename T> \
+    /*template <typename T> \
     __host__ Expr<UnaryTransformPtrSz<typename PtrTraits<Texture<T> >::ptr_type, functor<T> > > \
     operator op(const Texture<T>& src) \
     { \
         return makeExpr(transformPtr(src, functor<T>())); \
-    } \
+    } */ \
     template <class Body> \
     __host__ Expr<UnaryTransformPtrSz<typename PtrTraits<Body>::ptr_type, functor<typename Body::value_type> > > \
     operator op(const Expr<Body>& src) \

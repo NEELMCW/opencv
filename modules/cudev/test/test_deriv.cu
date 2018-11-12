@@ -48,6 +48,7 @@ using namespace cv::cuda;
 using namespace cv::cudev;
 using namespace cvtest;
 
+#ifdef HIP_TO_DO
 TEST(Sobel, Accuracy)
 {
     const Size size = randomSize(100, 400);
@@ -107,3 +108,4 @@ TEST(Laplacian, Accuracy)
     EXPECT_MAT_NEAR(dst1_gold, dst1, 0.0);
     EXPECT_MAT_NEAR(dst3_gold, dst3, 0.0);
 }
+#endif //HIP_TO_DO
