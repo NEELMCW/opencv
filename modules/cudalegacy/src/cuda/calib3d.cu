@@ -76,10 +76,12 @@ namespace cv { namespace cuda { namespace device
                   const float* transl, PtrStepSz<float3> dst,
                   hipStream_t stream)
         {
+#ifdef HIP_TODO
             cudaSafeCall(hipMemcpyToSymbol(crot0, rot, sizeof(float) * 3));
             cudaSafeCall(hipMemcpyToSymbol(crot1, rot + 3, sizeof(float) * 3));
             cudaSafeCall(hipMemcpyToSymbol(crot2, rot + 6, sizeof(float) * 3));
             cudaSafeCall(hipMemcpyToSymbol(ctransl, transl, sizeof(float) * 3));
+#endif
             cv::cuda::device::transform(src, dst, TransformOp(), WithOutMask(), stream);
         }
     } // namespace transform_points
@@ -115,12 +117,14 @@ namespace cv { namespace cuda { namespace device
                   const float* transl, const float* proj, PtrStepSz<float2> dst,
                   hipStream_t stream)
         {
+#ifdef HIP_TODO
             cudaSafeCall(hipMemcpyToSymbol(crot0, rot, sizeof(float) * 3));
             cudaSafeCall(hipMemcpyToSymbol(crot1, rot + 3, sizeof(float) * 3));
             cudaSafeCall(hipMemcpyToSymbol(crot2, rot + 6, sizeof(float) * 3));
             cudaSafeCall(hipMemcpyToSymbol(ctransl, transl, sizeof(float) * 3));
             cudaSafeCall(hipMemcpyToSymbol(cproj0, proj, sizeof(float) * 3));
             cudaSafeCall(hipMemcpyToSymbol(cproj1, proj + 3, sizeof(float) * 3));
+#endif
             cv::cuda::device::transform(src, dst, ProjectOp(), WithOutMask(), stream);
         }
     } // namespace project_points
