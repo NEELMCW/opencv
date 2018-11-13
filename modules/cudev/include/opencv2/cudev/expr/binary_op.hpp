@@ -82,7 +82,7 @@ namespace cv { namespace cudev {
     { \
         return makeExpr(transformPtr(src1, src2, functor<T>())); \
     } \
-    template <typename T> \
+    /*template <typename T> \
     __host__ Expr<BinaryTransformPtrSz<typename PtrTraits<GpuMat_<T> >::ptr_type, typename PtrTraits<Texture<T> >::ptr_type, functor<T> > > \
     operator op(const GpuMat_<T>& src1, const Texture<T>& src2) \
     { \
@@ -93,7 +93,7 @@ namespace cv { namespace cudev {
     operator op(const Texture<T>& src1, const GpuMat_<T>& src2) \
     { \
         return makeExpr(transformPtr(src1, src2, functor<T>())); \
-    } \
+    } */ \
     template <typename T, class Body> \
     __host__ Expr<BinaryTransformPtrSz<typename PtrTraits<GpuMat_<T> >::ptr_type, typename PtrTraits<Body>::ptr_type, functor<typename LargerType<T, typename PtrTraits<Body>::value_type>::type> > > \
     operator op(const GpuMat_<T>& src1, const Expr<Body>& src2) \
@@ -124,7 +124,7 @@ namespace cv { namespace cudev {
     { \
         return makeExpr(transformPtr(src1, src2, functor<T>())); \
     } \
-    template <typename T> \
+    /*template <typename T> \
     __host__ Expr<BinaryTransformPtrSz<typename PtrTraits<GlobPtrSz<T> >::ptr_type, typename PtrTraits<Texture<T> >::ptr_type, functor<T> > > \
     operator op(const GlobPtrSz<T>& src1, const Texture<T>& src2) \
     { \
@@ -135,7 +135,7 @@ namespace cv { namespace cudev {
     operator op(const Texture<T>& src1, const GlobPtrSz<T>& src2) \
     { \
         return makeExpr(transformPtr(src1, src2, functor<T>())); \
-    } \
+    } */ \
     template <typename T, class Body> \
     __host__ Expr<BinaryTransformPtrSz<typename PtrTraits<GlobPtrSz<T> >::ptr_type, typename PtrTraits<Body>::ptr_type, functor<typename LargerType<T, typename PtrTraits<Body>::value_type>::type> > > \
     operator op(const GlobPtrSz<T>& src1, const Expr<Body>& src2) \
@@ -160,7 +160,7 @@ namespace cv { namespace cudev {
     { \
         return makeExpr(transformPtr(src, bind1st(functor<T>(), val))); \
     } \
-    template <typename T> \
+    /*template <typename T> \
     __host__ Expr<BinaryTransformPtrSz<typename PtrTraits<Texture<T> >::ptr_type, typename PtrTraits<Texture<T> >::ptr_type, functor<T> > > \
     operator op(const Texture<T>& src1, const Texture<T>& src2) \
     { \
@@ -189,7 +189,7 @@ namespace cv { namespace cudev {
     operator op(T val, const Texture<T>& src) \
     { \
         return makeExpr(transformPtr(src, bind1st(functor<T>(), val))); \
-    } \
+    } */ \
     template <class Body1, class Body2> \
     __host__ Expr<BinaryTransformPtrSz<typename PtrTraits<Body1>::ptr_type, typename PtrTraits<Body2>::ptr_type, functor<typename LargerType<typename PtrTraits<Body1>::value_type, typename PtrTraits<Body2>::value_type>::type> > > \
     operator op(const Expr<Body1>& a, const Expr<Body2>& b) \
