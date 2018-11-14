@@ -96,6 +96,7 @@ bool TestTranspose<T>::process()
     ncvAssertReturn(this->src.fill(h_img), false);
     NCV_SKIP_COND_END
 
+#ifdef NPP_ENABLE
     ncvStat = h_img.copySolid(d_img, 0);
     ncvAssertReturn(ncvStat == NPPST_SUCCESS, false);
     NCV_SKIP_COND_BEGIN
@@ -139,6 +140,7 @@ bool TestTranspose<T>::process()
     }
     ncvAssertReturn(ncvStat == NPPST_SUCCESS, false);
     NCV_SKIP_COND_END
+#endif //NPP_ENABLE
 
     //bit-to-bit check
     bool bLoopVirgin = true;

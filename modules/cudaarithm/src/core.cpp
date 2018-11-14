@@ -65,7 +65,7 @@ void cv::cuda::copyMakeBorder(InputArray, OutputArray, int, int, int, int, int, 
 
 ////////////////////////////////////////////////////////////////////////
 // flip
-
+#ifdef NPP_ENABLE
 namespace
 {
     template<int DEPTH> struct NppTypeTraits;
@@ -131,5 +131,5 @@ void cv::cuda::flip(InputArray _src, OutputArray _dst, int flipCode, Stream& str
 
     syncOutput(dst, _dst, stream);
 }
-
+#endif //NPP_ENABLE
 #endif /* !defined (HAVE_HIP) */

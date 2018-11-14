@@ -554,8 +554,10 @@ int main(int argc, char **argv)
         state.ppBuffers[4] = ubi.ptr ();
         state.ppBuffers[5] = vbi.ptr ();
 
+#ifdef NPP_ENABLE
         // interpolate red channel
         nppiStInterpolateFrames (&state);
+#endif //NPP_ENABLE
 
         // reset buffers
         ncvAssertCUDAReturn (cudaMemset (ui.ptr (), 0, ui.pitch () * ui.height ()), NCV_CUDA_ERROR);
@@ -572,7 +574,9 @@ int main(int argc, char **argv)
         state.pSrcFrame1 = d_gt.ptr ();
         state.pNewFrame  = d_gNew.ptr ();
 
+#ifdef NPP_ENABLE
         nppiStInterpolateFrames (&state);
+#endif //NPP_ENABLE
 
         // reset buffers
         ncvAssertCUDAReturn (cudaMemset (ui.ptr (), 0, ui.pitch () * ui.height ()), NCV_CUDA_ERROR);
@@ -589,7 +593,9 @@ int main(int argc, char **argv)
         state.pSrcFrame1 = d_bt.ptr ();
         state.pNewFrame  = d_bNew.ptr ();
 
+#ifdef NPP_ENABLE
         nppiStInterpolateFrames (&state);
+#endif //NPP_ENABLE
 
         // copy to host memory
         ncvAssertReturnNcvStat (d_rNew.copySolid (h_r, 0));

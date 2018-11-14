@@ -88,6 +88,7 @@ namespace
         }
     };
 
+#ifdef NPP_ENABLE
     template <int DEPTH, int cn> struct NppBitwiseCFunc
     {
         typedef typename NPPTypeTraits<DEPTH>::npp_type npp_type;
@@ -156,6 +157,7 @@ void bitScalar(const GpuMat& src, cv::Scalar value, bool, GpuMat& dst, const Gpu
             {BitScalar<uint, bitScalarOp<bit_xor, uint> >::call    , 0, NppBitwiseC<CV_32S, 3, nppiXorC_32s_C3R>::call, NppBitwiseC<CV_32S, 4, nppiXorC_32s_C4R>::call}
         }
     };
+#endif //NPP_ENABLE
 
     const int depth = src.depth();
     const int cn = src.channels();

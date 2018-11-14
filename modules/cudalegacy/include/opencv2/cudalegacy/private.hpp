@@ -60,6 +60,7 @@
 
 namespace cv { namespace cuda
 {
+    #ifdef NPP_ENABLE
     class NppStStreamHandler
     {
     public:
@@ -76,6 +77,8 @@ namespace cv { namespace cuda
     private:
         hipStream_t oldStream;
     };
+    #endif //NPP_ENABLE
+
 
     CV_EXPORTS cv::String getNcvErrorMessage(int code);
 

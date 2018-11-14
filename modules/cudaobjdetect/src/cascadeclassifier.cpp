@@ -792,7 +792,13 @@ namespace
             cudaSafeCall( cudaGetDeviceProperties(&prop, cv::cuda::getDevice()) );
 
             Ncv32u bufSize;
+
+            #ifdef NPP_ENABLE
             ncvSafeCall( nppiStIntegralGetSize_8u32u(roiSize, &bufSize, prop) );
+            #else
+            ncvSafeCall(1);
+            #endif //NPP_ENABLE
+
             integralBuffer.create(1, bufSize, CV_8UC1);
         #endif
 

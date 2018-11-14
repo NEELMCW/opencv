@@ -93,6 +93,7 @@ namespace
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Box Filter
 
+#ifdef NPP_ENABLE
 namespace
 {
     class NPPBoxFilter : public Filter
@@ -180,15 +181,18 @@ namespace
             cudaSafeCall( cudaDeviceSynchronize() );
     }
 }
+#endif //NPP_ENABLE
 
 Ptr<Filter> cv::cuda::createBoxFilter(int srcType, int dstType, Size ksize, Point anchor, int borderMode, Scalar borderVal)
 {
+#ifdef NPP_ENABLE
     if (dstType < 0)
         dstType = srcType;
 
     dstType = CV_MAKE_TYPE(CV_MAT_DEPTH(dstType), CV_MAT_CN(srcType));
 
     return makePtr<NPPBoxFilter>(srcType, dstType, ksize, anchor, borderMode, borderVal);
+#endif //NPP_ENABLE
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -514,6 +518,7 @@ Ptr<Filter> cv::cuda::createGaussianFilter(int srcType, int dstType, Size ksize,
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Morphology Filter
 
+#ifdef NPP_ENABLE
 namespace
 {
     class MorphologyFilter : public Filter
@@ -663,6 +668,7 @@ namespace
             cudaSafeCall( cudaDeviceSynchronize() );
     }
 }
+#endif //NPP_ENABLE
 
 namespace
 {
@@ -829,6 +835,7 @@ Ptr<Filter> cv::cuda::createMorphologyFilter(int op, int srcType, InputArray ker
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Image Rank Filter
 
+#ifdef NPP_ENABLE
 namespace
 {
     enum RankType

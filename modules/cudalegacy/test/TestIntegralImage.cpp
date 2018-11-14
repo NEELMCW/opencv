@@ -93,6 +93,7 @@ bool TestIntegralImage<T_in, T_out>::process()
     NCVMatrixAlloc<T_out> h_imgII_d(*this->allocatorCPU.get(), widthII, heightII);
     ncvAssertReturn(h_imgII_d.isMemAllocated(), false);
 
+#ifdef NPP_ENABLE
     Ncv32u bufSize;
     if (sizeof(T_in) == sizeof(Ncv8u))
     {
@@ -165,6 +166,7 @@ bool TestIntegralImage<T_in, T_out>::process()
 
     NCV_SKIP_COND_END
 
+
     //bit-to-bit check
     bool bLoopVirgin = true;
 
@@ -201,6 +203,11 @@ bool TestIntegralImage<T_in, T_out>::process()
     }
 
     return rcode;
+
+    #else
+    return 0;
+    #endif //NPP_ENABLE
+
 }
 
 
