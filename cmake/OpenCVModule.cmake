@@ -925,7 +925,7 @@ macro(_ocv_create_module)
   ocv_target_link_libraries(${the_module} LINK_PUBLIC ${OPENCV_MODULE_${the_module}_DEPS_EXT})
   ocv_target_link_libraries(${the_module} LINK_PRIVATE ${OPENCV_LINKER_LIBS} ${OPENCV_HAL_LINKER_LIBS} ${IPP_LIBS} ${ARGN})
   if (HAVE_HIP)
-    ocv_target_link_libraries(${the_module} LINK_PRIVATE ${CUDA_LIBRARIES} ${CUDA_npp_LIBRARY})
+    ocv_target_link_libraries(${the_module} LINK_PRIVATE ${CUDA_LIBRARIES})# ${CUDA_npp_LIBRARY})
   endif()
 
   if(OPENCV_MODULE_${the_module}_COMPILE_DEFINITIONS)

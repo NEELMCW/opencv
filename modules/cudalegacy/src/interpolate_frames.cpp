@@ -82,6 +82,7 @@ void cv::cuda::interpolateFrames(const GpuMat& frame0, const GpuMat& frame1, con
 
     CV_Assert(frame1.step == step && fu.step == step && fv.step == step && bu.step == step && bv.step == step && newFrame.step == step && buf.step == step);
 
+#ifdef NPP_ENABLE
     hipStream_t stream = StreamAccessor::getStream(s);
     NppStStreamHandler h(stream);
 
@@ -108,6 +109,8 @@ void cv::cuda::interpolateFrames(const GpuMat& frame0, const GpuMat& frame1, con
 
     if (stream == 0)
         cudaSafeCall( hipDeviceSynchronize() );
+#endif //NPP_ENABLE
+
 }
 
 #endif /* HAVE_HIP */

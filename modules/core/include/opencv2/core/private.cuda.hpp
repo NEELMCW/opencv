@@ -68,11 +68,17 @@
 #     include <cuda_fp16.h>
 #    endif
 #  endif // defined(__CUDACC_VER_MAJOR__) && (8 <= __CUDACC_VER_MAJOR__)
+
+#ifdef NPP_ENABLE
 #  include <npp.h>
+#endif //NPP_ENABLE
+
 #  include "opencv2/core/cuda_stream_accessor.hpp"
 #  include "opencv2/core/cuda/common.hpp"
 
+#ifdef NPP_ENABLE
 #  define NPP_VERSION (NPP_VERSION_MAJOR * 1000 + NPP_VERSION_MINOR * 100 + NPP_VERSION_BUILD)
+#endif //NPP_ENABLE
 
 #  define CUDART_MINIMUM_REQUIRED_VERSION 6050
 
@@ -88,7 +94,11 @@
 //! @cond IGNORED
 
 namespace cv { namespace cuda {
+
+#ifdef NPP_ENABLE
     CV_EXPORTS cv::String getNppErrorMessage(int code);
+#endif //NPP_ENABLE
+
     CV_EXPORTS cv::String getCudaDriverApiErrorMessage(int code);
 
     CV_EXPORTS GpuMat getInputMat(InputArray _src, Stream& stream);
@@ -108,17 +118,21 @@ static inline CV_NORETURN void throw_no_cuda() { CV_Error(cv::Error::GpuNotSuppo
 
 #else // HAVE_HIP
 
+#ifdef NPP_ENABLE
 #define nppSafeSetStream(oldStream, newStream) { if(oldStream != newStream) { hipStreamSynchronize(oldStream); nppSetStream(newStream); } }
+#endif //NPP_ENABLE
 
 static inline CV_NORETURN void throw_no_cuda() { CV_Error(cv::Error::StsNotImplemented, "The called functionality is disabled for current build or platform"); }
 
 namespace cv { namespace cuda
 {
+#ifdef NPP_ENABLE
     static inline void checkNppError(int code, const char* file, const int line, const char* func)
     {
         if (code < 0)
             cv::error(cv::Error::GpuApiCallError, getNppErrorMessage(code), func, file, line);
     }
+#endif //NPP_ENABLE
 
     static inline void checkCudaDriverApiError(int code, const char* file, const int line, const char* func)
     {
@@ -126,6 +140,7 @@ namespace cv { namespace cuda
             cv::error(cv::Error::GpuApiCallError, getCudaDriverApiErrorMessage(code), func, file, line);
     }
 
+#ifdef NPP_ENABLE
     template<int n> struct NPPTypeTraits;
     template<> struct NPPTypeTraits<CV_8U>  { typedef Npp8u npp_type; };
     template<> struct NPPTypeTraits<CV_8S>  { typedef Npp8s npp_type; };
@@ -158,9 +173,14 @@ namespace cv { namespace cuda
     private:
         hipStream_t oldStream;
     };
+#endif //NPP_ENABLE
+
 }}
 
+#ifdef NPP_ENABLE
 #define nppSafeCall(expr)  cv::cuda::checkNppError(expr, __FILE__, __LINE__, CV_Func)
+#endif //NPP_ENABLE
+
 #define cuSafeCall(expr)  cv::cuda::checkCudaDriverApiError(expr, __FILE__, __LINE__, CV_Func)
 
 #endif // HAVE_HIP

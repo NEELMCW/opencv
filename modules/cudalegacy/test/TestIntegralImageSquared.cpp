@@ -87,6 +87,7 @@ bool TestIntegralImageSquared::process()
     NCVMatrixAlloc<Ncv64u> h_imgSII_d(*this->allocatorCPU.get(), widthSII, heightSII);
     ncvAssertReturn(h_imgSII_d.isMemAllocated(), false);
 
+#ifdef NPP_ENABLE
     Ncv32u bufSize;
     ncvStat = nppiStSqrIntegralGetSize_8u64u(NcvSize32u(this->width, this->height), &bufSize, this->devProp);
     ncvAssertReturn(NPPST_SUCCESS == ncvStat, false);
@@ -117,6 +118,7 @@ bool TestIntegralImageSquared::process()
 
     NCV_SKIP_COND_END
 
+
     //bit-to-bit check
     bool bLoopVirgin = true;
 
@@ -139,6 +141,10 @@ bool TestIntegralImageSquared::process()
     }
 
     return rcode;
+
+    #else
+    return 0;
+    #endif //NPP_ENABLE
 }
 
 

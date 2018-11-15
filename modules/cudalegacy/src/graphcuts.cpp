@@ -116,6 +116,7 @@ void cv::cuda::labelComponents(const GpuMat& mask, GpuMat& components, int flags
     device::ccl::labelComponents(mask, components, flags, stream);
 }
 
+#ifdef NPP_ENABLE
 namespace
 {
     typedef NppStatus (*init_func_t)(NppiSize oSize, NppiGraphcutState** ppState, Npp8u* pDeviceMem);
@@ -142,6 +143,8 @@ namespace
         NppiGraphcutState* pState;
     };
 }
+#endif //NPP_ENABLE
+
 
 void cv::cuda::graphcut(GpuMat& terminals, GpuMat& leftTransp, GpuMat& rightTransp, GpuMat& top, GpuMat& bottom, GpuMat& labels, GpuMat& buf, Stream& s)
 {
@@ -167,6 +170,7 @@ void cv::cuda::graphcut(GpuMat& terminals, GpuMat& leftTransp, GpuMat& rightTran
 
     labels.create(src_size, CV_8U);
 
+#ifdef NPP_ENABLE
     NppiSize sznpp;
     sznpp.width = src_size.width;
     sznpp.height = src_size.height;
@@ -200,6 +204,8 @@ void cv::cuda::graphcut(GpuMat& terminals, GpuMat& leftTransp, GpuMat& rightTran
 
     if (stream == 0)
         cudaSafeCall( hipDeviceSynchronize() );
+#endif //NPP_ENABLE
+
 }
 
 void cv::cuda::graphcut(GpuMat& terminals, GpuMat& leftTransp, GpuMat& rightTransp, GpuMat& top, GpuMat& topLeft, GpuMat& topRight,
@@ -239,6 +245,7 @@ void cv::cuda::graphcut(GpuMat& terminals, GpuMat& leftTransp, GpuMat& rightTran
 
     labels.create(src_size, CV_8U);
 
+#ifdef NPP_ENABLE
     NppiSize sznpp;
     sznpp.width = src_size.width;
     sznpp.height = src_size.height;
@@ -278,6 +285,8 @@ void cv::cuda::graphcut(GpuMat& terminals, GpuMat& leftTransp, GpuMat& rightTran
 
     if (stream == 0)
         cudaSafeCall( hipDeviceSynchronize() );
+#endif //NPP_ENABLE
+
 }
 
 #endif /* !defined (HAVE_HIP) */

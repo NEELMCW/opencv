@@ -133,6 +133,8 @@ void cv::cuda::buildWarpPerspectiveMaps(InputArray _M, bool inverse, Size dsize,
     buildWarpPerspectiveMaps_gpu(coeffs, xmap, ymap, StreamAccessor::getStream(stream));
 }
 
+
+#ifdef NPP_ENABLE
 namespace
 {
     template <int DEPTH> struct NppWarpFunc
@@ -179,6 +181,7 @@ namespace
         }
     };
 }
+#endif //NPP_ENABLE
 
 void cv::cuda::warpAffine(InputArray _src, OutputArray _dst, InputArray _M, Size dsize, int flags, int borderMode, Scalar borderValue, Stream& stream)
 {
@@ -200,6 +203,7 @@ void cv::cuda::warpAffine(InputArray _src, OutputArray _dst, InputArray _M, Size
     Point ofs;
     src.locateROI(wholeSize, ofs);
 
+#ifdef NPP_ENABLE
     static const bool useNppTab[6][4][3] =
     {
         {
@@ -317,6 +321,8 @@ void cv::cuda::warpAffine(InputArray _src, OutputArray _dst, InputArray _M, Size
         func(src, PtrStepSzb(wholeSize.height, wholeSize.width, src.datastart, src.step), ofs.x, ofs.y, coeffs,
             dst, interpolation, borderMode, borderValueFloat.val, StreamAccessor::getStream(stream), deviceSupports(FEATURE_SET_COMPUTE_20));
     }
+    #endif //NPP_ENABLE
+
 }
 
 void cv::cuda::warpPerspective(InputArray _src, OutputArray _dst, InputArray _M, Size dsize, int flags, int borderMode, Scalar borderValue, Stream& stream)
@@ -339,6 +345,7 @@ void cv::cuda::warpPerspective(InputArray _src, OutputArray _dst, InputArray _M,
     Point ofs;
     src.locateROI(wholeSize, ofs);
 
+#ifdef NPP_ENABLE
     static const bool useNppTab[6][4][3] =
     {
         {
@@ -456,11 +463,14 @@ void cv::cuda::warpPerspective(InputArray _src, OutputArray _dst, InputArray _M,
         func(src, PtrStepSzb(wholeSize.height, wholeSize.width, src.datastart, src.step), ofs.x, ofs.y, coeffs,
             dst, interpolation, borderMode, borderValueFloat.val, StreamAccessor::getStream(stream), deviceSupports(FEATURE_SET_COMPUTE_20));
     }
+    #endif //NPP_ENABLE
+
 }
 
 ////////////////////////////////////////////////////////////////////////
 // rotate
 
+#ifdef NPP_ENABLE
 namespace
 {
     template <int DEPTH> struct NppRotateFunc
@@ -503,9 +513,11 @@ namespace
         }
     };
 }
+#endif //NPP_ENABLE
 
 void cv::cuda::rotate(InputArray _src, OutputArray _dst, Size dsize, double angle, double xShift, double yShift, int interpolation, Stream& stream)
 {
+#ifdef NPP_ENABLE
     typedef void (*func_t)(const GpuMat& src, GpuMat& dst, Size dsize, double angle, double xShift, double yShift, int interpolation, cudaStream_t stream);
     static const func_t funcs[6][4] =
     {
@@ -529,6 +541,7 @@ void cv::cuda::rotate(InputArray _src, OutputArray _dst, Size dsize, double angl
     dst.setTo(Scalar::all(0), stream);
 
     funcs[src.depth()][src.channels() - 1](src, dst, dsize, angle, xShift, yShift, interpolation, StreamAccessor::getStream(stream));
+#endif //NPP_ENABLE
 }
 
 #endif // HAVE_HIP

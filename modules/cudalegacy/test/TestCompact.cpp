@@ -100,6 +100,7 @@ bool TestCompact::process()
     }
     NCV_SKIP_COND_END
 
+#ifdef NPP_ENABLE
     NCVVectorAlloc<Ncv32u> h_dstLen(*this->allocatorCPU.get(), 1);
     ncvAssertReturn(h_dstLen.isMemAllocated(), false);
     Ncv32u bufSize;
@@ -150,6 +151,11 @@ bool TestCompact::process()
     }
 
     return rcode;
+
+    #else
+    return 0;
+    #endif //NPP_ENABLE
+
 }
 
 
