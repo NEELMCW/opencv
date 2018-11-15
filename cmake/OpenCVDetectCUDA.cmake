@@ -8,6 +8,16 @@ if(NOT UNIX AND CV_CLANG)
   return()
 endif()
 
+# HIP_PATH
+IF(NOT DEFINED $ENV{HIP_PATH})
+  SET(HIP_PATH "/opt/rocm/hip")
+ELSE()
+  SET(HIP_PATH $ENV{HIP_PATH})
+ENDIF()
+
+EXECUTE_PROCESS(COMMAND ${HIP_PATH}/bin/hipconfig -P OUTPUT_VARIABLE HIP_PLATFORM)
+
+set(CMAKE_MODULE_PATH "${OpenCV_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH})
 
 if(((NOT CMAKE_VERSION VERSION_LESS "3.9.0")  # requires https://gitlab.kitware.com/cmake/cmake/merge_requests/663
       OR OPENCV_CUDA_FORCE_EXTERNAL_CMAKE_MODULE)
@@ -256,9 +266,15 @@ if(HIP_FOUND)
     endif()
 
     HIP_COMPILE(${VAR} ${ARGN})
-    INCLUDE_DIRECTORIES("/opt/rocm/hip/include/" "/usr/local/cuda/include/")
-    LINK_DIRECTORIES("/opt/rocm/hip/lib/" "/usr/local/cuda/lib64/")
-    ADD_DEFINITIONS(-D__HIP_PLATFORM_NVCC__ )
+    if (${HIP_PLATFORM} MATCHES "nvcc")
+    	INCLUDE_DIRECTORIES("/opt/rocm/hip/include/" "/usr/local/cuda/include/")
+    	LINK_DIRECTORIES("/opt/rocm/hip/lib/" "/usr/local/cuda/lib64/")
+    	ADD_DEFINITIONS(-D__HIP_PLATFORM_NVCC__ )
+    elseif (${HIP_PLATFORM} MATCHES "hcc")
+        INCLUDE_DIRECTORIES("/opt/rocm/hip/include/")
+        LINK_DIRECTORIES("/opt/rocm/hip/lib/")
+        ADD_DEFINITIONS(-D__HIP_PLATFORM_HCC__ )
+    endif()
     foreach(var CMAKE_CXX_FLAGS CMAKE_CXX_FLAGS_RELEASE CMAKE_CXX_FLAGS_DEBUG)
       set(${var} "${${var}_backup_in_cuda_compile_}")
       unset(${var}_backup_in_cuda_compile_)
