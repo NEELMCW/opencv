@@ -64,6 +64,7 @@ namespace
     class DefaultThrustAllocator: public cv::cuda::device::ThrustAllocator
     {
     public:
+#ifdef __HIP_PLATFORM_NVCC__
         __device__ __host__ uchar* allocate(size_t numBytes) CV_OVERRIDE
         {
 #ifndef __CUDA_ARCH__
@@ -81,6 +82,26 @@ namespace
             CV_CUDEV_SAFE_CALL(hipFree(ptr));
 #endif
         }
+#elif defined (__HIP_PLATFORM_HCC__)
+        __host__ uchar* allocate(size_t numBytes) CV_OVERRIDE
+        {
+#ifndef __CUDA_ARCH__
+            uchar* ptr;
+            CV_CUDEV_SAFE_CALL(hipMalloc(&ptr, numBytes));
+            return ptr;
+#else
+            return NULL;
+#endif
+        }
+        __host__ void deallocate(uchar* ptr, size_t numBytes) CV_OVERRIDE
+        {
+            (void)numBytes;
+#ifndef __CUDA_ARCH__
+            CV_CUDEV_SAFE_CALL(hipFree(ptr));
+#endif
+        }
+
+#endif
     };
     DefaultThrustAllocator defaultThrustAllocator;
     cv::cuda::device::ThrustAllocator* g_thrustAllocator = &defaultThrustAllocator;

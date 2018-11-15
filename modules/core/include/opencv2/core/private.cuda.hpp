@@ -65,7 +65,7 @@
 #     include <hip/hip_fp16.h>
 #     pragma GCC diagnostic pop
 #    else
-#     include <cuda_fp16.h>
+#     include <hip/hip_fp16.h>
 #    endif
 #  endif // defined(__CUDACC_VER_MAJOR__) && (8 <= __CUDACC_VER_MAJOR__)
 
