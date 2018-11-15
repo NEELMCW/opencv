@@ -66,44 +66,72 @@ namespace cv { namespace cuda { namespace device
     {
         uint res = 0;
         int vi = v;
+#ifdef __HIP_PLATFORM_NVCC__
         asm("cvt.sat.u8.s8 %0, %1;" : "=r"(res) : "r"(vi));
+#elif defined (__HIP_PLATFORM_HCC__)
+    // HIP_TODO
+#endif
         return res;
     }
     template<> __device__ __forceinline__ uchar saturate_cast<uchar>(short v)
     {
         uint res = 0;
+#ifdef __HIP_PLATFORM_NVCC__
         asm("cvt.sat.u8.s16 %0, %1;" : "=r"(res) : "h"(v));
+#elif defined (__HIP_PLATFORM_HCC__)
+    // HIP_TODO
+#endif
         return res;
     }
     template<> __device__ __forceinline__ uchar saturate_cast<uchar>(ushort v)
     {
         uint res = 0;
+#ifdef __HIP_PLATFORM_NVCC__
         asm("cvt.sat.u8.u16 %0, %1;" : "=r"(res) : "h"(v));
+#elif defined (__HIP_PLATFORM_HCC__)
+    // HIP_TODO
+#endif
         return res;
     }
     template<> __device__ __forceinline__ uchar saturate_cast<uchar>(int v)
     {
         uint res = 0;
+#ifdef __HIP_PLATFORM_NVCC__
         asm("cvt.sat.u8.s32 %0, %1;" : "=r"(res) : "r"(v));
+#elif defined (__HIP_PLATFORM_HCC__)
+    // HIP_TODO
+#endif
         return res;
     }
     template<> __device__ __forceinline__ uchar saturate_cast<uchar>(uint v)
     {
         uint res = 0;
+#ifdef __HIP_PLATFORM_NVCC__
         asm("cvt.sat.u8.u32 %0, %1;" : "=r"(res) : "r"(v));
+#elif defined (__HIP_PLATFORM_HCC__)
+    // HIP_TODO
+#endif
         return res;
     }
     template<> __device__ __forceinline__ uchar saturate_cast<uchar>(float v)
     {
         uint res = 0;
+#ifdef __HIP_PLATFORM_NVCC__
         asm("cvt.rni.sat.u8.f32 %0, %1;" : "=r"(res) : "f"(v));
+#elif defined (__HIP_PLATFORM_HCC__)
+    // HIP_TODO
+#endif
         return res;
     }
     template<> __device__ __forceinline__ uchar saturate_cast<uchar>(double v)
     {
     #if defined __CUDA_ARCH__ && __CUDA_ARCH__ >= 130
         uint res = 0;
+#ifdef __HIP_PLATFORM_NVCC__
         asm("cvt.rni.sat.u8.f64 %0, %1;" : "=r"(res) : "d"(v));
+#elif defined (__HIP_PLATFORM_HCC__)
+    // HIP_TODO
+#endif
         return res;
     #else
         return saturate_cast<uchar>((float)v);
@@ -114,44 +142,72 @@ namespace cv { namespace cuda { namespace device
     {
         uint res = 0;
         uint vi = v;
+#ifdef __HIP_PLATFORM_NVCC__
         asm("cvt.sat.s8.u8 %0, %1;" : "=r"(res) : "r"(vi));
+#elif defined (__HIP_PLATFORM_HCC__)
+    // HIP_TODO
+#endif
         return res;
     }
     template<> __device__ __forceinline__ schar saturate_cast<schar>(short v)
     {
         uint res = 0;
+#ifdef __HIP_PLATFORM_NVCC__
         asm("cvt.sat.s8.s16 %0, %1;" : "=r"(res) : "h"(v));
+#elif defined (__HIP_PLATFORM_HCC__)
+    // HIP_TODO
+#endif
         return res;
     }
     template<> __device__ __forceinline__ schar saturate_cast<schar>(ushort v)
     {
         uint res = 0;
+#ifdef __HIP_PLATFORM_NVCC__
         asm("cvt.sat.s8.u16 %0, %1;" : "=r"(res) : "h"(v));
+#elif defined (__HIP_PLATFORM_HCC__)
+    // HIP_TODO
+#endif
         return res;
     }
     template<> __device__ __forceinline__ schar saturate_cast<schar>(int v)
     {
         uint res = 0;
+#ifdef __HIP_PLATFORM_NVCC__
         asm("cvt.sat.s8.s32 %0, %1;" : "=r"(res) : "r"(v));
+#elif defined (__HIP_PLATFORM_HCC__)
+    // HIP_TODO
+#endif
         return res;
     }
     template<> __device__ __forceinline__ schar saturate_cast<schar>(uint v)
     {
         uint res = 0;
+#ifdef __HIP_PLATFORM_NVCC__
         asm("cvt.sat.s8.u32 %0, %1;" : "=r"(res) : "r"(v));
+#elif defined (__HIP_PLATFORM_HCC__)
+    // HIP_TODO
+#endif
         return res;
     }
     template<> __device__ __forceinline__ schar saturate_cast<schar>(float v)
     {
         uint res = 0;
+#ifdef __HIP_PLATFORM_NVCC__
         asm("cvt.rni.sat.s8.f32 %0, %1;" : "=r"(res) : "f"(v));
+#elif defined (__HIP_PLATFORM_HCC__)
+    // HIP_TODO
+#endif
         return res;
     }
     template<> __device__ __forceinline__ schar saturate_cast<schar>(double v)
     {
     #if defined __CUDA_ARCH__ && __CUDA_ARCH__ >= 130
         uint res = 0;
+#ifdef __HIP_PLATFORM_NVCC__
         asm("cvt.rni.sat.s8.f64 %0, %1;" : "=r"(res) : "d"(v));
+#elif defined (__HIP_PLATFORM_HCC__)
+    // HIP_TODO
+#endif
         return res;
     #else
         return saturate_cast<schar>((float)v);
@@ -162,38 +218,62 @@ namespace cv { namespace cuda { namespace device
     {
         ushort res = 0;
         int vi = v;
+#ifdef __HIP_PLATFORM_NVCC__
         asm("cvt.sat.u16.s8 %0, %1;" : "=h"(res) : "r"(vi));
+#elif defined (__HIP_PLATFORM_HCC__)
+    // HIP_TODO
+#endif
         return res;
     }
     template<> __device__ __forceinline__ ushort saturate_cast<ushort>(short v)
     {
         ushort res = 0;
+#ifdef __HIP_PLATFORM_NVCC__
         asm("cvt.sat.u16.s16 %0, %1;" : "=h"(res) : "h"(v));
+#elif defined (__HIP_PLATFORM_HCC__)
+    // HIP_TODO
+#endif
         return res;
     }
     template<> __device__ __forceinline__ ushort saturate_cast<ushort>(int v)
     {
         ushort res = 0;
+#ifdef __HIP_PLATFORM_NVCC__
         asm("cvt.sat.u16.s32 %0, %1;" : "=h"(res) : "r"(v));
+#elif defined (__HIP_PLATFORM_HCC__)
+    // HIP_TODO
+#endif
         return res;
     }
     template<> __device__ __forceinline__ ushort saturate_cast<ushort>(uint v)
     {
         ushort res = 0;
+#ifdef __HIP_PLATFORM_NVCC__
         asm("cvt.sat.u16.u32 %0, %1;" : "=h"(res) : "r"(v));
+#elif defined (__HIP_PLATFORM_HCC__)
+    // HIP_TODO
+#endif
         return res;
     }
     template<> __device__ __forceinline__ ushort saturate_cast<ushort>(float v)
     {
         ushort res = 0;
+#ifdef __HIP_PLATFORM_NVCC__
         asm("cvt.rni.sat.u16.f32 %0, %1;" : "=h"(res) : "f"(v));
+#elif defined (__HIP_PLATFORM_HCC__)
+    // HIP_TODO
+#endif
         return res;
     }
     template<> __device__ __forceinline__ ushort saturate_cast<ushort>(double v)
     {
     #if defined __CUDA_ARCH__ && __CUDA_ARCH__ >= 130
         ushort res = 0;
+#ifdef __HIP_PLATFORM_NVCC__
         asm("cvt.rni.sat.u16.f64 %0, %1;" : "=h"(res) : "d"(v));
+#elif defined (__HIP_PLATFORM_HCC__)
+    // HIP_TODO
+#endif
         return res;
     #else
         return saturate_cast<ushort>((float)v);
@@ -203,32 +283,52 @@ namespace cv { namespace cuda { namespace device
     template<> __device__ __forceinline__ short saturate_cast<short>(ushort v)
     {
         short res = 0;
+#ifdef __HIP_PLATFORM_NVCC__
         asm("cvt.sat.s16.u16 %0, %1;" : "=h"(res) : "h"(v));
+#elif defined (__HIP_PLATFORM_HCC__)
+    // HIP_TODO
+#endif
         return res;
     }
     template<> __device__ __forceinline__ short saturate_cast<short>(int v)
     {
         short res = 0;
+#ifdef __HIP_PLATFORM_NVCC__
         asm("cvt.sat.s16.s32 %0, %1;" : "=h"(res) : "r"(v));
+#elif defined (__HIP_PLATFORM_HCC__)
+    // HIP_TODO
+#endif
         return res;
     }
     template<> __device__ __forceinline__ short saturate_cast<short>(uint v)
     {
         short res = 0;
+#ifdef __HIP_PLATFORM_NVCC__
         asm("cvt.sat.s16.u32 %0, %1;" : "=h"(res) : "r"(v));
+#elif defined (__HIP_PLATFORM_HCC__)
+    // HIP_TODO
+#endif
         return res;
     }
     template<> __device__ __forceinline__ short saturate_cast<short>(float v)
     {
         short res = 0;
+#ifdef __HIP_PLATFORM_NVCC__
         asm("cvt.rni.sat.s16.f32 %0, %1;" : "=h"(res) : "f"(v));
+#elif defined (__HIP_PLATFORM_HCC__)
+    // HIP_TODO
+#endif
         return res;
     }
     template<> __device__ __forceinline__ short saturate_cast<short>(double v)
     {
     #if defined __CUDA_ARCH__ && __CUDA_ARCH__ >= 130
         short res = 0;
+#ifdef __HIP_PLATFORM_NVCC__
         asm("cvt.rni.sat.s16.f64 %0, %1;" : "=h"(res) : "d"(v));
+#elif defined (__HIP_PLATFORM_HCC__)
+    // HIP_TODO
+#endif
         return res;
     #else
         return saturate_cast<short>((float)v);
@@ -238,7 +338,11 @@ namespace cv { namespace cuda { namespace device
     template<> __device__ __forceinline__ int saturate_cast<int>(uint v)
     {
         int res = 0;
+#ifdef __HIP_PLATFORM_NVCC__
         asm("cvt.sat.s32.u32 %0, %1;" : "=r"(res) : "r"(v));
+#elif defined (__HIP_PLATFORM_HCC__)
+    // HIP_TODO
+#endif
         return res;
     }
     template<> __device__ __forceinline__ int saturate_cast<int>(float v)
@@ -258,19 +362,31 @@ namespace cv { namespace cuda { namespace device
     {
         uint res = 0;
         int vi = v;
+#ifdef __HIP_PLATFORM_NVCC__
         asm("cvt.sat.u32.s8 %0, %1;" : "=r"(res) : "r"(vi));
+#elif defined (__HIP_PLATFORM_HCC__)
+    // HIP_TODO
+#endif
         return res;
     }
     template<> __device__ __forceinline__ uint saturate_cast<uint>(short v)
     {
         uint res = 0;
+#ifdef __HIP_PLATFORM_NVCC__
         asm("cvt.sat.u32.s16 %0, %1;" : "=r"(res) : "h"(v));
+#elif defined (__HIP_PLATFORM_HCC__)
+    // HIP_TODO
+#endif
         return res;
     }
     template<> __device__ __forceinline__ uint saturate_cast<uint>(int v)
     {
         uint res = 0;
+#ifdef __HIP_PLATFORM_NVCC__
         asm("cvt.sat.u32.s32 %0, %1;" : "=r"(res) : "r"(v));
+#elif defined (__HIP_PLATFORM_HCC__)
+    // HIP_TODO
+#endif
         return res;
     }
     template<> __device__ __forceinline__ uint saturate_cast<uint>(float v)

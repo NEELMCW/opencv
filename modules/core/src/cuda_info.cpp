@@ -53,7 +53,7 @@ int cv::cuda::getCudaEnabledDeviceCount()
     int count;
     hipError_t error = hipGetDeviceCount(&count);
 
-    if (error == cudaErrorInsufficientDriver)
+    if (error == hipErrorInsufficientDriver)
         return -1;
 
     if (error == hipErrorNoDevice)
@@ -1244,57 +1244,69 @@ namespace
 
     const size_t npp_error_num = sizeof(npp_errors) / sizeof(npp_errors[0]);
     #endif //NPP_ENABLE
+#ifdef __HIP_PLATFORM_HCC__
     const ErrorEntry cu_errors [] =
     {
-        error_entry( CUDA_SUCCESS                              ),
-        error_entry( CUDA_ERROR_INVALID_VALUE                  ),
-        error_entry( CUDA_ERROR_OUT_OF_MEMORY                  ),
-        error_entry( CUDA_ERROR_NOT_INITIALIZED                ),
-        error_entry( CUDA_ERROR_DEINITIALIZED                  ),
-        error_entry( CUDA_ERROR_PROFILER_DISABLED              ),
-        error_entry( CUDA_ERROR_PROFILER_NOT_INITIALIZED       ),
-        error_entry( CUDA_ERROR_PROFILER_ALREADY_STARTED       ),
-        error_entry( CUDA_ERROR_PROFILER_ALREADY_STOPPED       ),
-        error_entry( CUDA_ERROR_NO_DEVICE                      ),
-        error_entry( CUDA_ERROR_INVALID_DEVICE                 ),
-        error_entry( CUDA_ERROR_INVALID_IMAGE                  ),
-        error_entry( CUDA_ERROR_INVALID_CONTEXT                ),
-        error_entry( CUDA_ERROR_CONTEXT_ALREADY_CURRENT        ),
-        error_entry( CUDA_ERROR_MAP_FAILED                     ),
-        error_entry( CUDA_ERROR_UNMAP_FAILED                   ),
-        error_entry( CUDA_ERROR_ARRAY_IS_MAPPED                ),
-        error_entry( CUDA_ERROR_ALREADY_MAPPED                 ),
-        error_entry( CUDA_ERROR_NO_BINARY_FOR_GPU              ),
-        error_entry( CUDA_ERROR_ALREADY_ACQUIRED               ),
-        error_entry( CUDA_ERROR_NOT_MAPPED                     ),
-        error_entry( CUDA_ERROR_NOT_MAPPED_AS_ARRAY            ),
-        error_entry( CUDA_ERROR_NOT_MAPPED_AS_POINTER          ),
-        error_entry( CUDA_ERROR_ECC_UNCORRECTABLE              ),
-        error_entry( CUDA_ERROR_UNSUPPORTED_LIMIT              ),
-        error_entry( CUDA_ERROR_CONTEXT_ALREADY_IN_USE         ),
-        error_entry( CUDA_ERROR_INVALID_SOURCE                 ),
-        error_entry( CUDA_ERROR_FILE_NOT_FOUND                 ),
-        error_entry( CUDA_ERROR_SHARED_OBJECT_SYMBOL_NOT_FOUND ),
-        error_entry( CUDA_ERROR_SHARED_OBJECT_INIT_FAILED      ),
-        error_entry( CUDA_ERROR_OPERATING_SYSTEM               ),
-        error_entry( CUDA_ERROR_INVALID_HANDLE                 ),
-        error_entry( CUDA_ERROR_NOT_FOUND                      ),
-        error_entry( CUDA_ERROR_NOT_READY                      ),
-        error_entry( CUDA_ERROR_LAUNCH_FAILED                  ),
-        error_entry( CUDA_ERROR_LAUNCH_OUT_OF_RESOURCES        ),
-        error_entry( CUDA_ERROR_LAUNCH_TIMEOUT                 ),
-        error_entry( CUDA_ERROR_LAUNCH_INCOMPATIBLE_TEXTURING  ),
-        error_entry( CUDA_ERROR_PEER_ACCESS_ALREADY_ENABLED    ),
-        error_entry( CUDA_ERROR_PEER_ACCESS_NOT_ENABLED        ),
-        error_entry( CUDA_ERROR_PRIMARY_CONTEXT_ACTIVE         ),
-        error_entry( CUDA_ERROR_CONTEXT_IS_DESTROYED           ),
-        error_entry( CUDA_ERROR_ASSERT                         ),
-        error_entry( CUDA_ERROR_TOO_MANY_PEERS                 ),
-        error_entry( CUDA_ERROR_HOST_MEMORY_ALREADY_REGISTERED ),
-        error_entry( CUDA_ERROR_HOST_MEMORY_NOT_REGISTERED     ),
-        error_entry( CUDA_ERROR_UNKNOWN                        )
+        error_entry( HIP_SUCCESS                              ),
+        error_entry( HIP_ERROR_INVALID_VALUE                  ),
+        error_entry( HIP_ERROR_LAUNCH_OUT_OF_RESOURCES        ),
+        error_entry( HIP_ERROR_NOT_INITIALIZED                )
     };
 
+#elif defined (__HIP_PLATFORM_NVCC__)
+   
+    const ErrorEntry cu_errors [] =
+    {
+        error_entry( HIP_SUCCESS                              ),
+        error_entry( HIP_ERROR_INVALID_VALUE                  ),
+        error_entry( HIP_ERROR_LAUNCH_OUT_OF_RESOURCES        ),
+        error_entry( HIP_ERROR_NOT_INITIALIZED                )
+        error_entry( HIP_ERROR_DEINITIALIZED                  ),
+        error_entry( HIP_ERROR_PROFILER_DISABLED              ),
+        error_entry( HIP_ERROR_PROFILER_NOT_INITIALIZED       ),
+        error_entry( HIP_ERROR_PROFILER_ALREADY_STARTED       ),
+        error_entry( HIP_ERROR_PROFILER_ALREADY_STOPPED       ),
+        error_entry( HIP_ERROR_NO_DEVICE                      ),
+        error_entry( HIP_ERROR_INVALID_DEVICE                 ),
+        error_entry( HIP_ERROR_INVALID_IMAGE                  ),
+        error_entry( HIP_ERROR_INVALID_CONTEXT                ),
+        error_entry( HIP_ERROR_CONTEXT_ALREADY_CURRENT        ),
+        error_entry( HIP_ERROR_MAP_FAILED                     ),
+        error_entry( HIP_ERROR_UNMAP_FAILED                   ),
+        error_entry( HIP_ERROR_ARRAY_IS_MAPPED                ),
+        error_entry( HIP_ERROR_ALREADY_MAPPED                 ),
+        error_entry( HIP_ERROR_NO_BINARY_FOR_GPU              ),
+        error_entry( HIP_ERROR_ALREADY_ACQUIRED               ),
+        error_entry( HIP_ERROR_NOT_MAPPED                     ),
+        error_entry( HIP_ERROR_NOT_MAPPED_AS_ARRAY            ),
+        error_entry( HIP_ERROR_NOT_MAPPED_AS_POINTER          ),
+        error_entry( HIP_ERROR_ECC_UNCORRECTABLE              ),
+        error_entry( HIP_ERROR_UNSUPPORTED_LIMIT              ),
+        error_entry( HIP_ERROR_CONTEXT_ALREADY_IN_USE         ),
+        error_entry( HIP_ERROR_INVALID_SOURCE                 ),
+        error_entry( HIP_ERROR_FILE_NOT_FOUND                 ),
+        error_entry( HIP_ERROR_SHARED_OBJECT_SYMBOL_NOT_FOUND ),
+        error_entry( HIP_ERROR_SHARED_OBJECT_INIT_FAILED      ),
+        error_entry( HIP_ERROR_OPERATING_SYSTEM               ),
+        error_entry( HIP_ERROR_INVALID_HANDLE                 ),
+        error_entry( HIP_ERROR_NOT_FOUND                      ),
+        error_entry( HIP_ERROR_NOT_READY                      ),
+        error_entry( HIP_ERROR_LAUNCH_FAILED                  ),
+        error_entry( HIP_ERROR_LAUNCH_OUT_OF_RESOURCES        ),
+        error_entry( HIP_ERROR_LAUNCH_TIMEOUT                 ),
+        error_entry( HIP_ERROR_LAUNCH_INCOMPATIBLE_TEXTURING  ),
+        error_entry( HIP_ERROR_PEER_ACCESS_ALREADY_ENABLED    ),
+        error_entry( HIP_ERROR_PEER_ACCESS_NOT_ENABLED        ),
+        error_entry( HIP_ERROR_PRIMARY_CONTEXT_ACTIVE         ),
+        error_entry( HIP_ERROR_CONTEXT_IS_DESTROYED           ),
+        error_entry( HIP_ERROR_ASSERT                         ),
+        error_entry( HIP_ERROR_TOO_MANY_PEERS                 ),
+        error_entry( HIP_ERROR_HOST_MEMORY_ALREADY_REGISTERED ),
+        error_entry( HIP_ERROR_HOST_MEMORY_NOT_REGISTERED     ),
+        error_entry( HIP_ERROR_UNKNOWN                        )
+    };
+
+#endif
     const size_t cu_errors_num = sizeof(cu_errors) / sizeof(cu_errors[0]);
 
     cv::String getErrorString(int code, const ErrorEntry* errors, size_t n)
