@@ -56,7 +56,7 @@
 #include "opencv2/core/cuda.hpp"
 
 #ifdef HAVE_HIP
-#  include <cuda.h>
+#  include <hip/hip_runtime_api.h>
 #  include <hip/hip_runtime.h>
 #  if defined(__CUDACC_VER_MAJOR__) && (8 <= __CUDACC_VER_MAJOR__)
 #    if defined (__GNUC__) && !defined(__HIPCC__)
@@ -82,9 +82,11 @@
 
 #  define CUDART_MINIMUM_REQUIRED_VERSION 6050
 
+#ifdef __NVCC__
 #  if (CUDART_VERSION < CUDART_MINIMUM_REQUIRED_VERSION)
 #    error "Insufficient Cuda Runtime library version, please update it."
 #  endif
+#endif //__NVCC__
 
 #  if defined(CUDA_ARCH_BIN_OR_PTX_10)
 #    error "OpenCV CUDA module doesn't support NVIDIA compute capability 1.0"
@@ -136,7 +138,7 @@ namespace cv { namespace cuda
 
     static inline void checkCudaDriverApiError(int code, const char* file, const int line, const char* func)
     {
-        if (code != CUDA_SUCCESS)
+        if (code != HIP_SUCCESS)
             cv::error(cv::Error::GpuApiCallError, getCudaDriverApiErrorMessage(code), func, file, line);
     }
 
