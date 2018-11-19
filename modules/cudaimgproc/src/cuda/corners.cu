@@ -59,8 +59,9 @@ namespace cv { namespace cuda { namespace device
     {
         /////////////////////////////////////////// Corner Harris /////////////////////////////////////////////////
 
-        texture<float, cudaTextureType2D, hipReadModeElementType> harrisDxTex(0, hipFilterModePoint, hipAddressModeClamp);
-        texture<float, cudaTextureType2D, hipReadModeElementType> harrisDyTex(0, hipFilterModePoint, hipAddressModeClamp);
+        #ifdef HIP_TO_DO
+        texture<float, hipTextureType2D, hipReadModeElementType> harrisDxTex(0, hipFilterModePoint, hipAddressModeClamp);
+        texture<float, hipTextureType2D, hipReadModeElementType> harrisDyTex(0, hipFilterModePoint, hipAddressModeClamp);
 
         __global__ void cornerHarris_kernel(const int block_size, const float k, PtrStepSzf dst)
         {
@@ -132,9 +133,11 @@ namespace cv { namespace cuda { namespace device
                 dst(y, x) = a * c - b * b - k * (a + c) * (a + c);
             }
         }
+        #endif //HIP_TO_DO
 
         void cornerHarris_gpu(int block_size, float k, PtrStepSzf Dx, PtrStepSzf Dy, PtrStepSzf dst, int border_type, hipStream_t stream)
         {
+            #ifdef HIP_TO_DO
             dim3 block(32, 8);
             dim3 grid(divUp(Dx.cols, block.x), divUp(Dx.rows, block.y));
 
@@ -160,15 +163,20 @@ namespace cv { namespace cuda { namespace device
 
             if (stream == 0)
                 cudaSafeCall( hipDeviceSynchronize() );
+            #endif //HIP_TO_DO
+
         }
 
         /////////////////////////////////////////// Corner Min Eigen Val /////////////////////////////////////////////////
 
-        texture<float, cudaTextureType2D, hipReadModeElementType> minEigenValDxTex(0, hipFilterModePoint, hipAddressModeClamp);
-        texture<float, cudaTextureType2D, hipReadModeElementType> minEigenValDyTex(0, hipFilterModePoint, hipAddressModeClamp);
+        #ifdef HIP_TO_DO
+        texture<float, hipTextureType2D, hipReadModeElementType> minEigenValDxTex(0, hipFilterModePoint, hipAddressModeClamp);
+        texture<float, hipTextureType2D, hipReadModeElementType> minEigenValDyTex(0, hipFilterModePoint, hipAddressModeClamp);
+        #endif //HIP_TO_DO
 
         __global__ void cornerMinEigenVal_kernel(const int block_size, PtrStepSzf dst)
         {
+            #ifdef HIP_TO_DO
             const int x = blockIdx.x * blockDim.x + threadIdx.x;
             const int y = blockIdx.y * blockDim.y + threadIdx.y;
 
@@ -201,12 +209,15 @@ namespace cv { namespace cuda { namespace device
 
                 dst(y, x) = (a + c) - sqrtf((a - c) * (a - c) + b * b);
             }
+            #endif //HIP_TO_DO
+
         }
 
 
         template <typename BR, typename BC>
         __global__ void cornerMinEigenVal_kernel(const int block_size, PtrStepSzf dst, const BR border_row, const BC border_col)
         {
+            #ifdef HIP_TO_DO
             const int x = blockIdx.x * blockDim.x + threadIdx.x;
             const int y = blockIdx.y * blockDim.y + threadIdx.y;
 
@@ -243,10 +254,13 @@ namespace cv { namespace cuda { namespace device
 
                 dst(y, x) = (a + c) - sqrtf((a - c) * (a - c) + b * b);
             }
+            #endif //HIP_TO_DO
+
         }
 
         void cornerMinEigenVal_gpu(int block_size, PtrStepSzf Dx, PtrStepSzf Dy, PtrStepSzf dst, int border_type, hipStream_t stream)
         {
+            #ifdef HIP_TO_DO
             dim3 block(32, 8);
             dim3 grid(divUp(Dx.cols, block.x), divUp(Dx.rows, block.y));
 
@@ -272,6 +286,8 @@ namespace cv { namespace cuda { namespace device
 
             if (stream == 0)
                 cudaSafeCall(hipDeviceSynchronize());
+            #endif //HIP_TO_DO
+                
         }
     }
 }}}

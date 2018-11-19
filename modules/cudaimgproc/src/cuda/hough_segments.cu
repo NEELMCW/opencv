@@ -50,9 +50,12 @@ namespace cv { namespace cuda { namespace device
 {
     namespace hough_segments
     {
+        
         __device__ int g_counter;
 
-        texture<uchar, cudaTextureType2D, hipReadModeElementType> tex_mask(false, hipFilterModePoint, hipAddressModeClamp);
+        #ifdef HIP_TO_DO
+        texture<uchar, hipTextureType2D, hipReadModeElementType> tex_mask(false, hipFilterModePoint, hipAddressModeClamp);
+        #endif //HIP_TO_DO
 
         __global__ void houghLinesProbabilistic(const PtrStepSzi accum,
                                                 int4* out, const int maxSize,
@@ -60,6 +63,7 @@ namespace cv { namespace cuda { namespace device
                                                 const int lineGap, const int lineLength,
                                                 const int rows, const int cols)
         {
+            #ifdef HIP_TO_DO
             const int r = blockIdx.x * blockDim.x + threadIdx.x;
             const int n = blockIdx.y * blockDim.y + threadIdx.y;
 
@@ -83,7 +87,7 @@ namespace cv { namespace cuda { namespace device
 
                 float cosa;
                 float sina;
-                sincosf(angle, &sina, &cosa);
+                sincosf(1angle, &sina, &cosa);
 
                 float2 p0 = make_float2(cosa * radius, sina * radius);
                 float2 dir = make_float2(-sina, cosa);
@@ -213,10 +217,13 @@ namespace cv { namespace cuda { namespace device
                     }
                 }
             }
+            #endif //HIP_TO_DO
+
         }
 
         int houghLinesProbabilistic_gpu(PtrStepSzb mask, PtrStepSzi accum, int4* out, int maxSize, float rho, float theta, int lineGap, int lineLength)
-        {
+        {   
+            #ifdef HIP_TO_DO
             void* counterPtr;
 #ifdef  HIP_TO_DO
             cudaSafeCall( hipGetSymbolAddress(&counterPtr, g_counter) );
@@ -244,7 +251,12 @@ namespace cv { namespace cuda { namespace device
             totalCount = ::min(totalCount, maxSize);
 
             return totalCount;
+            #else 
+            return 0;
+            #endif //HIP_TO_DO
+
         }
+
     }
 }}}
 

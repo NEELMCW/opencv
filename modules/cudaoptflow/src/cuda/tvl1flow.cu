@@ -101,9 +101,11 @@ namespace tvl1flow
         }
     }
 
-    texture<float, cudaTextureType2D, cudaReadModeElementType> tex_I1 (false, cudaFilterModePoint, cudaAddressModeClamp);
-    texture<float, cudaTextureType2D, cudaReadModeElementType> tex_I1x(false, cudaFilterModePoint, cudaAddressModeClamp);
-    texture<float, cudaTextureType2D, cudaReadModeElementType> tex_I1y(false, cudaFilterModePoint, cudaAddressModeClamp);
+    #ifdef HIP_TO_DO
+    texture<float, hipTextureType2D, cudaReadModeElementType> tex_I1 (false, cudaFilterModePoint, cudaAddressModeClamp);
+    texture<float, hipTextureType2D, cudaReadModeElementType> tex_I1x(false, cudaFilterModePoint, cudaAddressModeClamp);
+    texture<float, hipTextureType2D, cudaReadModeElementType> tex_I1y(false, cudaFilterModePoint, cudaAddressModeClamp);
+    #endif //HIP_TO_DO
 
     __global__ void warpBackwardKernel(const PtrStepSzf I0, const PtrStepf u1, const PtrStepf u2, PtrStepf I1w, PtrStepf I1wx, PtrStepf I1wy, PtrStepf grad, PtrStepf rho)
     {
@@ -130,6 +132,7 @@ namespace tvl1flow
         float sumy = 0.0f;
         float wsum = 0.0f;
 
+        #ifdef HIP_TO_DO
         for (int cy = ymin; cy <= ymax; ++cy)
         {
             for (int cx = xmin; cx <= xmax; ++cx)
@@ -143,6 +146,7 @@ namespace tvl1flow
                 wsum += w;
             }
         }
+        #endif //HIP_TO_DO
 
         const float coeff = 1.0f / wsum;
 
@@ -170,6 +174,7 @@ namespace tvl1flow
                       PtrStepSzf I1wy, PtrStepSzf grad, PtrStepSzf rho,
                       cudaStream_t stream)
     {
+        #ifdef HIP_TO_DO
         const dim3 block(32, 8);
         const dim3 grid(divUp(I0.cols, block.x), divUp(I0.rows, block.y));
 
@@ -182,6 +187,8 @@ namespace tvl1flow
 
         if (!stream)
             cudaSafeCall( cudaDeviceSynchronize() );
+        #endif //HIP_TO_DO
+
     }
 }
 

@@ -77,37 +77,37 @@ namespace cv { namespace cuda { namespace device
     template <typename T, typename D, template <typename> class Brd> struct Filter2DCaller;
 
     #define IMPLEMENT_FILTER2D_TEX_READER(type) \
-        texture< type , cudaTextureType2D, cudaReadModeElementType> tex_filter2D_ ## type (0, cudaFilterModePoint, cudaAddressModeClamp); \
-        struct tex_filter2D_ ## type ## _reader \
-        { \
-            typedef type elem_type; \
-            typedef int index_type; \
-            const int xoff; \
-            const int yoff; \
-            tex_filter2D_ ## type ## _reader (int xoff_, int yoff_) : xoff(xoff_), yoff(yoff_) {} \
-            __device__ __forceinline__ elem_type operator ()(index_type y, index_type x) const \
-            { \
-                return tex2D(tex_filter2D_ ## type , x + xoff, y + yoff); \
-            } \
-        }; \
-        template <typename D, template <typename> class Brd> struct Filter2DCaller< type , D, Brd> \
-        { \
-            static void call(const PtrStepSz< type > srcWhole, int xoff, int yoff, PtrStepSz<D> dst, const float* kernel, \
-                int kWidth, int kHeight, int anchorX, int anchorY, const float* borderValue, cudaStream_t stream) \
-            { \
-                typedef typename TypeVec<float, VecTraits< type >::cn>::vec_type work_type; \
-                dim3 block(16, 16); \
-                dim3 grid(divUp(dst.cols, block.x), divUp(dst.rows, block.y)); \
-                bindTexture(&tex_filter2D_ ## type , srcWhole); \
-                tex_filter2D_ ## type ##_reader texSrc(xoff, yoff); \
-                Brd<work_type> brd(dst.rows, dst.cols, VecTraits<work_type>::make(borderValue)); \
-                BorderReader< tex_filter2D_ ## type ##_reader, Brd<work_type> > brdSrc(texSrc, brd); \
-                filter2D<<<grid, block, 0, stream>>>(brdSrc, dst, kernel, kWidth, kHeight, anchorX, anchorY); \
-                cudaSafeCall( cudaGetLastError() ); \
-                if (stream == 0) \
-                    cudaSafeCall( cudaDeviceSynchronize() ); \
-            } \
-        };
+        // texture< type , hipTextureType2D, cudaReadModeElementType> tex_filter2D_ ## type (0, cudaFilterModePoint, cudaAddressModeClamp); \
+        // struct tex_filter2D_ ## type ## _reader \
+        // { \
+        //     typedef type elem_type; \
+        //     typedef int index_type; \
+        //     const int xoff; \
+        //     const int yoff; \
+        //     tex_filter2D_ ## type ## _reader (int xoff_, int yoff_) : xoff(xoff_), yoff(yoff_) {} \
+        //     __device__ __forceinline__ elem_type operator ()(index_type y, index_type x) const \
+        //     { \
+        //         return tex2D(tex_filter2D_ ## type , x + xoff, y + yoff); \
+        //     } \
+        // }; \
+        // template <typename D, template <typename> class Brd> struct Filter2DCaller< type , D, Brd> \
+        // { \
+        //     static void call(const PtrStepSz< type > srcWhole, int xoff, int yoff, PtrStepSz<D> dst, const float* kernel, \
+        //         int kWidth, int kHeight, int anchorX, int anchorY, const float* borderValue, cudaStream_t stream) \
+        //     { \
+        //         typedef typename TypeVec<float, VecTraits< type >::cn>::vec_type work_type; \
+        //         dim3 block(16, 16); \
+        //         dim3 grid(divUp(dst.cols, block.x), divUp(dst.rows, block.y)); \
+        //         bindTexture(&tex_filter2D_ ## type , srcWhole); \
+        //         tex_filter2D_ ## type ##_reader texSrc(xoff, yoff); \
+        //         Brd<work_type> brd(dst.rows, dst.cols, VecTraits<work_type>::make(borderValue)); \
+        //         BorderReader< tex_filter2D_ ## type ##_reader, Brd<work_type> > brdSrc(texSrc, brd); \
+        //         filter2D<<<grid, block, 0, stream>>>(brdSrc, dst, kernel, kWidth, kHeight, anchorX, anchorY); \
+        //         cudaSafeCall( cudaGetLastError() ); \
+        //         if (stream == 0) \
+        //             cudaSafeCall( cudaDeviceSynchronize() ); \
+        //     } \
+        // };
 
     IMPLEMENT_FILTER2D_TEX_READER(uchar);
     IMPLEMENT_FILTER2D_TEX_READER(uchar4);

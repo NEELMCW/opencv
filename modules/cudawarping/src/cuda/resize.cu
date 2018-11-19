@@ -135,22 +135,22 @@ namespace cv { namespace cuda { namespace device
     template <typename T> struct TextureAccessor;
 
     #define OPENCV_CUDA_IMPLEMENT_RESIZE_TEX(type) \
-        texture<type, cudaTextureType2D, cudaReadModeElementType> tex_resize_##type (0, cudaFilterModePoint, cudaAddressModeClamp); \
-        template <> struct TextureAccessor<type> \
-        { \
-            typedef type elem_type; \
-            typedef int index_type; \
-            int xoff; \
-            int yoff; \
-            __device__ __forceinline__ elem_type operator ()(index_type y, index_type x) const \
-            { \
-                return tex2D(tex_resize_##type, x + xoff, y + yoff); \
-            } \
-            __host__ static void bind(const PtrStepSz<type>& mat) \
-            { \
-                bindTexture(&tex_resize_##type, mat); \
-            } \
-        };
+        // texture<type, hipTextureType2D, cudaReadModeElementType> tex_resize_##type (0, cudaFilterModePoint, cudaAddressModeClamp); \
+        // template <> struct TextureAccessor<type> \
+        // { \
+        //     typedef type elem_type; \
+        //     typedef int index_type; \
+        //     int xoff; \
+        //     int yoff; \
+        //     __device__ __forceinline__ elem_type operator ()(index_type y, index_type x) const \
+        //     { \
+        //         return tex2D(tex_resize_##type, x + xoff, y + yoff); \
+        //     } \
+        //     __host__ static void bind(const PtrStepSz<type>& mat) \
+        //     { \
+        //         bindTexture(&tex_resize_##type, mat); \
+        //     } \
+        // };
 
     OPENCV_CUDA_IMPLEMENT_RESIZE_TEX(uchar)
     OPENCV_CUDA_IMPLEMENT_RESIZE_TEX(uchar4)
