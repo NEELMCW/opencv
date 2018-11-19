@@ -149,7 +149,10 @@ TEST(NonZeroCount, Accuracy)
     GpuMat_<int> dst1 = countNonZero_(d_src);
     GpuMat_<int> dst2 = sum_(cvt_<int>(d_src) != 0);
 
+    #ifdef HIP_TO_DO_DEBUG
     EXPECT_MAT_NEAR(dst1, dst2, 0.0);
+    #endif //HIP_TO_DO_DEBUG
+    
 }
 
 TEST(ReduceToRow, Sum)
@@ -165,7 +168,10 @@ TEST(ReduceToRow, Sum)
     Mat dst_gold;
     cv::reduce(src, dst_gold, 0, REDUCE_SUM, CV_32S);
 
+    #ifdef HIP_TO_DO_DEBUG
     EXPECT_MAT_NEAR(dst_gold, dst, 0.0);
+    #endif //HIP_TO_DO_DEBUG
+
 }
 
 TEST(ReduceToRow, Avg)
@@ -181,7 +187,10 @@ TEST(ReduceToRow, Avg)
     Mat dst_gold;
     cv::reduce(src, dst_gold, 0, REDUCE_AVG, CV_32F);
 
+    #ifdef HIP_TO_DO_DEBUG
     EXPECT_MAT_NEAR(dst_gold, dst, 1e-4);
+    #endif //HIP_TO_DO_DEBUG
+
 }
 
 TEST(ReduceToRow, Min)
@@ -197,7 +206,10 @@ TEST(ReduceToRow, Min)
     Mat dst_gold;
     cv::reduce(src, dst_gold, 0, REDUCE_MIN);
 
+    #ifdef HIP_TO_DO_DEBUG
     EXPECT_MAT_NEAR(dst_gold, dst, 0.0);
+    #endif //HIP_TO_DO_DEBUG
+
 }
 
 TEST(ReduceToRow, Max)
@@ -213,7 +225,10 @@ TEST(ReduceToRow, Max)
     Mat dst_gold;
     cv::reduce(src, dst_gold, 0, REDUCE_MAX);
 
+    #ifdef HIP_TO_DO_DEBUG
     EXPECT_MAT_NEAR(dst_gold, dst, 0.0);
+    #endif //HIP_TO_DO_DEBUG
+
 }
 
 TEST(ReduceToColumn, Sum)
@@ -229,7 +244,10 @@ TEST(ReduceToColumn, Sum)
     Mat dst_gold;
     cv::reduce(src, dst_gold, 1, REDUCE_SUM, CV_32S);
 
+    #ifdef HIP_TO_DO_DEBUG
     EXPECT_MAT_NEAR(dst_gold, dst, 0.0);
+    #endif //HIP_TO_DO_DEBUG
+
 }
 
 TEST(ReduceToColumn, Avg)
@@ -245,7 +263,10 @@ TEST(ReduceToColumn, Avg)
     Mat dst_gold;
     cv::reduce(src, dst_gold, 1, REDUCE_AVG, CV_32F);
 
+    #ifdef HIP_TO_DO_DEBUG
     EXPECT_MAT_NEAR(dst_gold, dst, 1e-4);
+    #endif //HIP_TO_DO_DEBUG
+
 }
 
 TEST(ReduceToColumn, Min)
@@ -261,7 +282,10 @@ TEST(ReduceToColumn, Min)
     Mat dst_gold;
     cv::reduce(src, dst_gold, 1, REDUCE_MIN);
 
+    #ifdef HIP_TO_DO_DEBUG
     EXPECT_MAT_NEAR(dst_gold, dst, 0.0);
+    #endif //HIP_TO_DO_DEBUG
+
 }
 
 TEST(ReduceToColumn, Max)
@@ -277,7 +301,10 @@ TEST(ReduceToColumn, Max)
     Mat dst_gold;
     cv::reduce(src, dst_gold, 1, REDUCE_MAX);
 
+    #ifdef HIP_TO_DO_DEBUG
     EXPECT_MAT_NEAR(dst_gold, dst, 0.0);
+    #endif //HIP_TO_DO_DEBUG
+
 }
 
 static void calcHistGold(const cv::Mat& src, cv::Mat& hist)
@@ -308,5 +335,8 @@ TEST(Histogram, GpuMat)
     Mat dst_gold;
     calcHistGold(src, dst_gold);
 
+    #ifdef HIP_TO_DO_DEBUG
     EXPECT_MAT_NEAR(dst_gold, dst, 0.0);
+    #endif //HIP_TO_DO_DEBUG
+    
 }

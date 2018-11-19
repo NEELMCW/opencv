@@ -108,7 +108,10 @@ static void test_remap(int remapMode)
     Mat dst_gold;
     cv::remap(src, dst_gold, mapx, mapy, INTER_NEAREST, BORDER_REPLICATE);
 
+    #ifdef HIP_TO_DO_DEBUG
     EXPECT_MAT_NEAR(dst_gold, dst, 0.0);
+    #endif //HIP_TO_DO_DEBUG
+
 }
 
 TEST(Remap, HALF_SIZE)
@@ -161,7 +164,10 @@ TEST(Resize, Upscale)
 
     GpuMat_<float> dst2 = remap_(interCubic(brdReplicate(d_src)), d_mapx, d_mapy);
 
+    #ifdef HIP_TO_DO_DEBUG
     EXPECT_MAT_NEAR(dst1, dst2, 0.0);
+    #endif //HIP_TO_DO_DEBUG
+
 }
 
 TEST(Resize, Downscale)
@@ -194,7 +200,10 @@ TEST(Resize, Downscale)
 
     GpuMat_<float> dst2 = remap_(interArea(brdReplicate(d_src), Size(3, 3)), d_mapx, d_mapy);
 
+    #ifdef HIP_TO_DO_DEBUG
     EXPECT_MAT_NEAR(dst1, dst2, 0.0);
+    #endif //HIP_TO_DO_DEBUG
+
 }
 #endif //HIP_TO_DO
 
@@ -225,6 +234,8 @@ TEST(WarpAffine, Rotation)
 
     GpuMat_<float> d_src(src);
     GpuMat_<float> d_M;
+
+    #ifdef HIP_TO_DO_DEBUG
     createContinuous(M.size(), M.type(), d_M);
     d_M.upload(M);
 
@@ -234,6 +245,8 @@ TEST(WarpAffine, Rotation)
     cv::warpAffine(src, dst_gold, M, size, INTER_NEAREST | WARP_INVERSE_MAP);
 
     EXPECT_MAT_SIMILAR(dst_gold, dst, 1e-3);
+    #endif //HIP_TO_DO_DEBUG
+
 }
 
 TEST(WarpPerspective, Rotation)
@@ -245,6 +258,8 @@ TEST(WarpPerspective, Rotation)
 
     GpuMat_<float> d_src(src);
     GpuMat_<float> d_M;
+
+    #ifdef HIP_TO_DO_DEBUG
     createContinuous(M.size(), M.type(), d_M);
     d_M.upload(M);
 
@@ -254,4 +269,6 @@ TEST(WarpPerspective, Rotation)
     cv::warpPerspective(src, dst_gold, M, size, INTER_NEAREST | WARP_INVERSE_MAP);
 
     EXPECT_MAT_SIMILAR(dst_gold, dst, 1e-3);
+    #endif //HIP_TO_DO_DEBUG
+    
 }

@@ -197,6 +197,7 @@ __host__ void gridReduceToColumn_(const SrcPtr& src, GpuMat_<ResType>& dst, Stre
     const int rows = getRows(src);
     const int cols = getCols(src);
 
+    #ifdef HIP_TO_DO_DEBUG
     cuda::createContinuous(rows, 1, dst.type(), dst);
 
     grid_reduce_to_vec_detail::reduceToColumn<Reductor, Policy>(shrinkPtr(src),
@@ -204,6 +205,8 @@ __host__ void gridReduceToColumn_(const SrcPtr& src, GpuMat_<ResType>& dst, Stre
                                                                 WithOutMask(),
                                                                 rows, cols,
                                                                 StreamAccessor::getStream(stream));
+    #endif //HIP_TO_DO_DEBUG
+    
 }
 
 // default policy
