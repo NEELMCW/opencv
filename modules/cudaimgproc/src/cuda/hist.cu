@@ -168,8 +168,10 @@ namespace hist
         const dim3 block(32, 8);
         const dim3 grid(divUp(src.rows, block.y));
 
+        #ifdef HIP_KERNEL_TO_DO
         hipLaunchKernelGGL((histogram256Kernel), dim3(grid), dim3(block), 0, stream, src.data, src.cols, src.rows, src.step, mask.data, mask.step, hist);
         cudaSafeCall( hipGetLastError() );
+        #endif //HIP_KERNEL_TO_DO
 
         if (stream == 0)
             cudaSafeCall( hipDeviceSynchronize() );
@@ -248,9 +250,11 @@ namespace hist
 
         const size_t smem_size = binCount * sizeof(int);
 
+        #ifdef HIP_KERNEL_TO_DO
         hipLaunchKernelGGL((histEven8u), dim3(grid), dim3(block), smem_size, stream, src.data, src.step, src.rows, src.cols, hist, binCount, binSize, lowerLevel, upperLevel);
         cudaSafeCall( hipGetLastError() );
-
+        #endif //HIP_KERNEL_TO_DO
+        
         if (stream == 0)
             cudaSafeCall( hipDeviceSynchronize() );
     }

@@ -114,8 +114,10 @@ namespace cv { namespace cuda { namespace device
             const dim3 threads(32, 8);
             const dim3 grid(divUp(result.cols, threads.x), divUp(result.rows, threads.y));
 
+            #ifdef HIP_KERNEL_TO_DO
             hipLaunchKernelGGL((matchTemplateNaiveKernel_CCORR<T, cn>), dim3(grid), dim3(threads), 0, stream, templ.cols, templ.rows, image, templ, result);
             cudaSafeCall( hipGetLastError() );
+            #endif //HIP_KERNEL_TO_DO
 
             if (stream == 0)
                 cudaSafeCall( hipDeviceSynchronize() );
@@ -184,9 +186,11 @@ namespace cv { namespace cuda { namespace device
             const dim3 threads(32, 8);
             const dim3 grid(divUp(result.cols, threads.x), divUp(result.rows, threads.y));
 
+            #ifdef HIP_KERNEL_TO_DO
             hipLaunchKernelGGL((matchTemplateNaiveKernel_SQDIFF<T, cn>), dim3(grid), dim3(threads), 0, stream, templ.cols, templ.rows, image, templ, result);
             cudaSafeCall( hipGetLastError() );
-
+            #endif //HIP_KERNEL_TO_DO
+            
             if (stream == 0)
                 cudaSafeCall( hipDeviceSynchronize() );
         }

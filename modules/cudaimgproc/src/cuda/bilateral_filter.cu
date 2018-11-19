@@ -136,10 +136,15 @@ namespace cv { namespace cuda { namespace device
             float sigma_spatial2_inv_half = -0.5f/(sigma_spatial * sigma_spatial);
             float sigma_color2_inv_half = -0.5f/(sigma_color * sigma_color);
 
-#ifdef HIP_TO_DO 
+            #ifdef HIP_TO_DO 
             cudaSafeCall( hipFuncSetCacheConfig (bilateral_kernel<T, B<T> >, hipFuncCachePreferL1) );
-#endif
+            #endif
+            
+
+            #ifdef HIP_KERNEL_TO_DO
             hipLaunchKernelGGL((bilateral_kernel), dim3(grid), dim3(block), 0, stream, (PtrStepSz<T>)src, (PtrStepSz<T>)dst, b, kernel_size, sigma_spatial2_inv_half, sigma_color2_inv_half);
+            #endif //HIP_KERNEL_TO_DO
+            
             cudaSafeCall ( hipGetLastError () );
 
             if (stream == 0)
