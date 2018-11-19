@@ -63,6 +63,7 @@ texture<uint2,  1, hipReadModeElementType> tex64u;
 //==============================================================================
 
 
+#ifdef NPP_ENABLE
 static hipStream_t nppStream = 0;
 
 
@@ -79,6 +80,7 @@ hipStream_t nppStSetActiveCUDAstream(hipStream_t hipStream)
     nppStream = hipStream;
     return tmp;
 }
+#endif //NPP_ENABLE
 
 
 //==============================================================================
@@ -330,6 +332,7 @@ template <bool tbDoSqr, class T_in, class T_out>
 NCVStatus scanRowsWrapperDevice(T_in *d_src, Ncv32u srcStride,
                                 T_out *d_dst, Ncv32u dstStride, NcvSize32u roi)
 {
+    #ifdef NPP_ENABLE
     hipChannelFormatDesc cfdTex;
     size_t alignmentOffset = 0;
     if (sizeof(T_in) == 1)
@@ -338,7 +341,9 @@ NCVStatus scanRowsWrapperDevice(T_in *d_src, Ncv32u srcStride,
         ncvAssertCUDAReturn(hipBindTexture(&alignmentOffset, tex8u, d_src, cfdTex, roi.height * srcStride), NPPST_TEXTURE_BIND_ERROR);
         if (alignmentOffset > 0)
         {
+#ifdef HIP_TODO
             ncvAssertCUDAReturn(hipUnbindTexture(tex8u), NCV_CUDA_ERROR);
+#endif
             ncvAssertCUDAReturn(hipBindTexture(&alignmentOffset, tex8u, d_src, cfdTex, alignmentOffset + roi.height * srcStride), NPPST_TEXTURE_BIND_ERROR);
         }
     }
@@ -347,6 +352,10 @@ NCVStatus scanRowsWrapperDevice(T_in *d_src, Ncv32u srcStride,
     ncvAssertCUDALastErrorReturn(NPPST_CUDA_KERNEL_EXECUTION_ERROR);
 
     return NPPST_SUCCESS;
+    #else
+    return 1;
+    #endif //NPP_ENABLE
+
 }
 
 
@@ -366,6 +375,7 @@ NCVStatus ncvIntegralImage_device(T_in *d_src, Ncv32u srcStep,
                                   T_out *d_dst, Ncv32u dstStep, NcvSize32u roi,
                                   INCVMemAllocator &gpuAllocator)
 {
+    #ifdef NPP_ENABLE
     ncvAssertReturn(sizeof(T_out) == sizeof(Ncv32u), NPPST_MEM_INTERNAL_ERROR);
     ncvAssertReturn(gpuAllocator.memType() == NCVMemoryTypeDevice ||
                       gpuAllocator.memType() == NCVMemoryTypeNone, NPPST_MEM_RESIDENCE_ERROR);
@@ -416,6 +426,10 @@ NCVStatus ncvIntegralImage_device(T_in *d_src, Ncv32u srcStep,
     NCV_SKIP_COND_END
 
     return NPPST_SUCCESS;
+    #else
+    return 1;
+    #endif //NPP_ENABLE
+
 }
 
 
@@ -423,6 +437,7 @@ NCVStatus ncvSquaredIntegralImage_device(Ncv8u *d_src, Ncv32u srcStep,
                                          Ncv64u *d_dst, Ncv32u dstStep, NcvSize32u roi,
                                          INCVMemAllocator &gpuAllocator)
 {
+    #ifdef NPP_ENABLE
     ncvAssertReturn(gpuAllocator.isInitialized(), NPPST_MEM_INTERNAL_ERROR);
     ncvAssertReturn(gpuAllocator.memType() == NCVMemoryTypeDevice ||
                       gpuAllocator.memType() == NCVMemoryTypeNone, NPPST_MEM_RESIDENCE_ERROR);
@@ -478,15 +493,24 @@ NCVStatus ncvSquaredIntegralImage_device(Ncv8u *d_src, Ncv32u srcStep,
     NCV_SKIP_COND_END
 
     return NPPST_SUCCESS;
+    #else
+    return 1;
+    #endif //NPP_ENABLE
+
 }
 
 
 NCVStatus nppiStIntegralGetSize_8u32u(NcvSize32u roiSize, Ncv32u *pBufsize, hipDeviceProp_t &devProp)
 {
+    #ifdef NPP_ENABLE
     ncvAssertReturn(pBufsize != NULL, NPPST_NULL_POINTER_ERROR);
     ncvAssertReturn(roiSize.width > 0 && roiSize.height > 0, NPPST_INVALID_ROI);
 
+#ifdef HIP_TO_DO
     NCVMemStackAllocator gpuCounter(static_cast<Ncv32u>(devProp.textureAlignment));
+#else
+    NCVMemStackAllocator gpuCounter(static_cast<Ncv32u>(0));
+#endif
     ncvAssertReturn(gpuCounter.isInitialized(), NPPST_MEM_INTERNAL_ERROR);
 
     NCVStatus ncvStat = ncvIntegralImage_device((Ncv8u*)NULL, roiSize.width,
@@ -496,15 +520,24 @@ NCVStatus nppiStIntegralGetSize_8u32u(NcvSize32u roiSize, Ncv32u *pBufsize, hipD
 
     *pBufsize = (Ncv32u)gpuCounter.maxSize();
     return NPPST_SUCCESS;
+    #else
+    return 1;
+    #endif //NPP_ENABLE
+
 }
 
 
 NCVStatus nppiStIntegralGetSize_32f32f(NcvSize32u roiSize, Ncv32u *pBufsize, hipDeviceProp_t &devProp)
 {
+    #ifdef NPP_ENABLE
     ncvAssertReturn(pBufsize != NULL, NPPST_NULL_POINTER_ERROR);
     ncvAssertReturn(roiSize.width > 0 && roiSize.height > 0, NPPST_INVALID_ROI);
 
+#ifdef HIP_TO_DO
     NCVMemStackAllocator gpuCounter(static_cast<Ncv32u>(devProp.textureAlignment));
+#else
+    NCVMemStackAllocator gpuCounter(static_cast<Ncv32u>(0));
+#endif
     ncvAssertReturn(gpuCounter.isInitialized(), NPPST_MEM_INTERNAL_ERROR);
 
     NCVStatus ncvStat = ncvIntegralImage_device((Ncv32f*)NULL, roiSize.width * sizeof(Ncv32f),
@@ -514,15 +547,24 @@ NCVStatus nppiStIntegralGetSize_32f32f(NcvSize32u roiSize, Ncv32u *pBufsize, hip
 
     *pBufsize = (Ncv32u)gpuCounter.maxSize();
     return NPPST_SUCCESS;
+    #else
+    return 1;
+    #endif //NPP_ENABLE
+
 }
 
 
 NCVStatus nppiStSqrIntegralGetSize_8u64u(NcvSize32u roiSize, Ncv32u *pBufsize, hipDeviceProp_t &devProp)
 {
+    #ifdef NPP_ENABLE
     ncvAssertReturn(pBufsize != NULL, NPPST_NULL_POINTER_ERROR);
     ncvAssertReturn(roiSize.width > 0 && roiSize.height > 0, NPPST_INVALID_ROI);
 
+#ifdef HIP_TO_DO
     NCVMemStackAllocator gpuCounter(static_cast<Ncv32u>(devProp.textureAlignment));
+#else
+    NCVMemStackAllocator gpuCounter(static_cast<Ncv32u>(0));
+#endif
     ncvAssertReturn(gpuCounter.isInitialized(), NPPST_MEM_INTERNAL_ERROR);
 
     NCVStatus ncvStat = ncvSquaredIntegralImage_device(NULL, roiSize.width,
@@ -532,6 +574,10 @@ NCVStatus nppiStSqrIntegralGetSize_8u64u(NcvSize32u roiSize, Ncv32u *pBufsize, h
 
     *pBufsize = (Ncv32u)gpuCounter.maxSize();
     return NPPST_SUCCESS;
+    #else
+    return 1;
+    #endif //NPP_ENABLE
+
 }
 
 
@@ -540,13 +586,23 @@ NCVStatus nppiStIntegral_8u32u_C1R(Ncv8u *d_src, Ncv32u srcStep,
                                    NcvSize32u roiSize, Ncv8u *pBuffer,
                                    Ncv32u bufSize, hipDeviceProp_t &devProp)
 {
+
+#ifdef NPP_ENABLE
+#ifdef HIP_TO_DO
     NCVMemStackAllocator gpuAllocator(NCVMemoryTypeDevice, bufSize, static_cast<Ncv32u>(devProp.textureAlignment), pBuffer);
+#else
+    NCVMemStackAllocator gpuAllocator(NCVMemoryTypeDevice, bufSize, static_cast<Ncv32u>(0), pBuffer);
+#endif
     ncvAssertReturn(gpuAllocator.isInitialized(), NPPST_MEM_INTERNAL_ERROR);
 
     NCVStatus ncvStat = ncvIntegralImage_device(d_src, srcStep, d_dst, dstStep, roiSize, gpuAllocator);
     ncvAssertReturnNcvStat(ncvStat);
 
     return NPPST_SUCCESS;
+#else
+return 1;
+#endif //NPP_ENABLE
+
 }
 
 
@@ -555,13 +611,24 @@ NCVStatus nppiStIntegral_32f32f_C1R(Ncv32f *d_src, Ncv32u srcStep,
                                     NcvSize32u roiSize, Ncv8u *pBuffer,
                                     Ncv32u bufSize, hipDeviceProp_t &devProp)
 {
+
+#ifdef NPP_ENABLE
+#ifdef HIP_TO_DO
     NCVMemStackAllocator gpuAllocator(NCVMemoryTypeDevice, bufSize, static_cast<Ncv32u>(devProp.textureAlignment), pBuffer);
+#else
+    NCVMemStackAllocator gpuAllocator(NCVMemoryTypeDevice, bufSize, static_cast<Ncv32u>(0), pBuffer);
+#endif
     ncvAssertReturn(gpuAllocator.isInitialized(), NPPST_MEM_INTERNAL_ERROR);
 
     NCVStatus ncvStat = ncvIntegralImage_device(d_src, srcStep, d_dst, dstStep, roiSize, gpuAllocator);
     ncvAssertReturnNcvStat(ncvStat);
 
     return NPPST_SUCCESS;
+    #else
+    return 1;
+    #endif //NPP_ENABLE
+
+
 }
 
 
@@ -570,13 +637,22 @@ NCVStatus nppiStSqrIntegral_8u64u_C1R(Ncv8u *d_src, Ncv32u srcStep,
                                       NcvSize32u roiSize, Ncv8u *pBuffer,
                                       Ncv32u bufSize, hipDeviceProp_t &devProp)
 {
+    #ifdef NPP_ENABLE
+#ifdef HIP_TO_DO
     NCVMemStackAllocator gpuAllocator(NCVMemoryTypeDevice, bufSize, static_cast<Ncv32u>(devProp.textureAlignment), pBuffer);
+#else
+    NCVMemStackAllocator gpuAllocator(NCVMemoryTypeDevice, bufSize, static_cast<Ncv32u>(0), pBuffer);
+#endif
     ncvAssertReturn(gpuAllocator.isInitialized(), NPPST_MEM_INTERNAL_ERROR);
 
     NCVStatus ncvStat = ncvSquaredIntegralImage_device(d_src, srcStep, d_dst, dstStep, roiSize, gpuAllocator);
     ncvAssertReturnNcvStat(ncvStat);
 
     return NPPST_SUCCESS;
+    #else
+    return 1;
+    #endif //NPP_ENABLE
+
 }
 
 
@@ -584,6 +660,7 @@ NCVStatus nppiStIntegral_8u32u_C1R_host(Ncv8u *h_src, Ncv32u srcStep,
                                         Ncv32u *h_dst, Ncv32u dstStep,
                                         NcvSize32u roiSize)
 {
+    #ifdef NPP_ENABLE
     ncvAssertReturn(h_src != NULL && h_dst != NULL, NPPST_NULL_POINTER_ERROR);
     ncvAssertReturn(roiSize.width > 0 && roiSize.height > 0, NPPST_INVALID_ROI);
     ncvAssertReturn(srcStep >= roiSize.width &&
@@ -609,6 +686,10 @@ NCVStatus nppiStIntegral_8u32u_C1R_host(Ncv8u *h_src, Ncv32u srcStep,
     }
 
     return NPPST_SUCCESS;
+    #else
+    return 1;
+    #endif //NPP_ENABLE
+
 }
 
 
@@ -616,6 +697,7 @@ NCVStatus nppiStIntegral_32f32f_C1R_host(Ncv32f *h_src, Ncv32u srcStep,
                                          Ncv32f *h_dst, Ncv32u dstStep,
                                          NcvSize32u roiSize)
 {
+    #ifdef NPP_ENABLE
     ncvAssertReturn(h_src != NULL && h_dst != NULL, NPPST_NULL_POINTER_ERROR);
     ncvAssertReturn(roiSize.width > 0 && roiSize.height > 0, NPPST_INVALID_ROI);
     ncvAssertReturn(srcStep >= roiSize.width * sizeof(Ncv32f) &&
@@ -643,6 +725,10 @@ NCVStatus nppiStIntegral_32f32f_C1R_host(Ncv32f *h_src, Ncv32u srcStep,
     }
 
     return NPPST_SUCCESS;
+    #else
+    return 1;
+    #endif //NPP_ENABLE
+
 }
 
 
@@ -650,6 +736,7 @@ NCVStatus nppiStSqrIntegral_8u64u_C1R_host(Ncv8u *h_src, Ncv32u srcStep,
                                            Ncv64u *h_dst, Ncv32u dstStep,
                                            NcvSize32u roiSize)
 {
+    #ifdef NPP_ENABLE
     ncvAssertReturn(h_src != NULL && h_dst != NULL, NPPST_NULL_POINTER_ERROR);
     ncvAssertReturn(roiSize.width > 0 && roiSize.height > 0, NPPST_INVALID_ROI);
     ncvAssertReturn(srcStep >= roiSize.width &&
@@ -675,6 +762,10 @@ NCVStatus nppiStSqrIntegral_8u64u_C1R_host(Ncv8u *h_src, Ncv32u srcStep,
     }
 
     return NPPST_SUCCESS;
+    #else
+    return 1;
+    #endif //NPP_ENABLE
+
 }
 
 
@@ -747,6 +838,7 @@ static NCVStatus decimateWrapperDevice(T *d_src, Ncv32u srcStep,
                                                 NcvSize32u srcRoi, Ncv32u scale,
                                                 NcvBool readThruTexture)
 {
+    #ifdef NPP_ENABLE
     ncvAssertReturn(d_src != NULL && d_dst != NULL, NPPST_NULL_POINTER_ERROR);
     ncvAssertReturn(srcRoi.width > 0 && srcRoi.height > 0, NPPST_INVALID_ROI);
     ncvAssertReturn(scale != 0, NPPST_INVALID_SCALE);
@@ -794,6 +886,10 @@ static NCVStatus decimateWrapperDevice(T *d_src, Ncv32u srcStep,
     ncvAssertCUDALastErrorReturn(NPPST_CUDA_KERNEL_EXECUTION_ERROR);
 
     return NPPST_SUCCESS;
+    #else
+    return 1;
+    #endif //NPP_ENABLE
+
 }
 
 
@@ -802,6 +898,8 @@ static NCVStatus decimateWrapperHost(T *h_src, Ncv32u srcStep,
                                               T *h_dst, Ncv32u dstStep,
                                               NcvSize32u srcRoi, Ncv32u scale)
 {
+
+    #ifdef NPP_ENABLE
     ncvAssertReturn(h_src != NULL && h_dst != NULL, NPPST_NULL_POINTER_ERROR);
     ncvAssertReturn(srcRoi.width != 0 && srcRoi.height != 0, NPPST_INVALID_ROI);
     ncvAssertReturn(scale != 0, NPPST_INVALID_SCALE);
@@ -824,9 +922,14 @@ static NCVStatus decimateWrapperHost(T *h_src, Ncv32u srcStep,
     }
 
     return NPPST_SUCCESS;
+    #else
+    return 1;
+    #endif //NPP_ENABLE
+
 }
 
 
+#ifdef NPP_ENABLE
 #define implementNppDecimate(bit, typ) \
     NCVStatus nppiStDecimate_##bit##typ##_C1R(Ncv##bit##typ *d_src, Ncv32u srcStep, \
                                                      Ncv##bit##typ *d_dst, Ncv32u dstStep, \
@@ -861,6 +964,7 @@ implementNppDecimateHost(32, f)
 implementNppDecimateHost(64, u)
 implementNppDecimateHost(64, s)
 implementNppDecimateHost(64, f)
+#endif //NPP_ENABLE
 
 
 //==============================================================================
@@ -975,6 +1079,7 @@ NCVStatus nppiStRectStdDev_32f_C1R(Ncv32u *d_sum, Ncv32u sumStep,
                                    NcvSize32u roi, NcvRect32u rect,
                                    Ncv32f scaleArea, NcvBool readThruTexture)
 {
+    #ifdef NPP_ENABLE
     ncvAssertReturn(d_sum != NULL && d_sqsum != NULL && d_norm != NULL, NPPST_NULL_POINTER_ERROR);
     ncvAssertReturn(roi.width > 0 && roi.height > 0, NPPST_INVALID_ROI);
     ncvAssertReturn(sumStep >= (Ncv32u)(roi.width + rect.x + rect.width - 1) * sizeof(Ncv32u) &&
@@ -1017,6 +1122,10 @@ NCVStatus nppiStRectStdDev_32f_C1R(Ncv32u *d_sum, Ncv32u sumStep,
     ncvAssertCUDALastErrorReturn(NPPST_CUDA_KERNEL_EXECUTION_ERROR);
 
     return NPPST_SUCCESS;
+    #else
+    return 1;
+    #endif //NPP_ENABLE
+
 }
 
 
@@ -1026,6 +1135,8 @@ NCVStatus nppiStRectStdDev_32f_C1R_host(Ncv32u *h_sum, Ncv32u sumStep,
                                         NcvSize32u roi, NcvRect32u rect,
                                         Ncv32f scaleArea)
 {
+
+    #ifdef NPP_ENABLE
     ncvAssertReturn(h_sum != NULL && h_sqsum != NULL && h_norm != NULL, NPPST_NULL_POINTER_ERROR);
     ncvAssertReturn(roi.width > 0 && roi.height > 0, NPPST_INVALID_ROI);
     ncvAssertReturn(sumStep >= (Ncv32u)(roi.width + rect.x + rect.width - 1) * sizeof(Ncv32u) &&
@@ -1070,6 +1181,10 @@ NCVStatus nppiStRectStdDev_32f_C1R_host(Ncv32u *h_sum, Ncv32u sumStep,
     }
 
     return NPPST_SUCCESS;
+    #else
+    return 1;
+    #endif //NPP_ENABLE
+
 }
 
 
@@ -1159,6 +1274,8 @@ template <class T>
 NCVStatus transposeWrapperDevice(T *d_src, Ncv32u srcStride,
                                    T *d_dst, Ncv32u dstStride, NcvSize32u srcRoi)
 {
+
+    #ifdef NPP_ENABLE
     ncvAssertReturn(d_src != NULL && d_dst != NULL, NPPST_NULL_POINTER_ERROR);
     ncvAssertReturn(srcRoi.width > 0 && srcRoi.height > 0, NPPST_INVALID_ROI);
     ncvAssertReturn(srcStride >= srcRoi.width * sizeof(T) &&
@@ -1174,6 +1291,10 @@ NCVStatus transposeWrapperDevice(T *d_src, Ncv32u srcStride,
     ncvAssertCUDALastErrorReturn(NPPST_CUDA_KERNEL_EXECUTION_ERROR);
 
     return NPPST_SUCCESS;
+    #else
+    return 1;
+    #endif //NPP_ENABLE
+
 }
 
 
@@ -1181,6 +1302,8 @@ template <class T>
 static NCVStatus transposeWrapperHost(T *h_src, Ncv32u srcStride,
                                         T *h_dst, Ncv32u dstStride, NcvSize32u srcRoi)
 {
+
+    #ifdef NPP_ENABLE
     ncvAssertReturn(h_src != NULL && h_dst != NULL, NPPST_NULL_POINTER_ERROR);
     ncvAssertReturn(srcRoi.width > 0 && srcRoi.height > 0, NPPST_INVALID_ROI);
     ncvAssertReturn(srcStride >= srcRoi.width * sizeof(T) &&
@@ -1198,9 +1321,14 @@ static NCVStatus transposeWrapperHost(T *h_src, Ncv32u srcStride,
     }
 
     return NPPST_SUCCESS;
+    #else
+    return 1;
+    #endif //NPP_ENABLE
+
 }
 
 
+#ifdef NPP_ENABLE
 #define implementNppTranspose(bit, typ) \
     NCVStatus nppiStTranspose_##bit##typ##_C1R(Ncv##bit##typ *d_src, Ncv32u srcStep, \
                                              Ncv##bit##typ *d_dst, Ncv32u dstStep, NcvSize32u srcRoi) \
@@ -1247,6 +1375,7 @@ NCVStatus nppiStTranspose_128_C1R_host(void *d_src, Ncv32u srcStep,
 {
     return transposeWrapperHost<uint4>((uint4 *)d_src, srcStep, (uint4 *)d_dst, dstStep, srcRoi);
 }
+#endif //NPP_ENABLE
 
 
 //==============================================================================
@@ -1363,6 +1492,8 @@ NCVStatus compactVector_32u_device(Ncv32u *d_src, Ncv32u srcLen,
                                    Ncv32u elemRemove,
                                    INCVMemAllocator &gpuAllocator)
 {
+
+    #ifdef NPP_ENABLE
     ncvAssertReturn(gpuAllocator.isInitialized(), NPPST_MEM_INTERNAL_ERROR);
     ncvAssertReturn((d_src != NULL && d_dst != NULL) || gpuAllocator.isCounting(), NPPST_NULL_POINTER_ERROR);
 
@@ -1494,13 +1625,17 @@ NCVStatus compactVector_32u_device(Ncv32u *d_src, Ncv32u srcLen,
     }
 
     NCV_SKIP_COND_END
-
     return NPPST_SUCCESS;
+    #else
+    return 1;
+    #endif //NPP_ENABLE
+
 }
 
 
 NCVStatus nppsStCompactGetSize_32u(Ncv32u srcLen, Ncv32u *pBufsize, hipDeviceProp_t &devProp)
 {
+    #ifdef NPP_ENABLE
     ncvAssertReturn(pBufsize != NULL, NPPST_NULL_POINTER_ERROR);
 
     if (srcLen == 0)
@@ -1509,7 +1644,11 @@ NCVStatus nppsStCompactGetSize_32u(Ncv32u srcLen, Ncv32u *pBufsize, hipDevicePro
         return NPPST_SUCCESS;
     }
 
+#ifdef HIP_TO_DO
     NCVMemStackAllocator gpuCounter(static_cast<Ncv32u>(devProp.textureAlignment));
+#else
+    NCVMemStackAllocator gpuCounter(static_cast<Ncv32u>(0));
+#endif
     ncvAssertReturn(gpuCounter.isInitialized(), NPPST_MEM_INTERNAL_ERROR);
 
     NCVStatus ncvStat = compactVector_32u_device(NULL, srcLen, NULL, NULL, 0xC001C0DE,
@@ -1518,18 +1657,34 @@ NCVStatus nppsStCompactGetSize_32u(Ncv32u srcLen, Ncv32u *pBufsize, hipDevicePro
 
     *pBufsize = (Ncv32u)gpuCounter.maxSize();
     return NPPST_SUCCESS;
+    #else
+    return 1;
+    #endif //NPP_ENABLE
+
 }
 
 
 NCVStatus nppsStCompactGetSize_32s(Ncv32u srcLen, Ncv32u *pBufsize, hipDeviceProp_t &devProp)
 {
+
+    #ifdef NPP_ENABLE
     return nppsStCompactGetSize_32u(srcLen, pBufsize, devProp);
+    #else
+    return 1;
+    #endif //NPP_ENABLE
+
 }
 
 
 NCVStatus nppsStCompactGetSize_32f(Ncv32u srcLen, Ncv32u *pBufsize, hipDeviceProp_t &devProp)
 {
+
+    #ifdef NPP_ENABLE
     return nppsStCompactGetSize_32u(srcLen, pBufsize, devProp);
+    #else
+    return 1;
+    #endif //NPP_ENABLE
+
 }
 
 
@@ -1538,7 +1693,13 @@ NCVStatus nppsStCompact_32u(Ncv32u *d_src, Ncv32u srcLen,
                             Ncv32u elemRemove, Ncv8u *pBuffer,
                             Ncv32u bufSize, hipDeviceProp_t &devProp)
 {
+
+#ifdef NPP_ENABLE
+#ifdef HIP_TO_DO
     NCVMemStackAllocator gpuAllocator(NCVMemoryTypeDevice, bufSize, static_cast<Ncv32u>(devProp.textureAlignment), pBuffer);
+#else
+    NCVMemStackAllocator gpuAllocator(NCVMemoryTypeDevice, bufSize, static_cast<Ncv32u>(0), pBuffer);
+#endif
     ncvAssertReturn(gpuAllocator.isInitialized(), NPPST_MEM_INTERNAL_ERROR);
 
     NCVStatus ncvStat = compactVector_32u_device(d_src, srcLen, d_dst, p_dstLen, elemRemove,
@@ -1546,6 +1707,10 @@ NCVStatus nppsStCompact_32u(Ncv32u *d_src, Ncv32u srcLen,
     ncvAssertReturnNcvStat(ncvStat);
 
     return NPPST_SUCCESS;
+#else
+return 1;
+#endif //NPP_ENABLE
+
 }
 
 
@@ -1554,8 +1719,14 @@ NCVStatus nppsStCompact_32s(Ncv32s *d_src, Ncv32u srcLen,
                             Ncv32s elemRemove, Ncv8u *pBuffer,
                             Ncv32u bufSize, hipDeviceProp_t &devProp)
 {
+
+    #ifdef NPP_ENABLE
     return nppsStCompact_32u((Ncv32u *)d_src, srcLen, (Ncv32u *)d_dst, p_dstLen,
                              *(Ncv32u *)&elemRemove, pBuffer, bufSize, devProp);
+    #else
+    return 1;
+    #endif //NPP_ENABLE
+
 }
 
 
@@ -1570,13 +1741,19 @@ NCVStatus nppsStCompact_32f(Ncv32f *d_src, Ncv32u srcLen,
                             Ncv32f elemRemove, Ncv8u *pBuffer,
                             Ncv32u bufSize, hipDeviceProp_t &devProp)
 {
+    #ifdef NPP_ENABLE
     return nppsStCompact_32u((Ncv32u *)d_src, srcLen, (Ncv32u *)d_dst, p_dstLen,
                              *(Ncv32u_a *)&elemRemove, pBuffer, bufSize, devProp);
+    #else
+    return 1;
+    #endif //NPP_ENABLE
 }
 
 NCVStatus nppsStCompact_32u_host(Ncv32u *h_src, Ncv32u srcLen,
                                  Ncv32u *h_dst, Ncv32u *dstLen, Ncv32u elemRemove)
 {
+
+    #ifdef NPP_ENABLE
     ncvAssertReturn(h_src != NULL && h_dst != NULL, NPPST_NULL_POINTER_ERROR);
 
     if (srcLen == 0)
@@ -1603,20 +1780,36 @@ NCVStatus nppsStCompact_32u_host(Ncv32u *h_src, Ncv32u srcLen,
     }
 
     return NPPST_SUCCESS;
+    #else
+    return 1;
+    #endif //NPP_ENABLE
+
 }
 
 
 NCVStatus nppsStCompact_32s_host(Ncv32s *h_src, Ncv32u srcLen,
                                  Ncv32s *h_dst, Ncv32u *dstLen, Ncv32s elemRemove)
 {
+
+    #ifdef NPP_ENABLE
     return nppsStCompact_32u_host((Ncv32u *)h_src, srcLen, (Ncv32u *)h_dst, dstLen, *(Ncv32u_a *)&elemRemove);
+    #else
+    return 1;
+    #endif //NPP_ENABLE
+
 }
 
 
 NCVStatus nppsStCompact_32f_host(Ncv32f *h_src, Ncv32u srcLen,
                                  Ncv32f *h_dst, Ncv32u *dstLen, Ncv32f elemRemove)
 {
+
+    #ifdef NPP_ENABLE
     return nppsStCompact_32u_host((Ncv32u *)h_src, srcLen, (Ncv32u *)h_dst, dstLen, *(Ncv32u_a *)&elemRemove);
+    #else
+    return 1;
+    #endif //NPP_ENABLE
+
 }
 
 //==============================================================================
@@ -1717,7 +1910,7 @@ __global__ void FilterColumnBorderMirror_32f_C1R(Ncv32u srcStep,
     pDst[ix + iy * dstStep] = sum * multiplier;
 }
 
-
+#ifdef NPP_ENABLE
 NCVStatus nppiStFilterRowBorder_32f_C1R(const Ncv32f *pSrc,
                                         NcvSize32u srcSize,
                                         Ncv32u nSrcStep,
@@ -1731,6 +1924,8 @@ NCVStatus nppiStFilterRowBorder_32f_C1R(const Ncv32f *pSrc,
                                         Ncv32s nAnchor,
                                         Ncv32f multiplier)
 {
+
+
     ncvAssertReturn (pSrc != NULL &&
         pDst != NULL &&
         pKernel != NULL, NCV_NULL_PTR);
@@ -1802,6 +1997,7 @@ NCVStatus nppiStFilterColumnBorder_32f_C1R(const Ncv32f *pSrc,
                                            Ncv32s nAnchor,
                                            Ncv32f multiplier)
 {
+
     ncvAssertReturn (pSrc != NULL &&
         pDst != NULL &&
         pKernel != NULL, NCV_NULL_PTR);
@@ -1855,8 +2051,9 @@ NCVStatus nppiStFilterColumnBorder_32f_C1R(const Ncv32f *pSrc,
     }
 
     return NPPST_SUCCESS;
-}
 
+}
+#endif //NPP_ENABLE
 
 //==============================================================================
 //
@@ -1917,7 +2114,6 @@ __global__ void BlendFramesKernel(const float *u, const float *v,   // forward f
     }
 }
 
-#ifdef HIP_TO_DO
 NCVStatus BlendFrames(const Ncv32f *src0,
                       const Ncv32f *src1,
                       const Ncv32f *ufi,
@@ -1932,6 +2128,9 @@ NCVStatus BlendFrames(const Ncv32f *src0,
                       Ncv32f theta,
                       Ncv32f *out)
 {
+
+#ifdef NPP_ENABLE
+#ifdef HIP_TO_DO
     tex_src1.addressMode[0] = hipAddressModeClamp;
     tex_src1.addressMode[1] = hipAddressModeClamp;
     tex_src1.filterMode = hipFilterModeLinear;
@@ -1953,23 +2152,36 @@ NCVStatus BlendFrames(const Ncv32f *src0,
     hipLaunchKernelGGL((BlendFramesKernel), dim3(blocks), dim3(threads), 0, nppStGetActiveCUDAstream (), ufi, vfi, ubi, vbi, o1, o2, width, height, stride, theta, out);
 
     ncvAssertCUDALastErrorReturn(NPPST_CUDA_KERNEL_EXECUTION_ERROR);
-
     return NPPST_SUCCESS;
+    else
+    return 0;
+    #endif // HIP_TO_DO
+
+    #else
+    return 1;
+    #endif //NPP_ENABLE
+
 }
-#endif // HIP_TO_DO
 
 NCVStatus nppiStGetInterpolationBufferSize(NcvSize32u srcSize,
                                            Ncv32u nStep,
                                            Ncv32u *hpSize)
 {
+
+    #ifdef NPP_ENABLE
     NCVStatus status = NPPST_ERROR;
     status = nppiStVectorWarpGetBufferSize(srcSize, nStep, hpSize);
     return status;
+    #else
+    return 1;
+    #endif //NPP_ENABLE
+
 }
 
-
+#ifdef NPP_ENABLE
 NCVStatus nppiStInterpolateFrames(const NppStInterpolationState *pState)
 {
+
     // check state validity
     ncvAssertReturn (pState->pSrcFrame0 != 0 &&
         pState->pSrcFrame1 != 0 &&
@@ -2059,7 +2271,9 @@ NCVStatus nppiStInterpolateFrames(const NppStInterpolationState *pState)
         pState->pNewFrame) );
 
     return NPPST_SUCCESS;
+
 }
+#endif //NPP_ENABLE
 
 
 //==============================================================================
@@ -2230,6 +2444,7 @@ __global__ void MemsetKernel(const float value, int w, int h, float *image)
 
 NCVStatus nppiStVectorWarpGetBufferSize (NcvSize32u srcSize, Ncv32u nSrcStep, Ncv32u *hpSize)
 {
+    #ifdef NPP_ENABLE
     ncvAssertReturn (hpSize != NULL, NPPST_NULL_POINTER_ERROR);
     ncvAssertReturn (srcSize.width * sizeof (Ncv32f) <= nSrcStep,
         NPPST_INVALID_STEP);
@@ -2237,6 +2452,10 @@ NCVStatus nppiStVectorWarpGetBufferSize (NcvSize32u srcSize, Ncv32u nSrcStep, Nc
     *hpSize = nSrcStep * srcSize.height;
 
     return NPPST_SUCCESS;
+    #else
+    return 1;
+    #endif //NPP_ENABLE
+
 }
 
 
@@ -2250,6 +2469,7 @@ NCVStatus nppiStVectorWarp_PSF1x1_32f_C1(const Ncv32f *pSrc,
                                          Ncv32f timeScale,
                                          Ncv32f *pDst)
 {
+    #ifdef NPP_ENABLE
     ncvAssertReturn (pSrc != NULL &&
         pU   != NULL &&
         pV   != NULL &&
@@ -2270,6 +2490,10 @@ NCVStatus nppiStVectorWarp_PSF1x1_32f_C1(const Ncv32f *pSrc,
     ncvAssertCUDALastErrorReturn(NPPST_CUDA_KERNEL_EXECUTION_ERROR);
 
     return NPPST_SUCCESS;
+    #else
+    return 1;
+    #endif //NPP_ENABLE
+
 }
 
 
@@ -2283,6 +2507,7 @@ NCVStatus nppiStVectorWarp_PSF2x2_32f_C1(const Ncv32f *pSrc,
                                          Ncv32f timeScale,
                                          Ncv32f *pDst)
 {
+    #ifdef NPP_ENABLE
     ncvAssertReturn (pSrc != NULL &&
         pU   != NULL &&
         pV   != NULL &&
@@ -2311,6 +2536,10 @@ NCVStatus nppiStVectorWarp_PSF2x2_32f_C1(const Ncv32f *pSrc,
     ncvAssertCUDALastErrorReturn(NPPST_CUDA_KERNEL_EXECUTION_ERROR);
 
     return NPPST_SUCCESS;
+    #else
+    return 1;
+    #endif //NPP_ENABLE
+
 }
 
 
@@ -2432,7 +2661,7 @@ __device__ float bicubicCoeff(float x_)
     }
     else
     {
-        return 0.0f;
+        return 1.0f;
     }
 }
 
@@ -2461,7 +2690,12 @@ __global__ void resizeBicubic(NcvSize32u srcSize,
     float ry = (float) srcROI.y;
 
     float rw = (float) srcROI.width;
-    float rh = (float) srcROI.height;
+    float rh = (float) srcROI.height;/home/mcw/jgeob/opencv_build_test/opencv/modules/cudalegacy/src/cuda/NPP_staging.cu(1921): error: identifier "NppStBorderType" is undefined
+
+    /home/mcw/jgeob/opencv_build_test/opencv/modules/cudalegacy/src/cuda/NPP_staging.cu(1998): error: identifier "NppStBorderType" is undefined
+
+    /home/mcw/jgeob/opencv_build_test/opencv/modules/cudalegacy/src/cuda/NPP_staging.cu(2190): error: identifier "NppStInterpolationState" is undefined
+
 
     float x = scaleX * (float) ix;
     float y = scaleY * (float) iy;
@@ -2518,6 +2752,7 @@ NCVStatus nppiStResize_32f_C1R(const Ncv32f *pSrc,
                                Ncv32f yFactor,
                                NppStInterpMode interpolation)
 {
+    #ifdef NPP_ENABLE
     NCVStatus status = NPPST_SUCCESS;
 
     ncvAssertReturn (pSrc != NULL && pDst != NULL, NPPST_NULL_POINTER_ERROR);
@@ -2568,6 +2803,11 @@ NCVStatus nppiStResize_32f_C1R(const Ncv32f *pSrc,
     ncvAssertCUDALastErrorReturn(NPPST_CUDA_KERNEL_EXECUTION_ERROR);
 
     return status;
+    #else
+    return 1;
+    #endif //NPP_ENABLE
+
+
 }
 
 #endif //HIP_TO_DO

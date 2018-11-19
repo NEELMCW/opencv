@@ -47,7 +47,7 @@
 #include "saturate_cast.hpp"
 #include "vec_traits.hpp"
 #include "type_traits.hpp"
-#include "device_functions.h"
+#include <hip/device_functions.h>
 
 /** @file
  * @deprecated Use @ref cudev instead.

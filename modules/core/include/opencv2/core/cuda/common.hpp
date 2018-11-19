@@ -43,7 +43,8 @@
 #ifndef OPENCV_CUDA_COMMON_HPP
 #define OPENCV_CUDA_COMMON_HPP
 
-#include <hip/hip_runtime_api.h>
+#include "hip/hip_runtime.h"
+#include "hip/hip_runtime_api.h"
 #include "opencv2/core/cuda_types.hpp"
 #include "opencv2/core/cvdef.h"
 #include "opencv2/core/base.hpp"
@@ -91,7 +92,8 @@ namespace cv { namespace cuda
 {
     namespace device
     {
-        __host__ __device__ __forceinline__ int divUp(int total, int grain)
+        inline __host__ __device__ __forceinline__ int divUp(int total, int grain);
+        inline __host__ __device__ __forceinline__ int divUp(int total, int grain)
         {
             return (total + grain - 1) / grain;
         }

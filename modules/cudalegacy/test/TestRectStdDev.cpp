@@ -117,6 +117,7 @@ bool TestRectStdDev::process()
     NCVMatrixAlloc<Ncv32f> h_norm_d(*this->allocatorCPU.get(), normWidth, normHeight);
     ncvAssertReturn(h_norm_d.isMemAllocated(), false);
 
+#ifdef NPP_ENABLE
     Ncv32u bufSizeII, bufSizeSII;
     ncvStat = nppiStIntegralGetSize_8u32u(NcvSize32u(this->width, this->height), &bufSizeII, this->devProp);
     ncvAssertReturn(NPPST_SUCCESS == ncvStat, false);
@@ -200,6 +201,10 @@ bool TestRectStdDev::process()
     }
 
     return rcode;
+    #else
+    return 0;
+    #endif //NPP_ENABLE
+
 }
 
 

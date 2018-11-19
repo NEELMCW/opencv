@@ -1,4 +1,4 @@
-#include "hip/hip_runtime.h"
+
 /*M///////////////////////////////////////////////////////////////////////////////////////
 //
 //  IMPORTANT: READ BEFORE DOWNLOADING, COPYING, INSTALLING OR USING.
@@ -40,6 +40,8 @@
 // the use of this software, even if advised of the possibility of such damage.
 //
 //M*/
+
+#include "hip/hip_runtime.h"
 
 #if !defined CUDA_DISABLER
 

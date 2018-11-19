@@ -86,9 +86,11 @@ void cv::cuda::createOpticalFlowNeedleMap(const GpuMat& u, const GpuMat& v, GpuM
 
     colors.setTo(Scalar::all(1.0));
 
-    double uMax, vMax;
+    double uMax=0, vMax=0;
+#ifdef TODO_NEEL  // This needs to enable cudaarithm module
     cuda::minMax(u_avg, 0, &uMax);
     cuda::minMax(v_avg, 0, &vMax);
+#endif
 
     float max_flow = static_cast<float>(std::sqrt(uMax * uMax + vMax * vMax));
 

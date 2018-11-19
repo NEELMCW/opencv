@@ -58,8 +58,13 @@ namespace cv { namespace cuda { namespace device
     {
         typedef uchar value_type;
         virtual ~ThrustAllocator();
-        virtual __device__ __host__ uchar* allocate(size_t numBytes) = 0;
-        virtual __device__ __host__ void deallocate(uchar* ptr, size_t numBytes) = 0;
+#ifdef __HIP_PLATFORM_NVCC__
+        virtual __host__ __device__ uchar* allocate(size_t numBytes) = 0;
+        virtual __host__ __device__ void deallocate(uchar* ptr, size_t numBytes) = 0;
+#elif defined (__HIP_PLATFORM_HCC__)
+        __host__ __device__ uchar* allocate(size_t numBytes);
+        __host__ __device__ void deallocate(uchar* ptr, size_t numBytes);
+#endif
         static ThrustAllocator& getAllocator();
         static void setAllocator(ThrustAllocator* allocator);
     };
@@ -130,7 +135,11 @@ namespace cv { namespace cuda { namespace device
         __device__ __forceinline__ bool operator()(int y, int x) const
         {
             uchar val;
+#ifdef HIP_TODO  // implicit instantiation of undefined template  error faced here TODO: Neel
             return curMask.data == 0 || (ForceGlob<uchar>::Load(curMask.ptr(y), x, val), (val != 0));
+#else
+            return curMask.data == 0;
+#endif
         }
 
         const PtrStepb* maskCollection;

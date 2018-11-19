@@ -73,6 +73,7 @@ namespace cv { namespace cuda { namespace device
 
         template<class T> struct ForceGlob;
 
+#ifdef __HIP_PLATFORM_NVCC__
         #define OPENCV_CUDA_DEFINE_FORCE_GLOB(base_type, ptx_type, reg_mod) \
             template <> struct ForceGlob<base_type> \
             { \
@@ -90,6 +91,11 @@ namespace cv { namespace cuda { namespace device
                     asm("ld.global."#ptx_type" %0, [%1];" : "=r"(*reinterpret_cast<uint*>(&val)) : OPENCV_CUDA_ASM_PTR(ptr + offset)); \
                 } \
             };
+#elif defined(__HIP_PLATFORM_HCC__)
+// HIP_TODO
+	#define OPENCV_CUDA_DEFINE_FORCE_GLOB(base_type, ptx_type, reg_mod) 
+	#define OPENCV_CUDA_DEFINE_FORCE_GLOB_B(base_type, ptx_type)
+#endif
 
             OPENCV_CUDA_DEFINE_FORCE_GLOB_B(uchar,  u8)
             OPENCV_CUDA_DEFINE_FORCE_GLOB_B(schar,  s8)

@@ -15,9 +15,9 @@ class StaticHelper {
         if(InitCuda)
         {
             loadLibrary("cudart");
-            loadLibrary("nppc");
-            loadLibrary("nppi");
-            loadLibrary("npps");
+            // loadLibrary("nppc");
+            // loadLibrary("nppi");
+            // loadLibrary("npps");
             loadLibrary("cufft");
             loadLibrary("cublas");
         }

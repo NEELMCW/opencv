@@ -64,7 +64,7 @@ namespace cv { namespace cuda { namespace device
                 // just campilation stab
                 return 0;
 #else
-                return __syncthreads_or(pred);
+                return syncthreadsOr(pred);
 #endif
         }
 

@@ -1,3 +1,4 @@
+#include "hip/hip_runtime.h"
 /*M///////////////////////////////////////////////////////////////////////////////////////
 //
 //  IMPORTANT: READ BEFORE DOWNLOADING, COPYING, INSTALLING OR USING.
@@ -198,20 +199,20 @@ void cv::cuda::polarToCart(InputArray _mag, InputArray _angle, OutputArray _x, O
 
     const float scale = angleInDegrees ? (CV_PI_F / 180.0f) : 1.0f;
 
-    cudaStream_t stream = StreamAccessor::getStream(_stream);
+    hipStream_t stream = StreamAccessor::getStream(_stream);
 
     if (magc.empty())
-        polarToCartImpl<false><<<grid, block, 0, stream>>>(shrinkPtr(magc), shrinkPtr(anglec), shrinkPtr(xc), shrinkPtr(yc), scale, anglec.rows, anglec.cols);
+        hipLaunchKernelGGL((polarToCartImpl<false>), dim3(grid), dim3(block), 0, stream, shrinkPtr(magc), shrinkPtr(anglec), shrinkPtr(xc), shrinkPtr(yc), scale, anglec.rows, anglec.cols);
     else
-        polarToCartImpl<true><<<grid, block, 0, stream>>>(shrinkPtr(magc), shrinkPtr(anglec), shrinkPtr(xc), shrinkPtr(yc), scale, anglec.rows, anglec.cols);
+        hipLaunchKernelGGL((polarToCartImpl<true>), dim3(grid), dim3(block), 0, stream, shrinkPtr(magc), shrinkPtr(anglec), shrinkPtr(xc), shrinkPtr(yc), scale, anglec.rows, anglec.cols);
 
-    CV_CUDEV_SAFE_CALL( cudaGetLastError() );
+    CV_CUDEV_SAFE_CALL( hipGetLastError() );
 
     syncOutput(x, _x, _stream);
     syncOutput(y, _y, _stream);
 
     if (stream == 0)
-        CV_CUDEV_SAFE_CALL( cudaDeviceSynchronize() );
+        CV_CUDEV_SAFE_CALL( hipDeviceSynchronize() );
 }
 
 #endif

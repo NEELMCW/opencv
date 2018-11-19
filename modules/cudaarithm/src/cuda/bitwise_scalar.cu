@@ -88,6 +88,7 @@ namespace
         }
     };
 
+#ifdef NPP_ENABLE
     template <int DEPTH, int cn> struct NppBitwiseCFunc
     {
         typedef typename NPPTypeTraits<DEPTH>::npp_type npp_type;
@@ -101,7 +102,7 @@ namespace
 
         static void call(const GpuMat& src, cv::Scalar value, GpuMat& dst, Stream& _stream)
         {
-            cudaStream_t stream = StreamAccessor::getStream(_stream);
+            hipStream_t stream = StreamAccessor::getStream(_stream);
             NppStreamHandler h(stream);
 
             NppiSize oSizeROI;
@@ -119,7 +120,7 @@ namespace
             nppSafeCall( func(src.ptr<npp_type>(), static_cast<int>(src.step), pConstants, dst.ptr<npp_type>(), static_cast<int>(dst.step), oSizeROI) );
 
             if (stream == 0)
-                CV_CUDEV_SAFE_CALL( cudaDeviceSynchronize() );
+                CV_CUDEV_SAFE_CALL( hipDeviceSynchronize() );
         }
     };
 }
@@ -156,6 +157,7 @@ void bitScalar(const GpuMat& src, cv::Scalar value, bool, GpuMat& dst, const Gpu
             {BitScalar<uint, bitScalarOp<bit_xor, uint> >::call    , 0, NppBitwiseC<CV_32S, 3, nppiXorC_32s_C3R>::call, NppBitwiseC<CV_32S, 4, nppiXorC_32s_C4R>::call}
         }
     };
+#endif //NPP_ENABLE
 
     const int depth = src.depth();
     const int cn = src.channels();

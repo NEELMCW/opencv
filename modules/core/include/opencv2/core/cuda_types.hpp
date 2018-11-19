@@ -66,6 +66,8 @@
     #define __CV_CUDA_HOST_DEVICE__
 #endif
 
+#include<hip/hip_runtime_api.h>
+
 namespace cv
 {
     namespace cuda

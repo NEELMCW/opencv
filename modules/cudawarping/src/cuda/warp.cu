@@ -181,59 +181,59 @@ namespace cv { namespace cuda { namespace device
         };
 
         #define OPENCV_CUDA_IMPLEMENT_WARP_TEX(type) \
-            texture< type , cudaTextureType2D > tex_warp_ ## type (0, cudaFilterModePoint, cudaAddressModeClamp); \
-            struct tex_warp_ ## type ## _reader \
-            { \
-                typedef type elem_type; \
-                typedef int index_type; \
-                int xoff, yoff; \
-                tex_warp_ ## type ## _reader (int xoff_, int yoff_) : xoff(xoff_), yoff(yoff_) {} \
-                __device__ __forceinline__ elem_type operator ()(index_type y, index_type x) const \
-                { \
-                    return tex2D(tex_warp_ ## type , x + xoff, y + yoff); \
-                } \
-            }; \
-            template <class Transform, template <typename> class Filter, template <typename> class B> struct WarpDispatcherNonStream<Transform, Filter, B, type> \
-            { \
-                static void call(PtrStepSz< type > src, PtrStepSz< type > srcWhole, int xoff, int yoff, PtrStepSz< type > dst, const float* borderValue, bool cc20) \
-                { \
-                    typedef typename TypeVec<float, VecTraits< type >::cn>::vec_type work_type; \
-                    dim3 block(32, cc20 ? 8 : 4); \
-                    dim3 grid(divUp(dst.cols, block.x), divUp(dst.rows, block.y)); \
-                    bindTexture(&tex_warp_ ## type , srcWhole); \
-                    tex_warp_ ## type ##_reader texSrc(xoff, yoff); \
-                    B<work_type> brd(src.rows, src.cols, VecTraits<work_type>::make(borderValue)); \
-                    BorderReader< tex_warp_ ## type ##_reader, B<work_type> > brdSrc(texSrc, brd); \
-                    Filter< BorderReader< tex_warp_ ## type ##_reader, B<work_type> > > filter_src(brdSrc); \
-                    warp<Transform><<<grid, block>>>(filter_src, dst); \
-                    cudaSafeCall( cudaGetLastError() ); \
-                    cudaSafeCall( cudaDeviceSynchronize() ); \
-                } \
-            }; \
-            template <class Transform, template <typename> class Filter> struct WarpDispatcherNonStream<Transform, Filter, BrdReplicate, type> \
-            { \
-                static void call(PtrStepSz< type > src, PtrStepSz< type > srcWhole, int xoff, int yoff, PtrStepSz< type > dst, const float*, bool) \
-                { \
-                    dim3 block(32, 8); \
-                    dim3 grid(divUp(dst.cols, block.x), divUp(dst.rows, block.y)); \
-                    bindTexture(&tex_warp_ ## type , srcWhole); \
-                    tex_warp_ ## type ##_reader texSrc(xoff, yoff); \
-                    if (srcWhole.cols == src.cols && srcWhole.rows == src.rows) \
-                    { \
-                        Filter< tex_warp_ ## type ##_reader > filter_src(texSrc); \
-                        warp<Transform><<<grid, block>>>(filter_src, dst); \
-                    } \
-                    else \
-                    { \
-                        BrdReplicate<type> brd(src.rows, src.cols); \
-                        BorderReader< tex_warp_ ## type ##_reader, BrdReplicate<type> > brdSrc(texSrc, brd); \
-                        Filter< BorderReader< tex_warp_ ## type ##_reader, BrdReplicate<type> > > filter_src(brdSrc); \
-                        warp<Transform><<<grid, block>>>(filter_src, dst); \
-                    } \
-                    cudaSafeCall( cudaGetLastError() ); \
-                    cudaSafeCall( cudaDeviceSynchronize() ); \
-                } \
-            };
+            // texture< type , hipTextureType2D > tex_warp_ ## type (0, cudaFilterModePoint, cudaAddressModeClamp); \
+            // struct tex_warp_ ## type ## _reader \
+            // { \
+            //     typedef type elem_type; \
+            //     typedef int index_type; \
+            //     int xoff, yoff; \
+            //     tex_warp_ ## type ## _reader (int xoff_, int yoff_) : xoff(xoff_), yoff(yoff_) {} \
+            //     __device__ __forceinline__ elem_type operator ()(index_type y, index_type x) const \
+            //     { \
+            //         return tex2D(tex_warp_ ## type , x + xoff, y + yoff); \
+            //     } \
+            // }; \
+            // template <class Transform, template <typename> class Filter, template <typename> class B> struct WarpDispatcherNonStream<Transform, Filter, B, type> \
+            // { \
+            //     static void call(PtrStepSz< type > src, PtrStepSz< type > srcWhole, int xoff, int yoff, PtrStepSz< type > dst, const float* borderValue, bool cc20) \
+            //     { \
+            //         typedef typename TypeVec<float, VecTraits< type >::cn>::vec_type work_type; \
+            //         dim3 block(32, cc20 ? 8 : 4); \
+            //         dim3 grid(divUp(dst.cols, block.x), divUp(dst.rows, block.y)); \
+            //         bindTexture(&tex_warp_ ## type , srcWhole); \
+            //         tex_warp_ ## type ##_reader texSrc(xoff, yoff); \
+            //         B<work_type> brd(src.rows, src.cols, VecTraits<work_type>::make(borderValue)); \
+            //         BorderReader< tex_warp_ ## type ##_reader, B<work_type> > brdSrc(texSrc, brd); \
+            //         Filter< BorderReader< tex_warp_ ## type ##_reader, B<work_type> > > filter_src(brdSrc); \
+            //         warp<Transform><<<grid, block>>>(filter_src, dst); \
+            //         cudaSafeCall( cudaGetLastError() ); \
+            //         cudaSafeCall( cudaDeviceSynchronize() ); \
+            //     } \
+            // }; \
+            // template <class Transform, template <typename> class Filter> struct WarpDispatcherNonStream<Transform, Filter, BrdReplicate, type> \
+            // { \
+            //     static void call(PtrStepSz< type > src, PtrStepSz< type > srcWhole, int xoff, int yoff, PtrStepSz< type > dst, const float*, bool) \
+            //     { \
+            //         dim3 block(32, 8); \
+            //         dim3 grid(divUp(dst.cols, block.x), divUp(dst.rows, block.y)); \
+            //         bindTexture(&tex_warp_ ## type , srcWhole); \
+            //         tex_warp_ ## type ##_reader texSrc(xoff, yoff); \
+            //         if (srcWhole.cols == src.cols && srcWhole.rows == src.rows) \
+            //         { \
+            //             Filter< tex_warp_ ## type ##_reader > filter_src(texSrc); \
+            //             warp<Transform><<<grid, block>>>(filter_src, dst); \
+            //         } \
+            //         else \
+            //         { \
+            //             BrdReplicate<type> brd(src.rows, src.cols); \
+            //             BorderReader< tex_warp_ ## type ##_reader, BrdReplicate<type> > brdSrc(texSrc, brd); \
+            //             Filter< BorderReader< tex_warp_ ## type ##_reader, BrdReplicate<type> > > filter_src(brdSrc); \
+            //             warp<Transform><<<grid, block>>>(filter_src, dst); \
+            //         } \
+            //         cudaSafeCall( cudaGetLastError() ); \
+            //         cudaSafeCall( cudaDeviceSynchronize() ); \
+            //     } \
+            // };
 
         OPENCV_CUDA_IMPLEMENT_WARP_TEX(uchar)
         //OPENCV_CUDA_IMPLEMENT_WARP_TEX(uchar2)

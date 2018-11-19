@@ -1305,8 +1305,14 @@ function(ocv_add_library target)
 
   add_library(${target} ${ARGN} ${cuda_objs})
 
-  set_target_properties(${target} PROPERTIES LINK_FLAGS "-L /usr/local/cuda/lib64/ -lcuda -lcudart")
-  set(CUDA_LIBRARIES "cudart")
+  IF (${HIP_PLATFORM} MATCHES "nvcc")
+    set_target_properties(${target} PROPERTIES LINK_FLAGS "-L /usr/local/cuda/lib64/ -lcuda -lcudart")
+    set(CUDA_LIBRARIES "cudart")
+  ELSE (${HIP_PLATFORM} MATCHES "hcc")
+    set_target_properties(${target} PROPERTIES LINK_FLAGS "-L ${HIP_PATH}/lib -lhip_hcc")
+    set(CUDA_LIBRARIES "hip_hcc")
+  ENDIF()
+
 
   if(APPLE_FRAMEWORK AND BUILD_SHARED_LIBS)
     message(STATUS "Setting Apple target properties for ${target}")

@@ -106,10 +106,12 @@ bool TestResize<T>::process()
     NCV_SKIP_COND_BEGIN
     ncvAssertReturn(this->src.fill(h_img), false);
     NCV_SKIP_COND_END
-
+#ifdef NPP_ENABLE
     ncvStat = h_img.copySolid(d_img, 0);
     ncvAssertReturn(ncvStat == NPPST_SUCCESS, false);
     NCV_SKIP_COND_BEGIN
+
+
     if (sizeof(T) == sizeof(Ncv32u))
     {
         ncvStat = nppiStDecimate_32u_C1R((Ncv32u *)d_img.ptr(), d_img.pitch(),
@@ -151,6 +153,7 @@ bool TestResize<T>::process()
         ncvAssertPrintReturn(false, "Incorrect downsample test instance", false);
     }
     ncvAssertReturn(ncvStat == NPPST_SUCCESS, false);
+
     NCV_SKIP_COND_END
 
     //bit-to-bit check
@@ -176,6 +179,11 @@ bool TestResize<T>::process()
     }
 
     return rcode;
+
+    #else
+    return 0;
+    #endif //NPP_ENABLE
+
 }
 
 

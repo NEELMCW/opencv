@@ -98,7 +98,10 @@ namespace
         error_entry( NCV_HAAR_TOO_LARGE_FEATURES ),
         error_entry( NCV_HAAR_XML_LOADING_EXCEPTION ),
         error_entry( NCV_NOIMPL_HAAR_TILTED_FEATURES ),
-        error_entry( NCV_WARNING_HAAR_DETECTIONS_VECTOR_OVERFLOW ),
+        error_entry( NCV_WARNING_HAAR_DETECTIONS_VECTOR_OVERFLOW )
+
+        #ifdef NPP_ENABLE
+        ,
         error_entry( NPPST_SUCCESS ),
         error_entry( NPPST_ERROR ),
         error_entry( NPPST_CUDA_KERNEL_EXECUTION_ERROR ),
@@ -113,6 +116,8 @@ namespace
         error_entry( NPPST_MEM_INSUFFICIENT_BUFFER ),
         error_entry( NPPST_MEM_RESIDENCE_ERROR ),
         error_entry( NPPST_MEM_INTERNAL_ERROR )
+        #endif //NPP_ENABLE
+
     };
 
     const size_t ncv_error_num = sizeof(ncv_errors) / sizeof(ncv_errors[0]);
@@ -269,7 +274,7 @@ NCVStatus memSegCopyHelper2D(void *dst, Ncv32u dstPitch, NCVMemoryType dstType,
         case NCVMemoryTypeDevice:
             if (cuStream != 0)
             {
-                ncvAssertCUDAReturn(hipMemcpy2D(dst, dstPitch, src, srcPitch, widthbytes, height, hipMemcpyDeviceToHost, cuStream), NCV_CUDA_ERROR);
+                ncvAssertCUDAReturn(hipMemcpy2DAsync(dst, dstPitch, src, srcPitch, widthbytes, height, hipMemcpyDeviceToHost, cuStream), NCV_CUDA_ERROR);
             }
             else
             {
@@ -288,7 +293,7 @@ NCVStatus memSegCopyHelper2D(void *dst, Ncv32u dstPitch, NCVMemoryType dstType,
         case NCVMemoryTypeHostPinned:
             if (cuStream != 0)
             {
-                ncvAssertCUDAReturn(hipMemcpy2D(dst, dstPitch, src, srcPitch, widthbytes, height, hipMemcpyHostToDevice, cuStream), NCV_CUDA_ERROR);
+                ncvAssertCUDAReturn(hipMemcpy2DAsync(dst, dstPitch, src, srcPitch, widthbytes, height, hipMemcpyHostToDevice, cuStream), NCV_CUDA_ERROR);
             }
             else
             {

@@ -57,7 +57,7 @@ static void swap(T &p1, T &p2)
 
 
 template<typename T>
-static T divUp(T a, T b)
+inline static T divUp(T a, T b)
 {
     return (a + b - 1) / b;
 }
