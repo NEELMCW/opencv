@@ -133,7 +133,7 @@ namespace cv { namespace cuda { namespace device
     // textures
 
     template <typename T> struct TextureAccessor;
-
+    //HIP_TO_DO
     #define OPENCV_CUDA_IMPLEMENT_RESIZE_TEX(type) \
         // texture<type, hipTextureType2D, cudaReadModeElementType> tex_resize_##type (0, cudaFilterModePoint, cudaAddressModeClamp); \
         // template <> struct TextureAccessor<type> \

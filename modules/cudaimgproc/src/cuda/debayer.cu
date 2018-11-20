@@ -392,7 +392,7 @@ namespace cv { namespace cuda { namespace device
     //
     // ported to CUDA
 
-    #ifdef HIP_TO_DO
+#ifdef HIP_TO_DO
     texture<uchar, hiphTextureType2D, hipReadModeElementType> sourceTex(false, hipFilterModePoint, hipAddressModeClamp);
 
     template <typename DstType>
@@ -543,7 +543,7 @@ namespace cv { namespace cuda { namespace device
     template void MHCdemosaic<1>(PtrStepSzb src, int2 sourceOffset, PtrStepSzb dst, int2 firstRed, hipStream_t stream);
     template void MHCdemosaic<3>(PtrStepSzb src, int2 sourceOffset, PtrStepSzb dst, int2 firstRed, hipStream_t stream);
     template void MHCdemosaic<4>(PtrStepSzb src, int2 sourceOffset, PtrStepSzb dst, int2 firstRed, hipStream_t stream);
-    #endif //HIP_TO_DO
+#endif //HIP_TO_DO
 
 }}}
 

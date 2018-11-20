@@ -179,7 +179,7 @@ namespace cv { namespace cuda { namespace device
                 cudaSafeCall( cudaDeviceSynchronize() );
             }
         };
-
+        //HIP_TO_DO
         #define OPENCV_CUDA_IMPLEMENT_WARP_TEX(type) \
             // texture< type , hipTextureType2D > tex_warp_ ## type (0, cudaFilterModePoint, cudaAddressModeClamp); \
             // struct tex_warp_ ## type ## _reader \
