@@ -50,6 +50,7 @@
 #include "opencv2/core/cuda/color.hpp"
 #include "opencv2/core/cuda/saturate_cast.hpp"
 
+
 namespace cv { namespace cuda { namespace device
 {
     template <typename T> struct Bayer2BGR;
@@ -66,15 +67,15 @@ namespace cv { namespace cuda { namespace device
             uchar4 patch[3][3];
             patch[0][1] = ((const uchar4*) src.ptr(s_y - 1))[s_x];
             patch[0][0] = ((const uchar4*) src.ptr(s_y - 1))[::max(s_x - 1, 0)];
-            patch[0][2] = ((const uchar4*) src.ptr(s_y - 1))[::min(s_x + 1, ((src.cols + 3) >> 2) - 1)];
+            patch[0][2] = ((const uchar4*) src.ptr(s_y - 1))[minVal(s_x + 1, ((src.cols + 3) >> 2) - 1)];
 
             patch[1][1] = ((const uchar4*) src.ptr(s_y))[s_x];
             patch[1][0] = ((const uchar4*) src.ptr(s_y))[::max(s_x - 1, 0)];
-            patch[1][2] = ((const uchar4*) src.ptr(s_y))[::min(s_x + 1, ((src.cols + 3) >> 2) - 1)];
+            patch[1][2] = ((const uchar4*) src.ptr(s_y))[minVal(s_x + 1, ((src.cols + 3) >> 2) - 1)];
 
             patch[2][1] = ((const uchar4*) src.ptr(s_y + 1))[s_x];
             patch[2][0] = ((const uchar4*) src.ptr(s_y + 1))[::max(s_x - 1, 0)];
-            patch[2][2] = ((const uchar4*) src.ptr(s_y + 1))[::min(s_x + 1, ((src.cols + 3) >> 2) - 1)];
+            patch[2][2] = ((const uchar4*) src.ptr(s_y + 1))[minVal(s_x + 1, ((src.cols + 3) >> 2) - 1)];
 
             if ((s_y & 1) ^ start_with_green)
             {
@@ -205,7 +206,7 @@ namespace cv { namespace cuda { namespace device
         if (s_y >= src.rows || (s_x << 2) >= src.cols)
             return;
 
-        s_y = ::min(::max(s_y, 1), src.rows - 2);
+        s_y = minVal(::max(s_y, 1), src.rows - 2);
 
         Bayer2BGR<uchar> bayer;
         bayer.apply(src, s_x, s_y, blue_last, start_with_green);
@@ -232,15 +233,15 @@ namespace cv { namespace cuda { namespace device
             ushort2 patch[3][3];
             patch[0][1] = ((const ushort2*) src.ptr(s_y - 1))[s_x];
             patch[0][0] = ((const ushort2*) src.ptr(s_y - 1))[::max(s_x - 1, 0)];
-            patch[0][2] = ((const ushort2*) src.ptr(s_y - 1))[::min(s_x + 1, ((src.cols + 1) >> 1) - 1)];
+            patch[0][2] = ((const ushort2*) src.ptr(s_y - 1))[minVal(s_x + 1, ((src.cols + 1) >> 1) - 1)];
 
             patch[1][1] = ((const ushort2*) src.ptr(s_y))[s_x];
             patch[1][0] = ((const ushort2*) src.ptr(s_y))[::max(s_x - 1, 0)];
-            patch[1][2] = ((const ushort2*) src.ptr(s_y))[::min(s_x + 1, ((src.cols + 1) >> 1) - 1)];
+            patch[1][2] = ((const ushort2*) src.ptr(s_y))[minVal(s_x + 1, ((src.cols + 1) >> 1) - 1)];
 
             patch[2][1] = ((const ushort2*) src.ptr(s_y + 1))[s_x];
             patch[2][0] = ((const ushort2*) src.ptr(s_y + 1))[::max(s_x - 1, 0)];
-            patch[2][2] = ((const ushort2*) src.ptr(s_y + 1))[::min(s_x + 1, ((src.cols + 1) >> 1) - 1)];
+            patch[2][2] = ((const ushort2*) src.ptr(s_y + 1))[minVal(s_x + 1, ((src.cols + 1) >> 1) - 1)];
 
             if ((s_y & 1) ^ start_with_green)
             {
@@ -327,7 +328,7 @@ namespace cv { namespace cuda { namespace device
         if (s_y >= src.rows || (s_x << 1) >= src.cols)
             return;
 
-        s_y = ::min(::max(s_y, 1), src.rows - 2);
+        s_y = minVal(::max(s_y, 1), src.rows - 2);
 
         Bayer2BGR<ushort> bayer;
         bayer.apply(src, s_x, s_y, blue_last, start_with_green);
@@ -394,10 +395,11 @@ namespace cv { namespace cuda { namespace device
 
 #ifdef HIP_TO_DO
     texture<uchar, hiphTextureType2D, hipReadModeElementType> sourceTex(false, hipFilterModePoint, hipAddressModeClamp);
-
+#endif
     template <typename DstType>
     __global__ void MHCdemosaic(PtrStepSz<DstType> dst, const int2 sourceOffset, const int2 firstRed)
     {
+#ifdef HIP_TO_DO
         const float   kAx = -1.0f / 8.0f,     kAy = -1.5f / 8.0f,     kAz =  0.5f / 8.0f    /*kAw = -1.0f / 8.0f*/;
         const float   kBx =  2.0f / 8.0f,   /*kBy =  0.0f / 8.0f,*/ /*kBz =  0.0f / 8.0f,*/   kBw =  4.0f / 8.0f  ;
         const float   kCx =  4.0f / 8.0f,     kCy =  6.0f / 8.0f,     kCz =  5.0f / 8.0f    /*kCw =  5.0f / 8.0f*/;
@@ -521,11 +523,13 @@ namespace cv { namespace cuda { namespace device
                     make_uchar3(saturate_cast<uchar>(C), saturate_cast<uchar>(PATTERN.x), saturate_cast<uchar>(PATTERN.y)));
 
         dst(y, x) = toDst<DstType>(pixelColor);
+#endif
     }
 
     template <int cn>
     void MHCdemosaic(PtrStepSzb src, int2 sourceOffset, PtrStepSzb dst, int2 firstRed, hipStream_t stream)
     {
+#ifdef HIP_TO_DO
         typedef typename TypeVec<uchar, cn>::vec_type dst_t;
 
         const dim3 block(32, 8);
@@ -538,12 +542,12 @@ namespace cv { namespace cuda { namespace device
 
         if (stream == 0)
             cudaSafeCall( hipDeviceSynchronize() );
+#endif //HIP_TO_DO
     }
 
     template void MHCdemosaic<1>(PtrStepSzb src, int2 sourceOffset, PtrStepSzb dst, int2 firstRed, hipStream_t stream);
     template void MHCdemosaic<3>(PtrStepSzb src, int2 sourceOffset, PtrStepSzb dst, int2 firstRed, hipStream_t stream);
     template void MHCdemosaic<4>(PtrStepSzb src, int2 sourceOffset, PtrStepSzb dst, int2 firstRed, hipStream_t stream);
-#endif //HIP_TO_DO
 
 }}}
 

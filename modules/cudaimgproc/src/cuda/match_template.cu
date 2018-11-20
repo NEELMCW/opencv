@@ -184,7 +184,7 @@ namespace cv { namespace cuda { namespace device
             const dim3 threads(32, 8);
             const dim3 grid(divUp(result.cols, threads.x), divUp(result.rows, threads.y));
 
-            hipLaunchKernelGGL((matchTemplateNaiveKernel_SQDIFF<T, cn>), dim3(grid), dim3(threads), 0, stream, templ.cols, templ.rows, image, templ, result);
+            hipLaunchKernelGGL((matchTemplateNaiveKernel_SQDIFF<T, cn>), dim3(grid), dim3(threads), 0, stream, (int)templ.cols, (int)templ.rows, (const PtrStepb)image, (const PtrStepb)templ, (PtrStepSzf)result);
             cudaSafeCall( hipGetLastError() );
 
             if (stream == 0)

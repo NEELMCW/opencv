@@ -248,7 +248,7 @@ namespace cv { namespace cuda { namespace device
             int totalCount;
             cudaSafeCall( hipMemcpy(&totalCount, counterPtr, sizeof(int), hipMemcpyDeviceToHost) );
 
-            totalCount = ::min(totalCount, maxSize);
+            totalCount = minVal(totalCount, maxSize);
 
             return totalCount;
             #else 

@@ -148,14 +148,14 @@ namespace clahe
         int ty2 = ty1 + 1;
         const float ya = tyf - ty1;
         ty1 = ::max(ty1, 0);
-        ty2 = ::min(ty2, tilesY - 1);
+        ty2 = minVal(ty2, tilesY - 1);
 
         const float txf = (static_cast<float>(x) / tileSize.x) - 0.5f;
         int tx1 = __float2int_rd(txf);
         int tx2 = tx1 + 1;
         const float xa = txf - tx1;
         tx1 = ::max(tx1, 0);
-        tx2 = ::min(tx2, tilesX - 1);
+        tx2 = minVal(tx2, tilesX - 1);
 
         const int srcVal = src(y, x);
 
