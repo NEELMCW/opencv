@@ -75,7 +75,7 @@ namespace cv { namespace cuda { namespace device
     }
 
     template <typename T, typename D, template <typename> class Brd> struct Filter2DCaller;
-
+    // HIP_TO_DO
     #define IMPLEMENT_FILTER2D_TEX_READER(type) \
         // texture< type , hipTextureType2D, cudaReadModeElementType> tex_filter2D_ ## type (0, cudaFilterModePoint, cudaAddressModeClamp); \
         // struct tex_filter2D_ ## type ## _reader \

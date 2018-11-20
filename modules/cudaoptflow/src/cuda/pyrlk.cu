@@ -64,7 +64,7 @@ namespace pyrlk
     __constant__ int c_halfWin_y;
     __constant__ int c_iters;
 
-    #ifdef HIP_TO_DO
+#ifdef HIP_TO_DO
     texture<uchar, hipTextureType2D, cudaReadModeNormalizedFloat> tex_I8U(false, cudaFilterModeLinear, cudaAddressModeClamp);
     texture<uchar4, hipTextureType2D, cudaReadModeNormalizedFloat> tex_I8UC4(false, cudaFilterModeLinear, cudaAddressModeClamp);
 
@@ -282,7 +282,7 @@ namespace pyrlk
             bindTexture(&tex_Jf4, J);
         }
     };
-    #endif //HIP_TO_DO
+#endif //HIP_TO_DO
 
     __device__ __forceinline__ void accum(float& dst, const float& val)
     {
@@ -920,7 +920,7 @@ namespace pyrlk
         const int xBase = blockIdx.x * blockDim.x;
         const int yBase = blockIdx.y * blockDim.y;
 
-        #ifdef HIP_TO_DO
+#ifdef HIP_TO_DO
         for (int i = threadIdx.y; i < patchHeight; i += blockDim.y)
         {
             for (int j = threadIdx.x; j < patchWidth; j += blockDim.x)
@@ -938,7 +938,7 @@ namespace pyrlk
                 dIdy_patch[i * patchWidth + j] = 3 * tex2D(tex_If, x-1, y+1) + 10 * tex2D(tex_If, x, y+1) + 3 * tex2D(tex_If, x+1, y+1) -
                                                 (3 * tex2D(tex_If, x-1, y-1) + 10 * tex2D(tex_If, x, y-1) + 3 * tex2D(tex_If, x+1, y-1));
             }
-        #endif //HIP_TO_DO
+#endif //HIP_TO_DO
 
         }
 
@@ -1004,7 +1004,7 @@ namespace pyrlk
             int b1 = 0;
             int b2 = 0;
             
-            #ifdef HIP_TO_DO
+#ifdef HIP_TO_DO
             for (int i = 0; i < c_winSize_y; ++i)
             {
                 for (int j = 0; j < c_winSize_x; ++j)
@@ -1021,7 +1021,7 @@ namespace pyrlk
                     b2 += diff * dIdy;
                 }
             }
-            #endif //HIP_TO_DO
+#endif //HIP_TO_DO
 
 
 
@@ -1043,7 +1043,7 @@ namespace pyrlk
         {
             int errval = 0;
 
-            #ifdef HIP_TO_DO
+#ifdef HIP_TO_DO
             for (int i = 0; i < c_winSize_y; ++i)
             {
                 for (int j = 0; j < c_winSize_x; ++j)
@@ -1054,7 +1054,7 @@ namespace pyrlk
                     errval += ::abs(J - I);
                 }
             }
-            #endif //HIP_TO_DO
+#endif //HIP_TO_DO
 
             err(y, x) = static_cast<float>(errval) / (c_winSize_x * c_winSize_y);
         }
@@ -1103,7 +1103,7 @@ namespace pyrlk
 
     template<typename T, int cn> struct pyrLK_caller
     {   
-        #ifdef HIP_TO_DO
+#ifdef HIP_TO_DO
         static void sparse(PtrStepSz<typename TypeVec<T, cn>::vec_type> I, PtrStepSz<typename TypeVec<T, cn>::vec_type> J, const float2* prevPts, float2* nextPts, uchar* status, float* err, int ptcount,
             int level, dim3 block, dim3 patch, cudaStream_t stream)
         {
@@ -1152,7 +1152,7 @@ namespace pyrlk
             if (stream == 0)
                 cudaSafeCall(cudaDeviceSynchronize());
         }
-        #endif //HIP_TO_DO
+#endif //HIP_TO_DO
 
     };
 
