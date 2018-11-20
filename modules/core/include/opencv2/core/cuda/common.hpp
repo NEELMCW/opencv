@@ -67,7 +67,7 @@
 // Added by Neel to resolve undefined references to ::min in device functions
 // Renaming to minVal to avoid many more conflicts with min defintion in hip headers
 // HIP_TODO
-inline __device__ int minVal(int a, int b) { return a < b ? a : b ;}
+inline __host__ __device__ int minVal(int a, int b) { return a < b ? a : b ;}
 
 namespace cv { namespace cuda {
     static inline void checkCudaError(hipError_t err, const char* file, const int line, const char* func)
