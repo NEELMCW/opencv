@@ -90,8 +90,11 @@ namespace cv { namespace cuda { namespace device
 }}}
 
 namespace canny
-{
-    texture<uchar, cudaTextureType2D, hipReadModeElementType> tex_src(false, hipFilterModePoint, hipAddressModeClamp);
+{   
+#ifdef HIP_TO_DO
+    texture<uchar, hipTextureType2D, hipReadModeElementType> tex_src(false, hipFilterModePoint, hipAddressModeClamp);
+#endif //HIP_TO_DO
+
     struct SrcTex
     {
         int xoff;
@@ -99,8 +102,13 @@ namespace canny
         __host__ SrcTex(int _xoff, int _yoff) : xoff(_xoff), yoff(_yoff) {}
 
         __device__ __forceinline__ int operator ()(int y, int x) const
-        {
+        {   
+#ifdef HIP_TO_DO
             return tex2D(tex_src, x + xoff, y + yoff);
+#else
+            return 0;
+#endif //HIP_TO_DO
+
         }
     };
 
@@ -109,18 +117,24 @@ namespace canny
         int xoff;
         int yoff;
         cudaTextureObject_t tex_src_object;
-        __host__ SrcTexObject(int _xoff, int _yoff, cudaTextureObject_t _tex_src_object) : xoff(_xoff), yoff(_yoff), tex_src_object(_tex_src_object) { }
+        __host__ SrcTexObject(int _xoff, int _yoff, hipTextureObject_t _tex_src_object) : xoff(_xoff), yoff(_yoff), tex_src_object(_tex_src_object) { }
 
         __device__ __forceinline__ int operator ()(int y, int x) const
         {
+#ifdef HIP_TO_DO
             return tex2D<uchar>(tex_src_object, x + xoff, y + yoff);
+#else
+            return 0;
+#endif //HIP_TO_DO
+
         }
 
     };
 
     template <class Norm> __global__
     void calcMagnitudeKernel(const SrcTex src, PtrStepi dx, PtrStepi dy, PtrStepSzf mag, const Norm norm)
-    {
+    {   
+#ifdef HIP_TO_DO
         const int x = blockIdx.x * blockDim.x + threadIdx.x;
         const int y = blockIdx.y * blockDim.y + threadIdx.y;
 
@@ -134,11 +148,13 @@ namespace canny
         dy(y, x) = dyVal;
 
         mag(y, x) = norm(dxVal, dyVal);
+#endif //HIP_TO_DO
     }
 
     template <class Norm> __global__
     void calcMagnitudeKernel(const SrcTexObject src, PtrStepi dx, PtrStepi dy, PtrStepSzf mag, const Norm norm)
     {
+#ifdef HIP_TO_DO
         const int x = blockIdx.x * blockDim.x + threadIdx.x;
         const int y = blockIdx.y * blockDim.y + threadIdx.y;
 
@@ -152,10 +168,13 @@ namespace canny
         dy(y, x) = dyVal;
 
         mag(y, x) = norm(dxVal, dyVal);
+#endif //HIP_TO_DO
+
     }
 
     void calcMagnitude(PtrStepSzb srcWhole, int xoff, int yoff, PtrStepSzi dx, PtrStepSzi dy, PtrStepSzf mag, bool L2Grad, hipStream_t stream)
     {
+#ifdef HIP_TO_DO
         const dim3 block(16, 16);
         const dim3 grid(divUp(mag.cols, block.x), divUp(mag.rows, block.y));
 
@@ -201,9 +220,7 @@ namespace canny
             else
                 cudaSafeCall( hipStreamSynchronize(stream) );
 
-#ifdef HIP_TO_DO
-            cudaSafeCall( cudaDestroyTextureObject(tex) );
-#endif
+            cudaSafeCall( hipDestroyTextureObject(tex) );
         }
         else
         {
@@ -226,6 +243,8 @@ namespace canny
             if (stream == NULL)
                 cudaSafeCall( hipDeviceSynchronize() );
         }
+#endif //HIP_TO_DO
+
     }
 
     void calcMagnitude(PtrStepSzi dx, PtrStepSzi dy, PtrStepSzf mag, bool L2Grad, hipStream_t stream)
@@ -246,10 +265,14 @@ namespace canny
 //////////////////////////////////////////////////////////////////////////////////////////
 
 namespace canny
-{
-    texture<float, cudaTextureType2D, hipReadModeElementType> tex_mag(false, hipFilterModePoint, hipAddressModeClamp);
+{   
+#ifdef HIP_TO_DO
+    texture<float, hipTextureType2D, hipReadModeElementType> tex_mag(false, hipFilterModePoint, hipAddressModeClamp);
+#endif //HIP_TO_DO
+    
     __global__ void calcMapKernel(const PtrStepSzi dx, const PtrStepi dy, PtrStepi map, const float low_thresh, const float high_thresh)
     {
+#ifdef HIP_TO_DO
         const int CANNY_SHIFT = 15;
         const int TG22 = (int)(0.4142135623730950488016887242097*(1<<CANNY_SHIFT) + 0.5);
 
@@ -298,10 +321,14 @@ namespace canny
         }
 
         map(y, x) = edge_type;
+#endif //HIP_TO_DO
+
     }
 
-    __global__ void calcMapKernel(const PtrStepSzi dx, const PtrStepi dy, PtrStepi map, const float low_thresh, const float high_thresh, cudaTextureObject_t tex_mag)
+    __global__ void calcMapKernel(const PtrStepSzi dx, const PtrStepi dy, PtrStepi map, const float low_thresh, const float high_thresh, hipTextureObject_t tex_mag)
     {
+
+#ifdef HIP_TO_DO
         const int CANNY_SHIFT = 15;
         const int TG22 = (int)(0.4142135623730950488016887242097*(1<<CANNY_SHIFT) + 0.5);
 
@@ -350,10 +377,13 @@ namespace canny
         }
 
         map(y, x) = edge_type;
+#endif //HIP_TO_DO
+
     }
 
     void calcMap(PtrStepSzi dx, PtrStepSzi dy, PtrStepSzf mag, PtrStepSzi map, float low_thresh, float high_thresh, hipStream_t stream)
     {
+#ifdef HIP_TO_DO
         const dim3 block(16, 16);
         const dim3 grid(divUp(dx.cols, block.x), divUp(dx.rows, block.y));
 
@@ -385,9 +415,7 @@ namespace canny
             else
                 cudaSafeCall( hipStreamSynchronize(stream) );
 
-#ifdef HIP_TO_DO
-            cudaSafeCall( cudaDestroyTextureObject(tex) );
-#endif
+            cudaSafeCall( hipDestroyTextureObject(tex) );
         }
         else
         {
@@ -399,7 +427,10 @@ namespace canny
             if (stream == NULL)
                 cudaSafeCall( hipDeviceSynchronize() );
         }
+#endif //HIP_TO_DO
+
     }
+        
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////

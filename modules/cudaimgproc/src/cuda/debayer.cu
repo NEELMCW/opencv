@@ -392,7 +392,8 @@ namespace cv { namespace cuda { namespace device
     //
     // ported to CUDA
 
-    texture<uchar, cudaTextureType2D, hipReadModeElementType> sourceTex(false, hipFilterModePoint, hipAddressModeClamp);
+#ifdef HIP_TO_DO
+    texture<uchar, hiphTextureType2D, hipReadModeElementType> sourceTex(false, hipFilterModePoint, hipAddressModeClamp);
 
     template <typename DstType>
     __global__ void MHCdemosaic(PtrStepSz<DstType> dst, const int2 sourceOffset, const int2 firstRed)
@@ -542,6 +543,8 @@ namespace cv { namespace cuda { namespace device
     template void MHCdemosaic<1>(PtrStepSzb src, int2 sourceOffset, PtrStepSzb dst, int2 firstRed, hipStream_t stream);
     template void MHCdemosaic<3>(PtrStepSzb src, int2 sourceOffset, PtrStepSzb dst, int2 firstRed, hipStream_t stream);
     template void MHCdemosaic<4>(PtrStepSzb src, int2 sourceOffset, PtrStepSzb dst, int2 firstRed, hipStream_t stream);
+#endif //HIP_TO_DO
+
 }}}
 
 #endif /* CUDA_DISABLER */
