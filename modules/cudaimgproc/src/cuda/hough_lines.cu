@@ -44,7 +44,9 @@
 #if !defined CUDA_DISABLER
 
 #include <thrust/device_ptr.h>
+#ifdef __HIP_PLATFORM_NVCC__
 #include <thrust/sort.h>
+#endif
 
 #include "opencv2/core/cuda/common.hpp"
 #include "opencv2/core/cuda/emulation.hpp"
@@ -204,7 +206,9 @@ namespace cv { namespace cuda { namespace device
             {
                 thrust::device_ptr<float2> outPtr(out);
                 thrust::device_ptr<int> votesPtr(votes);
+#ifdef __HIP_PLATFORM_NVCC__
                 thrust::sort_by_key(votesPtr, votesPtr + totalCount, outPtr, thrust::greater<int>());
+#endif
             }
 
             return totalCount;

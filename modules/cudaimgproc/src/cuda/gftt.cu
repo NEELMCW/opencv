@@ -44,7 +44,9 @@
 #if !defined CUDA_DISABLER
 
 #include <thrust/device_ptr.h>
+#ifdef __HIP_PLATFORM_NVCC__
 #include <thrust/sort.h>
+#endif
 
 #include "opencv2/core/cuda/common.hpp"
 #include "opencv2/core/cuda/utility.hpp"
@@ -147,6 +149,7 @@ namespace cv { namespace cuda { namespace device
 
         void sortCorners_gpu(PtrStepSzf eig, float2* corners, int count, hipStream_t stream)
         {
+#ifdef HIP_TODO
             bindTexture(&eigTex, eig);
 
             thrust::device_ptr<float2> ptr(corners);
@@ -158,6 +161,7 @@ namespace cv { namespace cuda { namespace device
 #else
             thrust::sort(ptr, ptr + count, EigGreater());
 #endif
+#endif // HIP_TODO
         }
     } // namespace optical_flow
 }}}

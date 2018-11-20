@@ -116,7 +116,7 @@ namespace canny
     {
         int xoff;
         int yoff;
-        cudaTextureObject_t tex_src_object;
+        hipTextureObject_t tex_src_object;
         __host__ SrcTexObject(int _xoff, int _yoff, hipTextureObject_t _tex_src_object) : xoff(_xoff), yoff(_yoff), tex_src_object(_tex_src_object) { }
 
         __device__ __forceinline__ int operator ()(int y, int x) const
