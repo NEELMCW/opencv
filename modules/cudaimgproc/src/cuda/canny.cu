@@ -661,7 +661,7 @@ namespace canny
             cudaSafeCall( hipMemcpyAsync(&count, d_counter, sizeof(int), hipMemcpyDeviceToHost, stream) );
             cudaSafeCall( hipStreamSynchronize(stream) );
 
-            count = min(count, map.cols * map.rows);
+            count = minVal(count, map.cols * map.rows);
 
             //std::swap(st1, st2);
             short2* tmp = st1;
