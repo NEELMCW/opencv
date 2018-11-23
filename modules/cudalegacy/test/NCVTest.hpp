@@ -163,7 +163,7 @@ private:
 #ifdef HIP_TO_DO_TEX
         this->allocatorGPU.reset(new NCVMemStackAllocator(static_cast<Ncv32u>(devProp.textureAlignment)));
         this->allocatorCPU.reset(new NCVMemStackAllocator(static_cast<Ncv32u>(devProp.textureAlignment)));
-#else  // TODO: Neel 
+#else  //HIP_TO_DO_TEX
         this->allocatorGPU.reset(new NCVMemStackAllocator(static_cast<Ncv32u>(0)));
         this->allocatorCPU.reset(new NCVMemStackAllocator(static_cast<Ncv32u>(0)));
 #endif //HIP_TO_DO_TEX
@@ -190,7 +190,7 @@ private:
 #ifdef HIP_TO_DO_TEX
         this->allocatorGPU.reset(new NCVMemStackAllocator(NCVMemoryTypeDevice, maxGPUsize, static_cast<Ncv32u>(devProp.textureAlignment)));
         this->allocatorCPU.reset(new NCVMemStackAllocator(NCVMemoryTypeHostPinned, maxCPUsize, static_cast<Ncv32u>(devProp.textureAlignment)));
-#else // TODO: Neel
+#else //HIP_TO_DO_TEX
         this->allocatorGPU.reset(new NCVMemStackAllocator(NCVMemoryTypeDevice, maxGPUsize, static_cast<Ncv32u>(0)));
         this->allocatorCPU.reset(new NCVMemStackAllocator(NCVMemoryTypeHostPinned, maxCPUsize, static_cast<Ncv32u>(0)));
 #endif //HIP_TO_DO_TEX

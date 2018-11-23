@@ -105,7 +105,7 @@ namespace canny
         {   
 #ifdef HIP_TO_DO_TEX
             return tex2D(tex_src, x + xoff, y + yoff);
-#else
+#else //HIP_TO_DO_TEX
             return 0;
 #endif //HIP_TO_DO_TEX
 
@@ -123,7 +123,7 @@ namespace canny
         {
 #ifdef HIP_TO_DO_TEX
             return tex2D<uchar>(tex_src_object, x + xoff, y + yoff);
-#else
+#else //HIP_TO_DO_TEX
             return 0;
 #endif //HIP_TO_DO_TEX
 

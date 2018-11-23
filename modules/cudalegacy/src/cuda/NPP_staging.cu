@@ -2153,9 +2153,9 @@ NCVStatus BlendFrames(const Ncv32f *src0,
 
     ncvAssertCUDALastErrorReturn(NPPST_CUDA_KERNEL_EXECUTION_ERROR);
     return NPPST_SUCCESS;
-    else //HIP_TO_DO_TEX
+#else //HIP_TO_DO_TEX
     return 0;
-    #endif // HIP_TO_DO_TEX
+#endif //HIP_TO_DO_TEX
 
     #else
     return 1;

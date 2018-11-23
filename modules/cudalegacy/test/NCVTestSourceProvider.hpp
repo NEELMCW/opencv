@@ -68,7 +68,7 @@ public:
         //Ncv32u maxWpitch = alignUp(maxWidth * sizeof(T), devProp.textureAlignment);
 #ifdef HIP_TO_DO_TEX
         allocatorCPU.reset(new NCVMemNativeAllocator(NCVMemoryTypeHostPinned, static_cast<Ncv32u>(devProp.textureAlignment)));
-#else // TODO: Neel
+#else //HIP_TO_DO_TEX
         allocatorCPU.reset(new NCVMemNativeAllocator(NCVMemoryTypeHostPinned, static_cast<Ncv32u>(0)));
 #endif //HIP_TO_DO_TEX
         data.reset(new NCVMatrixAlloc<T>(*this->allocatorCPU.get(), maxWidth, maxHeight));
@@ -107,7 +107,7 @@ public:
 
 #ifdef HIP_TO_DO_TEX
         allocatorCPU.reset(new NCVMemNativeAllocator(NCVMemoryTypeHostPinned, static_cast<Ncv32u>(devProp.textureAlignment)));
-#else // TODO NEEL
+#else //HIP_TO_DO_TEX
         allocatorCPU.reset(new NCVMemNativeAllocator(NCVMemoryTypeHostPinned, static_cast<Ncv32u>(0)));
 #endif //HIP_TO_DO_TEX
         data.reset(new NCVMatrixAlloc<T>(*this->allocatorCPU.get(), image.cols, image.rows));

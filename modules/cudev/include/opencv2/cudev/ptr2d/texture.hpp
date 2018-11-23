@@ -257,4 +257,4 @@ template <typename T> struct PtrTraits< Texture<T> > : PtrTraitsBase<Texture<T>,
 
 #endif
 
-#endif // HIP_TO_DO_TEX
+#endif //HIP_TO_DO_TEX

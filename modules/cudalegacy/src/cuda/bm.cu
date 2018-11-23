@@ -166,5 +166,5 @@ namespace optflowbm
             cudaSafeCall( hipDeviceSynchronize() );
     }
 }
-#endif // HIP_TO_DO_TEX
+#endif //HIP_TO_DO_TEX
 #endif // !defined CUDA_DISABLER

@@ -395,7 +395,7 @@ namespace cv { namespace cuda { namespace device
 
 #ifdef HIP_TO_DO_TEX
     texture<uchar, hiphTextureType2D, hipReadModeElementType> sourceTex(false, hipFilterModePoint, hipAddressModeClamp);
-#endif
+#endif //HIP_TO_DO_TEX
     template <typename DstType>
     __global__ void MHCdemosaic(PtrStepSz<DstType> dst, const int2 sourceOffset, const int2 firstRed)
     {
@@ -523,7 +523,7 @@ namespace cv { namespace cuda { namespace device
                     make_uchar3(saturate_cast<uchar>(C), saturate_cast<uchar>(PATTERN.x), saturate_cast<uchar>(PATTERN.y)));
 
         dst(y, x) = toDst<DstType>(pixelColor);
-#endif
+#endif //HIP_TO_DO_TEX
     }
 
     template <int cn>
