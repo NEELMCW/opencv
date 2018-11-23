@@ -392,7 +392,7 @@ namespace cv { namespace cuda { namespace device
         void prefilter_xsobel(const PtrStepSzb& input, const PtrStepSzb& output, int prefilterCap, cudaStream_t & stream)
         {
             cudaChannelFormatDesc desc = cudaCreateChannelDesc<unsigned char>();
-            cudaSafeCall( cudaBindTexture2D( 0, texForSobel, input.data, desc, input.cols, input.rows, input.step ) );
+            cudaSafeCall( hipBindTexture2D( 0, texForSobel, input.data, desc, input.cols, input.rows, input.step ) );
 
             dim3 threads(16, 16, 1);
             dim3 grid(1, 1, 1);
@@ -516,7 +516,7 @@ namespace cv { namespace cuda { namespace device
             texForTF.addressMode[1] = cudaAddressModeWrap;
 
             cudaChannelFormatDesc desc = cudaCreateChannelDesc<unsigned char>();
-            cudaSafeCall( cudaBindTexture2D( 0, texForTF, input.data, desc, input.cols, input.rows, input.step ) );
+            cudaSafeCall( hipBindTexture2D( 0, texForTF, input.data, desc, input.cols, input.rows, input.step ) );
 
             dim3 threads(128, 1, 1);
             dim3 grid(1, 1, 1);

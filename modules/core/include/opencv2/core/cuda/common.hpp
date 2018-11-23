@@ -108,7 +108,7 @@ namespace cv { namespace cuda
         {
 #ifdef HIP_TO_DO_TEX
             hipChannelFormatDesc desc = hipCreateChannelDesc<T>();
-            cudaSafeCall( cudaBindTexture2D(0, tex, img.ptr(), &desc, img.cols, img.rows, img.step) );
+            cudaSafeCall( hipBindTexture2D(0, tex, img.ptr(), &desc, img.cols, img.rows, img.step) );
 #endif //HIP_TO_DO_TEX
         }
     }
