@@ -106,10 +106,10 @@ namespace cv { namespace cuda
 
         template<class T> inline void bindTexture(const textureReference* tex, const PtrStepSz<T>& img)
         {
-#ifdef HIP_TO_DO
+#ifdef HIP_TO_DO_TEX
             hipChannelFormatDesc desc = hipCreateChannelDesc<T>();
             cudaSafeCall( cudaBindTexture2D(0, tex, img.ptr(), &desc, img.cols, img.rows, img.step) );
-#endif
+#endif //HIP_TO_DO_TEX
         }
     }
 }}

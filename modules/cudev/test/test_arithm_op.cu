@@ -92,7 +92,7 @@ public:
 
         EXPECT_MAT_NEAR(dst_gold, dst, 0.0);
     }
-#ifdef HIP_TO_DO
+#ifdef HIP_TO_DO_TEX
     void test_texptr()
     {
         const Size size = randomSize(100, 400);
@@ -110,7 +110,7 @@ public:
 
         EXPECT_MAT_NEAR(dst_gold, dst, 0.0);
     }
-#endif //HIP_TO_DO
+#endif //HIP_TO_DO_TEX
     void test_expr()
     {
         const Size size = randomSize(100, 400);
@@ -143,12 +143,12 @@ TYPED_TEST(UnaryMinusTest, GlobPtrSz)
     UnaryMinusTest<TypeParam>::test_globptr();
 }
 
-#ifdef HIP_TO_DO
+#ifdef HIP_TO_DO_TEX
 TYPED_TEST(UnaryMinusTest, TexturePtr)
 {
     UnaryMinusTest<TypeParam>::test_texptr();
 }
-#endif //HIP_TO_DO
+#endif //HIP_TO_DO_TEX
 TYPED_TEST(UnaryMinusTest, Expr)
 {
     UnaryMinusTest<TypeParam>::test_expr();
@@ -178,7 +178,7 @@ public:
 
         EXPECT_MAT_NEAR(dst_gold, dst, 0.0);
     }
-#ifdef HIP_TO_DO
+#ifdef HIP_TO_DO_TEX
     void test_texptr_scalar()
     {
         const Size size = randomSize(100, 400);
@@ -196,7 +196,7 @@ public:
 
         EXPECT_MAT_NEAR(dst_gold, dst, 0.0);
     }
-#endif //HIP_TO_DO
+#endif //HIP_TO_DO_TEX
     void test_expr_gpumat()
     {
         const Size size = randomSize(100, 400);
@@ -244,12 +244,12 @@ TYPED_TEST(PlusTest, GpuMat_GpuMat)
     PlusTest<TypeParam>::test_gpumat_gpumat();
 }
 
-#ifdef HIP_TO_DO
+#ifdef HIP_TO_DO_TEX
 TYPED_TEST(PlusTest, TexturePtr_Scalar)
 {
     PlusTest<TypeParam>::test_texptr_scalar();
 }
-#endif //HIP_TO_DO
+#endif //HIP_TO_DO_TEX
 
 TYPED_TEST(PlusTest, Expr_GpuMat)
 {
@@ -285,7 +285,7 @@ public:
 
         EXPECT_MAT_NEAR(dst_gold, dst, 0.0);
     }
-#ifdef HIP_TO_DO
+#ifdef HIP_TO_DO_TEX
     void test_texptr_scalar()
     {
         const Size size = randomSize(100, 400);
@@ -303,7 +303,7 @@ public:
 
         EXPECT_MAT_NEAR(dst_gold, dst, 0.0);
     }
-#endif //HIP_TO_DO
+#endif //HIP_TO_DO_TEX
     void test_expr_gpumat()
     {
         const Size size = randomSize(100, 400);
@@ -346,7 +346,7 @@ public:
 
 TYPED_TEST_CASE(MinusTest, SignedTypes);
 
-#ifdef HIP_TO_DO
+#ifdef HIP_TO_DO_TEX
 TYPED_TEST(MinusTest, GpuMat_GpuMat)
 {
     MinusTest<TypeParam>::test_gpumat_gpumat();
@@ -356,7 +356,7 @@ TYPED_TEST(MinusTest, TexturePtr_Scalar)
 {
     MinusTest<TypeParam>::test_texptr_scalar();
 }
-#endif //HIP_TO_DO
+#endif //HIP_TO_DO_TEX
 
 TYPED_TEST(MinusTest, Expr_GpuMat)
 {

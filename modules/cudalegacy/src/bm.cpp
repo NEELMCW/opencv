@@ -195,11 +195,11 @@ void cv::cuda::calcOpticalFlowBM(const GpuMat& prev, const GpuMat& curr, Size bl
     const int blSize = blockSize.area();
     const int acceptLevel = blSize * SMALL_DIFF;
     const int escapeLevel = blSize * BIG_DIFF;
-    #ifdef HIP_TO_DO
+    #ifdef HIP_TO_DO_TEX
     optflowbm::calc(prev, curr, velx, vely,
                     make_int2(blockSize.width, blockSize.height), make_int2(shiftSize.width, shiftSize.height), usePrevious,
                     maxX, maxY, acceptLevel, escapeLevel, buf.ptr<short2>(), ssCount, stream);
-    #endif //HIP_TO_DO
+    #endif //HIP_TO_DO_TEX
 }
 
 #endif // HAVE_HIP

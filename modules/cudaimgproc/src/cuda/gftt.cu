@@ -55,14 +55,14 @@ namespace cv { namespace cuda { namespace device
 {
     namespace gfft
     {   
-#ifdef HIP_TO_DO
+#ifdef HIP_TO_DO_TEX
         texture<float, hipTextureType2D, hipReadModeElementType> eigTex(0, hipFilterModePoint, hipAddressModeClamp);
-#endif // HIP_TO_DO
+#endif // HIP_TO_DO_TEX
         __device__ int g_counter = 0;
 
         template <class Mask> __global__ void findCorners(float threshold, const Mask mask, float2* corners, int max_count, int rows, int cols)
         {   
-#ifdef HIP_TO_DO
+#ifdef HIP_TO_DO_TEX
             const int j = blockIdx.x * blockDim.x + threadIdx.x;
             const int i = blockIdx.y * blockDim.y + threadIdx.y;
 
@@ -94,14 +94,14 @@ namespace cv { namespace cuda { namespace device
                     }
                 }
             }
-#endif //HIP_TO_DO
+#endif //HIP_TO_DO_TEX
 
         }
 
         int findCorners_gpu(PtrStepSzf eig, float threshold, PtrStepSzb mask, float2* corners, int max_count, hipStream_t stream)
         {
 
-#ifdef HIP_TO_DO
+#ifdef HIP_TO_DO_TEX
             void* counter_ptr;
 
             cudaSafeCall( hipGetSymbolAddress(&counter_ptr, g_counter) );
@@ -128,7 +128,7 @@ namespace cv { namespace cuda { namespace device
             return std::min(count, max_count);
 #else 
             return 0;
-#endif //HIP_TO_DO
+#endif //HIP_TO_DO_TEX
 
         }
 
@@ -137,11 +137,11 @@ namespace cv { namespace cuda { namespace device
         public:
             __device__ __forceinline__ bool operator()(float2 a, float2 b) const
             {   
-#ifdef HIP_TO_DO
+#ifdef HIP_TO_DO_TEX
                 return tex2D(eigTex, a.x, a.y) > tex2D(eigTex, b.x, b.y);
 #else 
                 return 0;
-#endif //HIP_TO_DO
+#endif //HIP_TO_DO_TEX
                 
             }
         };
@@ -149,7 +149,7 @@ namespace cv { namespace cuda { namespace device
 
         void sortCorners_gpu(PtrStepSzf eig, float2* corners, int count, hipStream_t stream)
         {
-#ifdef HIP_TODO
+#ifdef HIP_TO_DO_TEX
             bindTexture(&eigTex, eig);
 
             thrust::device_ptr<float2> ptr(corners);
@@ -161,7 +161,7 @@ namespace cv { namespace cuda { namespace device
 #else
             thrust::sort(ptr, ptr + count, EigGreater());
 #endif
-#endif // HIP_TODO
+#endif // HIP_TO_DO_TEX
         }
     } // namespace optical_flow
 }}}

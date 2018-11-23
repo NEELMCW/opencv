@@ -53,9 +53,9 @@ namespace cv { namespace cuda { namespace device
         
         __device__ int g_counter;
 
-        #ifdef HIP_TO_DO
+#ifdef HIP_TO_DO_TEX
         texture<uchar, hipTextureType2D, hipReadModeElementType> tex_mask(false, hipFilterModePoint, hipAddressModeClamp);
-        #endif //HIP_TO_DO
+#endif //HIP_TO_DO_TEX
 
         __global__ void houghLinesProbabilistic(const PtrStepSzi accum,
                                                 int4* out, const int maxSize,
@@ -63,7 +63,7 @@ namespace cv { namespace cuda { namespace device
                                                 const int lineGap, const int lineLength,
                                                 const int rows, const int cols)
         {
-            #ifdef HIP_TO_DO
+#ifdef HIP_TO_DO_TEX
             const int r = blockIdx.x * blockDim.x + threadIdx.x;
             const int n = blockIdx.y * blockDim.y + threadIdx.y;
 
@@ -217,13 +217,13 @@ namespace cv { namespace cuda { namespace device
                     }
                 }
             }
-            #endif //HIP_TO_DO
+#endif //HIP_TO_DO_TEX
 
         }
 
         int houghLinesProbabilistic_gpu(PtrStepSzb mask, PtrStepSzi accum, int4* out, int maxSize, float rho, float theta, int lineGap, int lineLength)
         {   
-            #ifdef HIP_TO_DO
+#ifdef HIP_TO_DO_TEX
             void* counterPtr;
 #ifdef  HIP_TO_DO
             cudaSafeCall( hipGetSymbolAddress(&counterPtr, g_counter) );
@@ -251,9 +251,9 @@ namespace cv { namespace cuda { namespace device
             totalCount = minVal(totalCount, maxSize);
 
             return totalCount;
-            #else 
+#else //HIP_TO_DO_TEX 
             return 0;
-            #endif //HIP_TO_DO
+#endif //HIP_TO_DO_TEX
 
         }
 

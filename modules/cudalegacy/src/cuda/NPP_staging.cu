@@ -506,11 +506,11 @@ NCVStatus nppiStIntegralGetSize_8u32u(NcvSize32u roiSize, Ncv32u *pBufsize, hipD
     ncvAssertReturn(pBufsize != NULL, NPPST_NULL_POINTER_ERROR);
     ncvAssertReturn(roiSize.width > 0 && roiSize.height > 0, NPPST_INVALID_ROI);
 
-#ifdef HIP_TO_DO
+#ifdef HIP_TO_DO_TEX
     NCVMemStackAllocator gpuCounter(static_cast<Ncv32u>(devProp.textureAlignment));
-#else
+#else //HIP_TO_DO_TEX
     NCVMemStackAllocator gpuCounter(static_cast<Ncv32u>(0));
-#endif
+#endif //HIP_TO_DO_TEX
     ncvAssertReturn(gpuCounter.isInitialized(), NPPST_MEM_INTERNAL_ERROR);
 
     NCVStatus ncvStat = ncvIntegralImage_device((Ncv8u*)NULL, roiSize.width,
@@ -533,11 +533,11 @@ NCVStatus nppiStIntegralGetSize_32f32f(NcvSize32u roiSize, Ncv32u *pBufsize, hip
     ncvAssertReturn(pBufsize != NULL, NPPST_NULL_POINTER_ERROR);
     ncvAssertReturn(roiSize.width > 0 && roiSize.height > 0, NPPST_INVALID_ROI);
 
-#ifdef HIP_TO_DO
+#ifdef HIP_TO_DO_TEX
     NCVMemStackAllocator gpuCounter(static_cast<Ncv32u>(devProp.textureAlignment));
-#else
+#else //HIP_TO_DO_TEX
     NCVMemStackAllocator gpuCounter(static_cast<Ncv32u>(0));
-#endif
+#endif //HIP_TO_DO_TEX
     ncvAssertReturn(gpuCounter.isInitialized(), NPPST_MEM_INTERNAL_ERROR);
 
     NCVStatus ncvStat = ncvIntegralImage_device((Ncv32f*)NULL, roiSize.width * sizeof(Ncv32f),
@@ -560,11 +560,11 @@ NCVStatus nppiStSqrIntegralGetSize_8u64u(NcvSize32u roiSize, Ncv32u *pBufsize, h
     ncvAssertReturn(pBufsize != NULL, NPPST_NULL_POINTER_ERROR);
     ncvAssertReturn(roiSize.width > 0 && roiSize.height > 0, NPPST_INVALID_ROI);
 
-#ifdef HIP_TO_DO
+#ifdef HIP_TO_DO_TEX
     NCVMemStackAllocator gpuCounter(static_cast<Ncv32u>(devProp.textureAlignment));
-#else
+#else //HIP_TO_DO_TEX
     NCVMemStackAllocator gpuCounter(static_cast<Ncv32u>(0));
-#endif
+#endif //HIP_TO_DO_TEX
     ncvAssertReturn(gpuCounter.isInitialized(), NPPST_MEM_INTERNAL_ERROR);
 
     NCVStatus ncvStat = ncvSquaredIntegralImage_device(NULL, roiSize.width,
@@ -588,11 +588,11 @@ NCVStatus nppiStIntegral_8u32u_C1R(Ncv8u *d_src, Ncv32u srcStep,
 {
 
 #ifdef NPP_ENABLE
-#ifdef HIP_TO_DO
+#ifdef HIP_TO_DO_TEX
     NCVMemStackAllocator gpuAllocator(NCVMemoryTypeDevice, bufSize, static_cast<Ncv32u>(devProp.textureAlignment), pBuffer);
-#else
+#else //HIP_TO_DO_TEX
     NCVMemStackAllocator gpuAllocator(NCVMemoryTypeDevice, bufSize, static_cast<Ncv32u>(0), pBuffer);
-#endif
+#endif //HIP_TO_DO_TEX
     ncvAssertReturn(gpuAllocator.isInitialized(), NPPST_MEM_INTERNAL_ERROR);
 
     NCVStatus ncvStat = ncvIntegralImage_device(d_src, srcStep, d_dst, dstStep, roiSize, gpuAllocator);
@@ -613,11 +613,11 @@ NCVStatus nppiStIntegral_32f32f_C1R(Ncv32f *d_src, Ncv32u srcStep,
 {
 
 #ifdef NPP_ENABLE
-#ifdef HIP_TO_DO
+#ifdef HIP_TO_DO_TEX
     NCVMemStackAllocator gpuAllocator(NCVMemoryTypeDevice, bufSize, static_cast<Ncv32u>(devProp.textureAlignment), pBuffer);
-#else
+#else //HIP_TO_DO_TEX
     NCVMemStackAllocator gpuAllocator(NCVMemoryTypeDevice, bufSize, static_cast<Ncv32u>(0), pBuffer);
-#endif
+#endif //HIP_TO_DO_TEX
     ncvAssertReturn(gpuAllocator.isInitialized(), NPPST_MEM_INTERNAL_ERROR);
 
     NCVStatus ncvStat = ncvIntegralImage_device(d_src, srcStep, d_dst, dstStep, roiSize, gpuAllocator);
@@ -638,11 +638,11 @@ NCVStatus nppiStSqrIntegral_8u64u_C1R(Ncv8u *d_src, Ncv32u srcStep,
                                       Ncv32u bufSize, hipDeviceProp_t &devProp)
 {
     #ifdef NPP_ENABLE
-#ifdef HIP_TO_DO
+#ifdef HIP_TO_DO_TEX
     NCVMemStackAllocator gpuAllocator(NCVMemoryTypeDevice, bufSize, static_cast<Ncv32u>(devProp.textureAlignment), pBuffer);
-#else
+#else //HIP_TO_DO_TEX
     NCVMemStackAllocator gpuAllocator(NCVMemoryTypeDevice, bufSize, static_cast<Ncv32u>(0), pBuffer);
-#endif
+#endif //HIP_TO_DO_TEX
     ncvAssertReturn(gpuAllocator.isInitialized(), NPPST_MEM_INTERNAL_ERROR);
 
     NCVStatus ncvStat = ncvSquaredIntegralImage_device(d_src, srcStep, d_dst, dstStep, roiSize, gpuAllocator);
@@ -1644,11 +1644,11 @@ NCVStatus nppsStCompactGetSize_32u(Ncv32u srcLen, Ncv32u *pBufsize, hipDevicePro
         return NPPST_SUCCESS;
     }
 
-#ifdef HIP_TO_DO
+#ifdef HIP_TO_DO_TEX
     NCVMemStackAllocator gpuCounter(static_cast<Ncv32u>(devProp.textureAlignment));
-#else
+#else //HIP_TO_DO_TEX
     NCVMemStackAllocator gpuCounter(static_cast<Ncv32u>(0));
-#endif
+#endif//HIP_TO_DO_TEX
     ncvAssertReturn(gpuCounter.isInitialized(), NPPST_MEM_INTERNAL_ERROR);
 
     NCVStatus ncvStat = compactVector_32u_device(NULL, srcLen, NULL, NULL, 0xC001C0DE,
@@ -1695,11 +1695,11 @@ NCVStatus nppsStCompact_32u(Ncv32u *d_src, Ncv32u srcLen,
 {
 
 #ifdef NPP_ENABLE
-#ifdef HIP_TO_DO
+#ifdef HIP_TO_DO_TEX
     NCVMemStackAllocator gpuAllocator(NCVMemoryTypeDevice, bufSize, static_cast<Ncv32u>(devProp.textureAlignment), pBuffer);
-#else
+#else //HIP_TO_DO_TEX
     NCVMemStackAllocator gpuAllocator(NCVMemoryTypeDevice, bufSize, static_cast<Ncv32u>(0), pBuffer);
-#endif
+#endif //HIP_TO_DO_TEX
     ncvAssertReturn(gpuAllocator.isInitialized(), NPPST_MEM_INTERNAL_ERROR);
 
     NCVStatus ncvStat = compactVector_32u_device(d_src, srcLen, d_dst, p_dstLen, elemRemove,
@@ -2130,7 +2130,7 @@ NCVStatus BlendFrames(const Ncv32f *src0,
 {
 
 #ifdef NPP_ENABLE
-#ifdef HIP_TO_DO
+#ifdef HIP_TO_DO_TEX
     tex_src1.addressMode[0] = hipAddressModeClamp;
     tex_src1.addressMode[1] = hipAddressModeClamp;
     tex_src1.filterMode = hipFilterModeLinear;
@@ -2153,9 +2153,9 @@ NCVStatus BlendFrames(const Ncv32f *src0,
 
     ncvAssertCUDALastErrorReturn(NPPST_CUDA_KERNEL_EXECUTION_ERROR);
     return NPPST_SUCCESS;
-    else
+    else //HIP_TO_DO_TEX
     return 0;
-    #endif // HIP_TO_DO
+    #endif // HIP_TO_DO_TEX
 
     #else
     return 1;
@@ -2549,7 +2549,7 @@ NCVStatus nppiStVectorWarp_PSF2x2_32f_C1(const Ncv32f *pSrc,
 //
 //==============================================================================
 
-#ifdef HIP_TO_DO
+#ifdef HIP_TO_DO_TEX
 texture <float, 2, hipReadModeElementType> texSrc2D;
 
 
@@ -2810,6 +2810,6 @@ NCVStatus nppiStResize_32f_C1R(const Ncv32f *pSrc,
 
 }
 
-#endif //HIP_TO_DO
+#endif //HIP_TO_DO_TEX
 
 #endif /* CUDA_DISABLER */

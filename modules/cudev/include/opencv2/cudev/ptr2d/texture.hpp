@@ -52,7 +52,7 @@
 #include "gpumat.hpp"
 #include "traits.hpp"
 
-#ifdef HIP_TO_DO
+#ifdef HIP_TO_DO_TEX
 #if CUDART_VERSION >= 5050
 namespace
 {
@@ -88,7 +88,7 @@ namespace
     typename CvCudevTextureRef<T>::TexRef CvCudevTextureRef<T>::ref;
 }
 
-#endif
+#endif 
 
 namespace cv { namespace cudev {
 
@@ -257,4 +257,4 @@ template <typename T> struct PtrTraits< Texture<T> > : PtrTraitsBase<Texture<T>,
 
 #endif
 
-#endif // HIP_TO_DO
+#endif // HIP_TO_DO_TEX
