@@ -67,7 +67,7 @@
 #include "opencv2/cudalegacy/NPP_staging.hpp"
 #include "opencv2/cudalegacy/NCVBroxOpticalFlow.hpp"
 
-#ifdef HIP_TO_DO_TEX
+
 typedef NCVVectorAlloc<Ncv32f> FloatVector;
 
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -1167,4 +1167,4 @@ NCVStatus NCVBroxOpticalFlow(const NCVBroxOpticalFlowDescriptor desc,
 
     return NCV_SUCCESS;
 }
-#endif //HIP_TO_DO_TEX
+

@@ -66,11 +66,9 @@ public:
         ncvAssertPrintReturn(hipSuccess == hipGetDeviceProperties(&devProp, devId), "Error returned from hipGetDeviceProperties", );
 
         //Ncv32u maxWpitch = alignUp(maxWidth * sizeof(T), devProp.textureAlignment);
-#ifdef HIP_TO_DO_TEX
+
         allocatorCPU.reset(new NCVMemNativeAllocator(NCVMemoryTypeHostPinned, static_cast<Ncv32u>(devProp.textureAlignment)));
-#else //HIP_TO_DO_TEX
-        allocatorCPU.reset(new NCVMemNativeAllocator(NCVMemoryTypeHostPinned, static_cast<Ncv32u>(0)));
-#endif //HIP_TO_DO_TEX
+
         data.reset(new NCVMatrixAlloc<T>(*this->allocatorCPU.get(), maxWidth, maxHeight));
         ncvAssertPrintReturn(data.get()->isMemAllocated(), "NCVTestSourceProvider ctor:: Matrix not allocated", );
 
@@ -105,11 +103,9 @@ public:
         ncvAssertPrintReturn(hipSuccess == hipGetDevice(&devId), "Error returned from hipGetDevice", );
         ncvAssertPrintReturn(hipSuccess == hipGetDeviceProperties(&devProp, devId), "Error returned from hipGetDeviceProperties", );
 
-#ifdef HIP_TO_DO_TEX
+
         allocatorCPU.reset(new NCVMemNativeAllocator(NCVMemoryTypeHostPinned, static_cast<Ncv32u>(devProp.textureAlignment)));
-#else //HIP_TO_DO_TEX
-        allocatorCPU.reset(new NCVMemNativeAllocator(NCVMemoryTypeHostPinned, static_cast<Ncv32u>(0)));
-#endif //HIP_TO_DO_TEX
+
         data.reset(new NCVMatrixAlloc<T>(*this->allocatorCPU.get(), image.cols, image.rows));
         ncvAssertPrintReturn(data.get()->isMemAllocated(), "NCVTestSourceProvider ctor:: Matrix not allocated", );
 

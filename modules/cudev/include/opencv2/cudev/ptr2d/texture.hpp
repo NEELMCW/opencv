@@ -52,7 +52,7 @@
 #include "gpumat.hpp"
 #include "traits.hpp"
 
-#ifdef HIP_TO_DO_TEX
+
 #if CUDART_VERSION >= 5050
 namespace
 {
@@ -257,4 +257,4 @@ template <typename T> struct PtrTraits< Texture<T> > : PtrTraitsBase<Texture<T>,
 
 #endif
 
-#endif //HIP_TO_DO_TEX
+
