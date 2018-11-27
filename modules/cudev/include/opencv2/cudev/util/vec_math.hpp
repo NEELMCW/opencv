@@ -202,7 +202,7 @@ CV_CUDEV_IMPLEMENT_VEC_UNARY_OP(~, uint, uint)
 
 namespace vec_math_detail
 {
-    __device__ __forceinline__ char abs_(char val)
+    __device__ __forceinline__ schar abs_(schar val)
     {
         return (char) ::abs((int) val);
     }

@@ -1,4 +1,3 @@
-#include "hip/hip_runtime.h"
 /*M///////////////////////////////////////////////////////////////////////////////////////
 //
 //  IMPORTANT: READ BEFORE DOWNLOADING, COPYING, INSTALLING OR USING.
@@ -43,6 +42,7 @@
 
 #if !defined CUDA_DISABLER
 
+#include "hip/hip_runtime.h"
 #include "opencv2/core/cuda/common.hpp"
 #include "opencv2/core/cuda/emulation.hpp"
 #include "opencv2/core/cuda/transform.hpp"

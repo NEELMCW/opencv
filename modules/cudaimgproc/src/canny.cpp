@@ -226,9 +226,9 @@ namespace
 
         cudaSafeCall( hipMalloc(&d_counter, sizeof(int)) );
 
-        canny::edgesHysteresisLocal(map_, st1_.ptr<short2>(), d_counter, StreamAccessor::getStream(stream));
+        canny::edgesHysteresisLocal(map_, (HIP_vector_type<short, 2>*)st1_.ptr<short2>(), d_counter, StreamAccessor::getStream(stream));
 
-        canny::edgesHysteresisGlobal(map_, st1_.ptr<short2>(), st2_.ptr<short2>(), d_counter, StreamAccessor::getStream(stream));
+        canny::edgesHysteresisGlobal(map_, (HIP_vector_type<short, 2>*)st1_.ptr<short2>(), (HIP_vector_type<short, 2>*)st2_.ptr<short2>(), d_counter, StreamAccessor::getStream(stream));
 
         cudaSafeCall( hipFree(d_counter) );
 

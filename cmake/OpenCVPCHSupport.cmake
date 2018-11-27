@@ -40,7 +40,7 @@ MACRO(_PCH_GET_COMPILE_FLAGS _out_compile_flags)
 
         GET_TARGET_PROPERTY(_targetType ${_PCH_current_target} TYPE)
         IF(${_targetType} STREQUAL SHARED_LIBRARY AND NOT WIN32)
-            LIST(APPEND ${_out_compile_flags} "-fPIC")
+            LIST(APPEND ${_out_compile_flags} "-std=c++11 -fPIC")
         ENDIF()
 
         GET_PROPERTY(_definitions DIRECTORY PROPERTY COMPILE_DEFINITIONS)
@@ -134,11 +134,11 @@ MACRO(_PCH_GET_COMPILE_COMMAND out_command _input _output)
             STRING(REGEX REPLACE "^ +" "" pchsupport_compiler_cxx_arg1 ${CMAKE_CXX_COMPILER_ARG1})
 
             SET(${out_command}
-              ${CMAKE_CXX_COMPILER} ${pchsupport_compiler_cxx_arg1} ${_compile_FLAGS} -x c++-header -o ${_output} ${_input}
+              ${CMAKE_CXX_COMPILER} ${pchsupport_compiler_cxx_arg1} ${_compile_FLAGS} -std=c++11 -x c++-header -o ${_output} ${_input}
               )
         ELSE(CMAKE_CXX_COMPILER_ARG1)
             SET(${out_command}
-              ${CMAKE_CXX_COMPILER}  ${_compile_FLAGS} -x c++-header -o ${_output} ${_input}
+              ${CMAKE_CXX_COMPILER}  ${_compile_FLAGS} -std=c++11 -x c++-header -o ${_output} ${_input}
               )
         ENDIF(CMAKE_CXX_COMPILER_ARG1)
     ELSE()

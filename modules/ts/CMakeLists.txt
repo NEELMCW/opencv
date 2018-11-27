@@ -22,6 +22,8 @@ ocv_glob_module_sources()
 ocv_module_include_directories()
 ocv_create_module()
 
+add_definitions(-std=c++11)
+
 # generate config file
 set(OPENCV_TESTS_CONFIG_FILE "${CMAKE_BINARY_DIR}/opencv_tests_config.hpp")
 set(OPENCV_TESTS_CONFIG_STR "")

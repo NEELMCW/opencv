@@ -27,6 +27,7 @@ endif()
 
 if(HAVE_HIP)
   ocv_warnings_disable(CMAKE_CXX_FLAGS -Wundef -Wenum-compare -Wunused-function -Wshadow)
+  add_definitions(-std=c++11)
 endif()
 
 if(CV_TRACE AND HAVE_ITT AND BUILD_ITT)
