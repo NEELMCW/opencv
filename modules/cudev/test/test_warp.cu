@@ -132,7 +132,7 @@ TEST(Remap, REFLECTION_BOTH)
 }
 
 // resize
-#ifdef HIP_TO_DO
+
 TEST(Resize, Upscale)
 {
     const Size size = randomSize(100, 400);
@@ -196,7 +196,7 @@ TEST(Resize, Downscale)
 
     EXPECT_MAT_NEAR(dst1, dst2, 0.0);
 }
-#endif //HIP_TO_DO
+
 
 // warpAffine & warpPerspective
 

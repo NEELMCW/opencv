@@ -858,13 +858,13 @@ namespace cv { namespace cuda { namespace device
             int colOfs = 0;
 
             cudaChannelFormatDesc desc = cudaCreateChannelDesc<T>();
-            cudaSafeCall( cudaBindTexture2D(&texOfs, tex, src.data, desc, src.cols, src.rows, src.step) );
+            cudaSafeCall( hipBindTexture2D(&texOfs, tex, src.data, desc, src.cols, src.rows, src.step) );
 
             if (texOfs != 0)
             {
                 colOfs = static_cast<int>( texOfs/sizeof(T) );
                 cudaSafeCall( cudaUnbindTexture(tex) );
-                cudaSafeCall( cudaBindTexture2D(&texOfs, tex, src.data, desc, src.cols, src.rows, src.step) );
+                cudaSafeCall( hipBindTexture2D(&texOfs, tex, src.data, desc, src.cols, src.rows, src.step) );
             }
 
             dim3 threads(32, 8);

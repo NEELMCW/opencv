@@ -393,13 +393,13 @@ namespace cv { namespace cuda { namespace device
     //
     // ported to CUDA
 
-#ifdef HIP_TO_DO
+
     texture<uchar, hiphTextureType2D, hipReadModeElementType> sourceTex(false, hipFilterModePoint, hipAddressModeClamp);
-#endif
+
     template <typename DstType>
     __global__ void MHCdemosaic(PtrStepSz<DstType> dst, const int2 sourceOffset, const int2 firstRed)
     {
-#ifdef HIP_TO_DO
+
         const float   kAx = -1.0f / 8.0f,     kAy = -1.5f / 8.0f,     kAz =  0.5f / 8.0f    /*kAw = -1.0f / 8.0f*/;
         const float   kBx =  2.0f / 8.0f,   /*kBy =  0.0f / 8.0f,*/ /*kBz =  0.0f / 8.0f,*/   kBw =  4.0f / 8.0f  ;
         const float   kCx =  4.0f / 8.0f,     kCy =  6.0f / 8.0f,     kCz =  5.0f / 8.0f    /*kCw =  5.0f / 8.0f*/;
@@ -523,13 +523,13 @@ namespace cv { namespace cuda { namespace device
                     make_uchar3(saturate_cast<uchar>(C), saturate_cast<uchar>(PATTERN.x), saturate_cast<uchar>(PATTERN.y)));
 
         dst(y, x) = toDst<DstType>(pixelColor);
-#endif
+
     }
 
     template <int cn>
     void MHCdemosaic(PtrStepSzb src, int2 sourceOffset, PtrStepSzb dst, int2 firstRed, hipStream_t stream)
     {
-#ifdef HIP_TO_DO
+
         typedef typename TypeVec<uchar, cn>::vec_type dst_t;
 
         const dim3 block(32, 8);
@@ -542,7 +542,7 @@ namespace cv { namespace cuda { namespace device
 
         if (stream == 0)
             cudaSafeCall( hipDeviceSynchronize() );
-#endif //HIP_TO_DO
+
     }
 
     template void MHCdemosaic<1>(PtrStepSzb src, int2 sourceOffset, PtrStepSzb dst, int2 firstRed, hipStream_t stream);

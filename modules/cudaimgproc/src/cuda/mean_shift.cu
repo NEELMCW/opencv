@@ -136,10 +136,10 @@ namespace cv { namespace cuda { namespace device
             grid.x = divUp(src.cols, threads.x);
             grid.y = divUp(src.rows, threads.y);
 
-#ifdef HIP_TO_DO
+
             hipChannelFormatDesc desc = hipCreateChannelDesc<uchar4>();
-            cudaSafeCall( cudaBindTexture2D( 0, tex_meanshift, src.data, desc, src.cols, src.rows, src.step ) );
-#endif
+            cudaSafeCall( hipBindTexture2D( 0, tex_meanshift, src.data, desc, src.cols, src.rows, src.step ) );
+
             hipLaunchKernelGGL((meanshift_kernel), dim3(grid), dim3(threads), 0, stream ,  dst.data, dst.step, dst.cols, dst.rows, sp, sr, maxIter, eps );
             cudaSafeCall( hipGetLastError() );
 
@@ -169,10 +169,10 @@ namespace cv { namespace cuda { namespace device
             grid.x = divUp(src.cols, threads.x);
             grid.y = divUp(src.rows, threads.y);
 
-#ifdef HIP_TO_DO
+
             hipChannelFormatDesc desc = hipCreateChannelDesc<uchar4>();
-            cudaSafeCall( cudaBindTexture2D( 0, tex_meanshift, src.data, desc, src.cols, src.rows, src.step ) );
-#endif
+            cudaSafeCall( hipBindTexture2D( 0, tex_meanshift, src.data, desc, src.cols, src.rows, src.step ) );
+
             hipLaunchKernelGGL((meanshiftproc_kernel), dim3(grid), dim3(threads), 0, stream ,  dstr.data, dstr.step, dstsp.data, dstsp.step, dstr.cols, dstr.rows, sp, sr, maxIter, eps );
             cudaSafeCall( hipGetLastError() );
 
