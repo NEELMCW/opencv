@@ -87,7 +87,7 @@ namespace cv { namespace cuda { namespace device
 
                 float cosa;
                 float sina;
-                sincosf(1angle, &sina, &cosa);
+                sincosf(angle, &sina, &cosa);
 
                 float2 p0 = make_float2(cosa * radius, sina * radius);
                 float2 dir = make_float2(-sina, cosa);

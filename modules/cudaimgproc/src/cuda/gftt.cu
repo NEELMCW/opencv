@@ -44,9 +44,7 @@
 #if !defined CUDA_DISABLER
 
 #include <thrust/device_ptr.h>
-#ifdef __HIP_PLATFORM_NVCC__
 #include <thrust/sort.h>
-#endif
 
 #include "opencv2/core/cuda/common.hpp"
 #include "opencv2/core/cuda/utility.hpp"
@@ -104,7 +102,9 @@ namespace cv { namespace cuda { namespace device
 
             void* counter_ptr;
 
+#ifdef HIP_TODO
             cudaSafeCall( hipGetSymbolAddress(&counter_ptr, g_counter) );
+#endif
             cudaSafeCall( hipMemsetAsync(counter_ptr, 0, sizeof(int), stream) );
 
             bindTexture(&eigTex, eig);
