@@ -43,6 +43,7 @@
 
 #if !defined CUDA_DISABLER
 
+#include "hip/hip_runtime_api.h"
 #include <thrust/device_ptr.h>
 #include <thrust/sort.h>
 
@@ -102,9 +103,7 @@ namespace cv { namespace cuda { namespace device
 
             void* counter_ptr;
 
-#ifdef HIP_TODO
-            cudaSafeCall( hipGetSymbolAddress(&counter_ptr, g_counter) );
-#endif
+            cudaSafeCall( hipGetSymbolAddress((void **)&counter_ptr, (const void *)g_counter) );
             cudaSafeCall( hipMemsetAsync(counter_ptr, 0, sizeof(int), stream) );
 
             bindTexture(&eigTex, eig);
