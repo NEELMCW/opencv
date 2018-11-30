@@ -48,7 +48,7 @@ using namespace cv::cuda;
 using namespace cv::cudev;
 using namespace cvtest;
 
-#ifdef HIP_TO_DO
+
 TEST(Sobel, Accuracy)
 {
     const Size size = randomSize(100, 400);
@@ -117,4 +117,4 @@ TEST(Laplacian, Accuracy)
     #endif //HIP_TO_DO_DEBUG
 
 }
-#endif //HIP_TO_DO
+

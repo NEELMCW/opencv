@@ -159,6 +159,7 @@ CV_CUDEV_IMPLEMENT_VEC_UNARY_OP(-, int, int)
 CV_CUDEV_IMPLEMENT_VEC_UNARY_OP(-, float, float)
 CV_CUDEV_IMPLEMENT_VEC_UNARY_OP(-, double, double)
 
+#ifdef __HIP_PLATFORM_NVCC__  // Disabling for HCC path since this operator conflicts with the hip vector types
 CV_CUDEV_IMPLEMENT_VEC_UNARY_OP(!, uchar, uchar)
 CV_CUDEV_IMPLEMENT_VEC_UNARY_OP(!, char, uchar)
 CV_CUDEV_IMPLEMENT_VEC_UNARY_OP(!, ushort, uchar)
@@ -167,6 +168,7 @@ CV_CUDEV_IMPLEMENT_VEC_UNARY_OP(!, int, uchar)
 CV_CUDEV_IMPLEMENT_VEC_UNARY_OP(!, uint, uchar)
 CV_CUDEV_IMPLEMENT_VEC_UNARY_OP(!, float, uchar)
 CV_CUDEV_IMPLEMENT_VEC_UNARY_OP(!, double, uchar)
+#endif
 
 CV_CUDEV_IMPLEMENT_VEC_UNARY_OP(~, uchar, uchar)
 CV_CUDEV_IMPLEMENT_VEC_UNARY_OP(~, char, char)
@@ -174,6 +176,7 @@ CV_CUDEV_IMPLEMENT_VEC_UNARY_OP(~, ushort, ushort)
 CV_CUDEV_IMPLEMENT_VEC_UNARY_OP(~, short, short)
 CV_CUDEV_IMPLEMENT_VEC_UNARY_OP(~, int, int)
 CV_CUDEV_IMPLEMENT_VEC_UNARY_OP(~, uint, uint)
+
 
 #undef CV_CUDEV_IMPLEMENT_VEC_UNARY_OP
 
@@ -199,9 +202,9 @@ CV_CUDEV_IMPLEMENT_VEC_UNARY_OP(~, uint, uint)
 
 namespace vec_math_detail
 {
-    __device__ __forceinline__ schar abs_(schar val)
+    __device__ __forceinline__ char abs_(char val)
     {
-        return (schar) ::abs((int) val);
+        return (char) ::abs((int) val);
     }
 
     __device__ __forceinline__ short abs_(short val)

@@ -50,7 +50,7 @@
 
 using namespace cv::cuda;
 using namespace cv::cuda::device;
-#ifdef HIP_TO_DO
+
 namespace optflowbm
 {
     texture<uchar, hipTextureType2D, hipReadModeElementType> tex_prev(false, hipFilterModePoint, hipAddressModeClamp);
@@ -166,5 +166,5 @@ namespace optflowbm
             cudaSafeCall( hipDeviceSynchronize() );
     }
 }
-#endif // HIP_TO_DO
+
 #endif // !defined CUDA_DISABLER

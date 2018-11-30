@@ -63,6 +63,12 @@
     #endif
 #endif
 
+
+// Added by Neel to resolve undefined references to ::min in device functions
+// Renaming to minVal to avoid many more conflicts with min defintion in hip headers
+// HIP_TODO
+inline __host__ __device__ int minVal(int a, int b) { return a < b ? a : b ;}
+
 namespace cv { namespace cuda {
     static inline void checkCudaError(hipError_t err, const char* file, const int line, const char* func)
     {
@@ -92,18 +98,18 @@ namespace cv { namespace cuda
 {
     namespace device
     {
-        inline __host__ __device__ __forceinline__ int divUp(int total, int grain);
-        inline __host__ __device__ __forceinline__ int divUp(int total, int grain)
+        inline __host__ __device__ int divUp(int total, int grain);
+        inline __host__ __device__ int divUp(int total, int grain)
         {
             return (total + grain - 1) / grain;
         }
 
         template<class T> inline void bindTexture(const textureReference* tex, const PtrStepSz<T>& img)
         {
-#ifdef HIP_TO_DO
+
             hipChannelFormatDesc desc = hipCreateChannelDesc<T>();
-            cudaSafeCall( cudaBindTexture2D(0, tex, img.ptr(), &desc, img.cols, img.rows, img.step) );
-#endif
+            cudaSafeCall( hipBindTexture2D(0, const_cast<textureReference*>(tex), img.ptr(), &desc, img.cols, img.rows, img.step) );
+
         }
     }
 }}

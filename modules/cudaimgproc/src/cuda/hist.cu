@@ -168,10 +168,8 @@ namespace hist
         const dim3 block(32, 8);
         const dim3 grid(divUp(src.rows, block.y));
 
-        #ifdef HIP_KERNEL_TO_DO
-        hipLaunchKernelGGL((histogram256Kernel), dim3(grid), dim3(block), 0, stream, src.data, src.cols, src.rows, src.step, mask.data, mask.step, hist);
+        hipLaunchKernelGGL((histogram256Kernel), dim3(grid), dim3(block), 0, stream, (const uchar*)src.data, (int)src.cols, (int)src.rows, (size_t)src.step, (const uchar*)mask.data, (size_t)mask.step, (int*)hist);
         cudaSafeCall( hipGetLastError() );
-        #endif //HIP_KERNEL_TO_DO
 
         if (stream == 0)
             cudaSafeCall( hipDeviceSynchronize() );
@@ -250,10 +248,8 @@ namespace hist
 
         const size_t smem_size = binCount * sizeof(int);
 
-        #ifdef HIP_KERNEL_TO_DO
-        hipLaunchKernelGGL((histEven8u), dim3(grid), dim3(block), smem_size, stream, src.data, src.step, src.rows, src.cols, hist, binCount, binSize, lowerLevel, upperLevel);
+        hipLaunchKernelGGL((histEven8u), dim3(grid), dim3(block), smem_size, stream, (const uchar*)src.data, (const size_t)src.step, (const int)src.rows,(const int)src.cols,(int*) hist, (const int)binCount,(const int) binSize, (const int)lowerLevel, (const int)upperLevel);
         cudaSafeCall( hipGetLastError() );
-        #endif //HIP_KERNEL_TO_DO
         
         if (stream == 0)
             cudaSafeCall( hipDeviceSynchronize() );

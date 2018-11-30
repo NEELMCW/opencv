@@ -303,7 +303,7 @@ namespace cv { namespace cuda { namespace device
             int totalCount;
             cudaSafeCall( hipMemcpy(&totalCount, counterPtr, sizeof(int), hipMemcpyDeviceToHost) );
 
-            totalCount = ::min(totalCount, maxSize);
+            totalCount = minVal(totalCount, maxSize);
 
             return totalCount;
         }
@@ -539,7 +539,7 @@ namespace cv { namespace cuda { namespace device
             cudaSafeCall( hipDeviceSynchronize() );
 
             thrust::device_ptr<int> sizesPtr(sizes);
-            thrust::transform(sizesPtr, sizesPtr + levels + 1, sizesPtr, device::bind2nd(device::minimum<int>(), maxSize));
+            thrust::transform(sizesPtr, sizesPtr + levels + 1, sizesPtr, device::bind2nd(deviceminValimum<int>(), maxSize));
         }
 
         void Guil_Full_buildTemplFeatureList_gpu(const unsigned int* coordList, const float* thetaList, int pointsCount,
@@ -813,7 +813,7 @@ namespace cv { namespace cuda { namespace device
             int totalCount;
             cudaSafeCall( hipMemcpy(&totalCount, counterPtr, sizeof(int), hipMemcpyDeviceToHost) );
 
-            totalCount = ::min(totalCount, maxSize);
+            totalCount = minVal(totalCount, maxSize);
 
             return totalCount;
         }

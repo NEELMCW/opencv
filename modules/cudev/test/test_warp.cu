@@ -135,7 +135,7 @@ TEST(Remap, REFLECTION_BOTH)
 }
 
 // resize
-#ifdef HIP_TO_DO
+
 TEST(Resize, Upscale)
 {
     const Size size = randomSize(100, 400);
@@ -205,7 +205,7 @@ TEST(Resize, Downscale)
     #endif //HIP_TO_DO_DEBUG
 
 }
-#endif //HIP_TO_DO
+
 
 // warpAffine & warpPerspective
 

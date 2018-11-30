@@ -89,8 +89,8 @@ namespace cv { namespace cuda { namespace device
             typedef typename TypeVec<T, cn>::vec_type Type;
             typedef typename TypeVec<float, cn>::vec_type Typef;
 
-            int x = blockDim.x * blockIdx.x + threadIdx.x;
-            int y = blockDim.y * blockIdx.y + threadIdx.y;
+            int x = hipBlockDim_x * hipBlockIdx_x + hipThreadIdx_x;
+            int y = hipBlockDim_y * hipBlockIdx_y + hipThreadIdx_y;
 
             if (x < result.cols && y < result.rows)
             {
@@ -157,8 +157,8 @@ namespace cv { namespace cuda { namespace device
             typedef typename TypeVec<T, cn>::vec_type Type;
             typedef typename TypeVec<float, cn>::vec_type Typef;
 
-            int x = blockDim.x * blockIdx.x + threadIdx.x;
-            int y = blockDim.y * blockIdx.y + threadIdx.y;
+            int x = hipBlockDim_x * hipBlockIdx_x + hipThreadIdx_x;
+            int y = hipBlockDim_y * hipBlockIdx_y + hipThreadIdx_y;
 
             if (x < result.cols && y < result.rows)
             {
@@ -186,10 +186,8 @@ namespace cv { namespace cuda { namespace device
             const dim3 threads(32, 8);
             const dim3 grid(divUp(result.cols, threads.x), divUp(result.rows, threads.y));
 
-            #ifdef HIP_KERNEL_TO_DO
-            hipLaunchKernelGGL((matchTemplateNaiveKernel_SQDIFF<T, cn>), dim3(grid), dim3(threads), 0, stream, templ.cols, templ.rows, image, templ, result);
+            hipLaunchKernelGGL((matchTemplateNaiveKernel_SQDIFF<T, cn>), dim3(grid), dim3(threads), 0, stream, (int)templ.cols, (int)templ.rows, (const PtrStepb)image, (const PtrStepb)templ, (PtrStepSzf)result);
             cudaSafeCall( hipGetLastError() );
-            #endif //HIP_KERNEL_TO_DO
             
             if (stream == 0)
                 cudaSafeCall( hipDeviceSynchronize() );
@@ -225,8 +223,8 @@ namespace cv { namespace cuda { namespace device
         template <int cn>
         __global__ void matchTemplatePreparedKernel_SQDIFF_8U(int w, int h, const PtrStep<double> image_sqsum, double templ_sqsum, PtrStepSzf result)
         {
-            const int x = blockIdx.x * blockDim.x + threadIdx.x;
-            const int y = blockIdx.y * blockDim.y + threadIdx.y;
+            const int x = hipBlockIdx_x * hipBlockDim_x + hipThreadIdx_x;
+            const int y = hipBlockIdx_y * hipBlockDim_y + hipThreadIdx_y;
 
             if (x < result.cols && y < result.rows)
             {
@@ -295,8 +293,8 @@ namespace cv { namespace cuda { namespace device
                 int w, int h, const PtrStep<double> image_sqsum,
                 double templ_sqsum, PtrStepSzf result)
         {
-            const int x = blockIdx.x * blockDim.x + threadIdx.x;
-            const int y = blockIdx.y * blockDim.y + threadIdx.y;
+            const int x = hipBlockIdx_x * hipBlockDim_x + hipThreadIdx_x;
+            const int y = hipBlockIdx_y * hipBlockDim_y + hipThreadIdx_y;
 
             if (x < result.cols && y < result.rows)
             {
@@ -341,8 +339,8 @@ namespace cv { namespace cuda { namespace device
 
         __global__ void matchTemplatePreparedKernel_CCOFF_8U(int w, int h, float templ_sum_scale, const PtrStep<int> image_sum, PtrStepSzf result)
         {
-            const int x = blockIdx.x * blockDim.x + threadIdx.x;
-            const int y = blockIdx.y * blockDim.y + threadIdx.y;
+            const int x = hipBlockIdx_x * hipBlockDim_x + hipThreadIdx_x;
+            const int y = hipBlockIdx_y * hipBlockDim_y + hipThreadIdx_y;
 
             if (x < result.cols && y < result.rows)
             {
@@ -374,8 +372,8 @@ namespace cv { namespace cuda { namespace device
                 const PtrStep<int> image_sum_g,
                 PtrStepSzf result)
         {
-            const int x = blockIdx.x * blockDim.x + threadIdx.x;
-            const int y = blockIdx.y * blockDim.y + threadIdx.y;
+            const int x = hipBlockIdx_x * hipBlockDim_x + hipThreadIdx_x;
+            const int y = hipBlockIdx_y * hipBlockDim_y + hipThreadIdx_y;
 
             if (x < result.cols && y < result.rows)
             {
@@ -422,8 +420,8 @@ namespace cv { namespace cuda { namespace device
                 const PtrStep<int> image_sum_b,
                 PtrStepSzf result)
         {
-            const int x = blockIdx.x * blockDim.x + threadIdx.x;
-            const int y = blockIdx.y * blockDim.y + threadIdx.y;
+            const int x = hipBlockIdx_x * hipBlockDim_x + hipThreadIdx_x;
+            const int y = hipBlockIdx_y * hipBlockDim_y + hipThreadIdx_y;
 
             if (x < result.cols && y < result.rows)
             {
@@ -482,8 +480,8 @@ namespace cv { namespace cuda { namespace device
                 const PtrStep<int> image_sum_a,
                 PtrStepSzf result)
         {
-            const int x = blockIdx.x * blockDim.x + threadIdx.x;
-            const int y = blockIdx.y * blockDim.y + threadIdx.y;
+            const int x = hipBlockIdx_x * hipBlockDim_x + hipThreadIdx_x;
+            const int y = hipBlockIdx_y * hipBlockDim_y + hipThreadIdx_y;
 
             if (x < result.cols && y < result.rows)
             {
@@ -546,8 +544,8 @@ namespace cv { namespace cuda { namespace device
                 const PtrStep<double> image_sqsum,
                 PtrStepSzf result)
         {
-            const int x = blockIdx.x * blockDim.x + threadIdx.x;
-            const int y = blockIdx.y * blockDim.y + threadIdx.y;
+            const int x = hipBlockIdx_x * hipBlockDim_x + hipThreadIdx_x;
+            const int y = hipBlockIdx_y * hipBlockDim_y + hipThreadIdx_y;
 
             if (x < result.cols && y < result.rows)
             {
@@ -595,8 +593,8 @@ namespace cv { namespace cuda { namespace device
                 const PtrStep<int> image_sum_g, const PtrStep<double> image_sqsum_g,
                 PtrStepSzf result)
         {
-            const int x = blockIdx.x * blockDim.x + threadIdx.x;
-            const int y = blockIdx.y * blockDim.y + threadIdx.y;
+            const int x = hipBlockIdx_x * hipBlockDim_x + hipThreadIdx_x;
+            const int y = hipBlockIdx_y * hipBlockDim_y + hipThreadIdx_y;
 
             if (x < result.cols && y < result.rows)
             {
@@ -662,8 +660,8 @@ namespace cv { namespace cuda { namespace device
                 const PtrStep<int> image_sum_b, const PtrStep<double> image_sqsum_b,
                 PtrStepSzf result)
         {
-            const int x = blockIdx.x * blockDim.x + threadIdx.x;
-            const int y = blockIdx.y * blockDim.y + threadIdx.y;
+            const int x = hipBlockIdx_x * hipBlockDim_x + hipThreadIdx_x;
+            const int y = hipBlockIdx_y * hipBlockDim_y + hipThreadIdx_y;
 
             if (x < result.cols && y < result.rows)
             {
@@ -743,8 +741,8 @@ namespace cv { namespace cuda { namespace device
                 const PtrStep<int> image_sum_a, const PtrStep<double> image_sqsum_a,
                 PtrStepSzf result)
         {
-            const int x = blockIdx.x * blockDim.x + threadIdx.x;
-            const int y = blockIdx.y * blockDim.y + threadIdx.y;
+            const int x = hipBlockIdx_x * hipBlockDim_x + hipThreadIdx_x;
+            const int y = hipBlockIdx_y * hipBlockDim_y + hipThreadIdx_y;
 
             if (x < result.cols && y < result.rows)
             {
@@ -831,8 +829,8 @@ namespace cv { namespace cuda { namespace device
                 int w, int h, const PtrStep<double> image_sqsum,
                 double templ_sqsum, PtrStepSzf result)
         {
-            const int x = blockIdx.x * blockDim.x + threadIdx.x;
-            const int y = blockIdx.y * blockDim.y + threadIdx.y;
+            const int x = hipBlockIdx_x * hipBlockDim_x + hipThreadIdx_x;
+            const int y = hipBlockIdx_y * hipBlockDim_y + hipThreadIdx_y;
 
             if (x < result.cols && y < result.rows)
             {
@@ -879,8 +877,8 @@ namespace cv { namespace cuda { namespace device
         {
             typedef typename TypeVec<float, cn>::vec_type Typef;
 
-            int x = blockDim.x * blockIdx.x + threadIdx.x;
-            int y = blockDim.y * blockIdx.y + threadIdx.y;
+            int x = hipBlockDim_x * hipBlockIdx_x + hipThreadIdx_x;
+            int y = hipBlockDim_y * hipBlockIdx_y + hipThreadIdx_y;
 
             if (x < result.cols && y < result.rows)
             {

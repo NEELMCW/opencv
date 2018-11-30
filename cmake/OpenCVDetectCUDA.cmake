@@ -23,7 +23,7 @@ if(((NOT CMAKE_VERSION VERSION_LESS "3.9.0")  # requires https://gitlab.kitware.
       OR OPENCV_CUDA_FORCE_EXTERNAL_CMAKE_MODULE)
     AND NOT OPENCV_CUDA_FORCE_BUILTIN_CMAKE_MODULE)
   ocv_update(CUDA_LINK_LIBRARIES_KEYWORD "LINK_PRIVATE")
-  find_host_package(HIP "1.5" QUIET)
+  find_host_package(HIP "1" QUIET)
 else()
   # Use OpenCV's patched "FindCUDA" module
   set(CMAKE_MODULE_PATH "${OpenCV_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH})
@@ -31,7 +31,7 @@ else()
   if(ANDROID)
     set(CUDA_TARGET_OS_VARIANT "Android")
   endif()
-  find_host_package(HIP "1.5" QUIET)
+  find_host_package(HIP "1" QUIET)
 
   list(REMOVE_AT CMAKE_MODULE_PATH 0)
 endif()

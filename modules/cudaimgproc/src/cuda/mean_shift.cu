@@ -114,7 +114,7 @@ namespace cv { namespace cuda { namespace device
                     break;
             }
 
-            int base = (blockIdx.y * blockDim.y + threadIdx.y) * out_step + (blockIdx.x * blockDim.x + threadIdx.x) * 4 * sizeof(uchar);
+            int base = (hipBlockIdx_y * hipBlockDim_y + hipThreadIdx_y) * out_step + (hipBlockIdx_x * hipBlockDim_x + hipThreadIdx_x) * 4 * sizeof(uchar);
             *(uchar4*)(out + base) = c;
 
             return make_short2((short)x0, (short)y0);
@@ -122,8 +122,8 @@ namespace cv { namespace cuda { namespace device
 
         __global__ void meanshift_kernel(unsigned char* out, size_t out_step, int cols, int rows, int sp, int sr, int maxIter, float eps )
         {
-            int x0 = blockIdx.x * blockDim.x + threadIdx.x;
-            int y0 = blockIdx.y * blockDim.y + threadIdx.y;
+            int x0 = hipBlockIdx_x * hipBlockDim_x + hipThreadIdx_x;
+            int y0 = hipBlockIdx_y * hipBlockDim_y + hipThreadIdx_y;
 
             if( x0 < cols && y0 < rows )
                 do_mean_shift(x0, y0, out, out_step, cols, rows, sp, sr, maxIter, eps);
@@ -136,10 +136,10 @@ namespace cv { namespace cuda { namespace device
             grid.x = divUp(src.cols, threads.x);
             grid.y = divUp(src.rows, threads.y);
 
-#ifdef HIP_TO_DO
+
             hipChannelFormatDesc desc = hipCreateChannelDesc<uchar4>();
-            cudaSafeCall( cudaBindTexture2D( 0, tex_meanshift, src.data, desc, src.cols, src.rows, src.step ) );
-#endif
+            cudaSafeCall( hipBindTexture2D( 0, tex_meanshift, src.data, desc, src.cols, src.rows, src.step ) );
+
             hipLaunchKernelGGL((meanshift_kernel), dim3(grid), dim3(threads), 0, stream ,  dst.data, dst.step, dst.cols, dst.rows, sp, sr, maxIter, eps );
             cudaSafeCall( hipGetLastError() );
 
@@ -152,12 +152,12 @@ namespace cv { namespace cuda { namespace device
                                              int cols, int rows,
                                              int sp, int sr, int maxIter, float eps)
         {
-            int x0 = blockIdx.x * blockDim.x + threadIdx.x;
-            int y0 = blockIdx.y * blockDim.y + threadIdx.y;
+            int x0 = hipBlockIdx_x * hipBlockDim_x + hipThreadIdx_x;
+            int y0 = hipBlockIdx_y * hipBlockDim_y + hipThreadIdx_y;
 
             if( x0 < cols && y0 < rows )
             {
-                int basesp = (blockIdx.y * blockDim.y + threadIdx.y) * outspstep + (blockIdx.x * blockDim.x + threadIdx.x) * 2 * sizeof(short);
+                int basesp = (hipBlockIdx_y * hipBlockDim_y + hipThreadIdx_y) * outspstep + (hipBlockIdx_x * hipBlockDim_x + hipThreadIdx_x) * 2 * sizeof(short);
                 *(short2*)(outsp + basesp) = do_mean_shift(x0, y0, outr, outrstep, cols, rows, sp, sr, maxIter, eps);
             }
         }
@@ -169,10 +169,10 @@ namespace cv { namespace cuda { namespace device
             grid.x = divUp(src.cols, threads.x);
             grid.y = divUp(src.rows, threads.y);
 
-#ifdef HIP_TO_DO
+
             hipChannelFormatDesc desc = hipCreateChannelDesc<uchar4>();
-            cudaSafeCall( cudaBindTexture2D( 0, tex_meanshift, src.data, desc, src.cols, src.rows, src.step ) );
-#endif
+            cudaSafeCall( hipBindTexture2D( 0, tex_meanshift, src.data, desc, src.cols, src.rows, src.step ) );
+
             hipLaunchKernelGGL((meanshiftproc_kernel), dim3(grid), dim3(threads), 0, stream ,  dstr.data, dstr.step, dstsp.data, dstsp.step, dstr.cols, dstr.rows, sp, sr, maxIter, eps );
             cudaSafeCall( hipGetLastError() );
 
