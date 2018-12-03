@@ -64,7 +64,11 @@ namespace cv { namespace cuda { namespace device
         static __device__ __forceinline__ unsigned int laneId()
         {
             unsigned int ret;
+#ifdef __HIP_PLATFORM_NVCC__
             asm("mov.u32 %0, %%laneid;" : "=r"(ret) );
+#elif defined (__HIP_PLATFORM_HCC__)
+    // HIP_TODO
+#endif
             return ret;
         }
 
