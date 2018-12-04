@@ -108,6 +108,19 @@ namespace
 }
 
 
+#ifdef __HIP_PLATFORM_HCC__
+__host__ void cv::cuda::device::ThrustAllocator::deallocate(unsigned char* ptr, unsigned long numBytes) {
+    (void)numBytes;
+    CV_CUDEV_SAFE_CALL(hipFree(ptr));
+}
+__host__ uchar* cv::cuda::device::ThrustAllocator::allocate(unsigned long numBytes) {
+    uchar* ptr;
+    CV_CUDEV_SAFE_CALL(hipMalloc(&ptr, numBytes));
+    return ptr;
+}
+#endif
+
+
 cv::cuda::device::ThrustAllocator& cv::cuda::device::ThrustAllocator::getAllocator()
 {
     return *g_thrustAllocator;
