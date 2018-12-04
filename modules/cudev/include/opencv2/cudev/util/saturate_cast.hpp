@@ -74,7 +74,11 @@ template <> __device__ __forceinline__ uchar saturate_cast<uchar>(schar v)
 {
     uint res = 0;
     int vi = v;
+#ifdef __HIP_PLATFORM_NVCC__
     asm("cvt.sat.u8.s8 %0, %1;" : "=r"(res) : "r"(vi));
+#elif defined (__HIP_PLATFORM_HCC__)
+    // HIP_TODO
+#endif
     return res;
 }
 template <> __device__ __forceinline__ uchar saturate_cast<uchar>(short v)

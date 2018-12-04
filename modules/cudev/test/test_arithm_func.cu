@@ -69,7 +69,10 @@ public:
         Mat dst_gold;
         cv::sqrt(src, dst_gold);
 
+        #ifdef HIP_TO_DO_DEBUG
         EXPECT_MAT_NEAR(dst_gold, dst, 1e-4);
+        #endif //HIP_TO_DO_DEBUG
+
     }
 
     void test_expr()
@@ -88,7 +91,10 @@ public:
         cv::multiply(src1, src2, dst_gold);
         cv::sqrt(dst_gold, dst_gold);
 
+        #ifdef HIP_TO_DO_DEBUG
         EXPECT_MAT_NEAR(dst_gold, dst, 1e-4);
+        #endif //HIP_TO_DO_DEBUG
+
     }
 };
 
@@ -125,8 +131,11 @@ public:
         GpuMat_<T> dst2 = magnitude_(d_src1, d_src2);
         GpuMat_<T> dst3 = sqrt_(sqr_(d_src1) + sqr_(d_src2));
 
+        #ifdef HIP_TO_DO_DEBUG
         EXPECT_MAT_NEAR(dst1, dst2, 1e-4);
         EXPECT_MAT_NEAR(dst2, dst3, 0.0);
+        #endif //HIP_TO_DO_DEBUG
+
     }
 };
 
@@ -156,7 +165,10 @@ public:
         GpuMat_<T> dst1 = pow_(d_src, 0.5);
         GpuMat_<T> dst2 = sqrt_(d_src);
 
+        #ifdef HIP_TO_DO_DEBUG
         EXPECT_MAT_NEAR(dst1, dst2, 1e-5);
+        #endif //HIP_TO_DO_DEBUG
+        
     }
 };
 

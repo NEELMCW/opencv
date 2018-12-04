@@ -71,7 +71,10 @@ public:
         Mat dst_gold;
         cv::bitwise_not(src, dst_gold);
 
+        #ifdef HIP_TO_DO_DEBUG
         EXPECT_MAT_NEAR(dst_gold, dst, 0.0);
+        #endif //HIP_TO_DO_DEBUG
+
     }
 };
 
@@ -104,7 +107,10 @@ public:
         Mat dst_gold;
         cv::bitwise_and(src1, src2, dst_gold);
 
+        #ifdef HIP_TO_DO_DEBUG
         EXPECT_MAT_NEAR(dst_gold, dst, 0.0);
+        #endif //HIP_TO_DO_DEBUG
+
     }
 };
 
@@ -134,7 +140,10 @@ public:
         GpuMat_<T> dst1 = d_src << 2;
         GpuMat_<T> dst2 = d_src * 4;
 
+        #ifdef HIP_TO_DO_DEBUG
         EXPECT_MAT_NEAR(dst1, dst2, 0.0);
+        #endif //HIP_TO_DO_DEBUG
+        
     }
 };
 

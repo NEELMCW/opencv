@@ -250,7 +250,7 @@ namespace hist
 
         hipLaunchKernelGGL((histEven8u), dim3(grid), dim3(block), smem_size, stream, (const uchar*)src.data, (const size_t)src.step, (const int)src.rows,(const int)src.cols,(int*) hist, (const int)binCount,(const int) binSize, (const int)lowerLevel, (const int)upperLevel);
         cudaSafeCall( hipGetLastError() );
-
+        
         if (stream == 0)
             cudaSafeCall( hipDeviceSynchronize() );
     }

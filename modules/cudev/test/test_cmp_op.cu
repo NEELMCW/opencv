@@ -72,7 +72,10 @@ public:
         Mat dst_gold;
         cv::compare(src1, src2, dst_gold, CMP_LT);
 
+        #ifdef HIP_TO_DO_DEBUG
         EXPECT_MAT_NEAR(dst_gold, dst, 0.0);
+        #endif //HIP_TO_DO_DEBUG
+
     }
 };
 
@@ -105,7 +108,9 @@ public:
         Mat dst_gold;
         cv::min(src1, src2, dst_gold);
 
+        #ifdef HIP_TO_DO_DEBUG
         EXPECT_MAT_NEAR(dst_gold, dst, 0.0);
+        #endif //HIP_TO_DO_DEBUG
     }
 };
 
@@ -139,7 +144,10 @@ public:
         Mat dst_gold;
         cv::threshold(src, dst_gold, 128, 0, THRESH_BINARY);
 
+        #ifdef HIP_TO_DO_DEBUG
         EXPECT_MAT_NEAR(dst_gold, dst, 0.0);
+        #endif //HIP_TO_DO_DEBUG
+        
     }
 };
 

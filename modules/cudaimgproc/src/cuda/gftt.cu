@@ -147,18 +147,17 @@ namespace cv { namespace cuda { namespace device
 
         void sortCorners_gpu(PtrStepSzf eig, float2* corners, int count, hipStream_t stream)
         {
-
             bindTexture(&eigTex, eig);
 
             thrust::device_ptr<float2> ptr(corners);
-#if THRUST_VERSION >= 100802
+            #if THRUST_VERSION >= 100802
             if (stream)
                 thrust::sort(thrust::cuda::par(ThrustAllocator::getAllocator()).on(stream), ptr, ptr + count, EigGreater());
             else
                 thrust::sort(thrust::cuda::par(ThrustAllocator::getAllocator()), ptr, ptr + count, EigGreater());
-#else
+            #else
             thrust::sort(ptr, ptr + count, EigGreater());
-#endif
+            #endif
 
         }
     } // namespace optical_flow
