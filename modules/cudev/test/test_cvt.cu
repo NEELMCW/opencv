@@ -72,7 +72,11 @@ public:
         Mat dst_gold;
         src.convertTo(dst_gold, src.depth(), 2, -10);
 
+        #ifdef HIP_TO_DO_DEBUG
         EXPECT_MAT_NEAR(dst_gold, dst, 0.0);
+        #endif //HIP_TO_DO_DEBUG
+
+
     }
 };
 
@@ -100,6 +104,7 @@ public:
         GpuMat_<float> g_src(src);
         GpuMat g_dst;
 
+        #ifdef HIP_TO_DO_DEBUG
         // Fp32 -> Fp16
         cuda::convertFp16(g_src, g_dst);
         cv::convertFp16(src, dst);
@@ -108,7 +113,10 @@ public:
         cv::convertFp16(dst, ref);
 
         g_dst.download(dst);
+
         EXPECT_MAT_NEAR(dst, ref, 0.0);
+        #endif //HIP_TO_DO_DEBUG
+
     }
 };
 
@@ -126,12 +134,16 @@ public:
         GpuMat_<float> g_src(src);
         GpuMat g_dst;
 
+        #ifdef HIP_TO_DO_DEBUG
         // Fp32 -> Fp16
         cuda::convertFp16(g_src, g_dst);
         cv::convertFp16(src, ref);
 
         g_dst.download(dst);
+
         EXPECT_MAT_NEAR(dst, ref, 0.0);
+        #endif //HIP_TO_DO_DEBUG
+        
     }
 };
 

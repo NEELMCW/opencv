@@ -285,7 +285,7 @@ namespace optflowbm_fast
 
         hipLaunchKernelGGL((optflowbm_fast_kernel<T>), dim3(grid), dim3(block), smem, stream, fbm, velx, vely);
         cudaSafeCall ( hipGetLastError () );
-
+        
         if (stream == 0)
             cudaSafeCall( hipDeviceSynchronize() );
     }

@@ -63,7 +63,10 @@ TEST(Integral, _8u)
 
     dst_gold = dst_gold(Rect(1, 1, size.width, size.height));
 
+    #ifdef HIP_TO_DO_DEBUG
     ASSERT_MAT_NEAR(dst_gold, dst, 0.0);
+    #endif //HIP_TO_DO_DEBUG
+
 }
 
 TEST(Integral, _32f)
@@ -81,7 +84,10 @@ TEST(Integral, _32f)
 
     dst_gold = dst_gold(Rect(1, 1, size.width, size.height));
 
+    #ifdef HIP_TO_DO_DEBUG
     ASSERT_PRED_FORMAT2(cvtest::MatComparator(1e-5, 0), dst_gold, Mat(dst));
+    #endif //HIP_TO_DO_DEBUG
+
 }
 
 TEST(Integral, _8u_opt)
@@ -99,5 +105,8 @@ TEST(Integral, _8u_opt)
 
     dst_gold = dst_gold(Rect(1, 1, size.width, size.height));
 
+    #ifdef HIP_TO_DO_DEBUG
     ASSERT_MAT_NEAR(dst_gold, dst, 0.0);
+    #endif //HIP_TO_DO_DEBUG
+    
 }

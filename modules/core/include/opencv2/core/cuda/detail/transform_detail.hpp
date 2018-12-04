@@ -336,7 +336,7 @@ namespace cv { namespace cuda { namespace device
 
                 hipLaunchKernelGGL((transformSimple<T1, T2, D, BinOp, Mask>), dim3(grid), dim3(threads), 0, stream, src1, src2, dst, mask, op);
                 cudaSafeCall( hipGetLastError() );
-
+                
                 if (stream == 0)
                     cudaSafeCall( hipDeviceSynchronize() );
             }

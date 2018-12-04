@@ -934,11 +934,17 @@ class Map {
     // Return a randomish value.
     size_type Seed() const {
       size_type s = static_cast<size_type>(reinterpret_cast<uintptr_t>(this));
+
+#ifdef __HIP_PLATFORM_NVCC__
 #if defined(__x86_64__) && defined(__GNUC__)
       uint32 hi, lo;
       asm("rdtsc" : "=a" (lo), "=d" (hi));
       s += ((static_cast<uint64>(hi) << 32) | lo);
 #endif
+#elif defined (__HIP_PLATFORM_HCC__) 
+	// HIP_TODO 
+#endif //Platform deduce
+
       return s;
     }
 

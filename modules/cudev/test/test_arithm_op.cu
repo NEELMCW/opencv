@@ -72,7 +72,10 @@ public:
         Mat dst_gold;
         src.convertTo(dst_gold, src.depth(), -1);
 
+        #ifdef HIP_TO_DO_DEBUG
         EXPECT_MAT_NEAR(dst_gold, dst, 0.0);
+        #endif //HIP_TO_DO_DEBUG
+
     }
 
     void test_globptr()
@@ -90,7 +93,10 @@ public:
         Mat dst_gold;
         src.convertTo(dst_gold, src.depth(), -1);
 
+        #ifdef HIP_TO_DO_DEBUG
         EXPECT_MAT_NEAR(dst_gold, dst, 0.0);
+        #endif //HIP_TO_DO_DEBUG
+
     }
 
     void test_texptr()
@@ -108,7 +114,11 @@ public:
         Mat dst_gold;
         src.convertTo(dst_gold, src.depth(), -1);
 
+
+        #ifdef HIP_TO_DO_DEBUG
         EXPECT_MAT_NEAR(dst_gold, dst, 0.0);
+        #endif //HIP_TO_DO_DEBUG
+
     }
 
     void test_expr()
@@ -127,7 +137,10 @@ public:
         cv::add(src1, src2, dst_gold);
         dst_gold.convertTo(dst_gold, dst_gold.depth(), -1);
 
+        #ifdef HIP_TO_DO_DEBUG
         EXPECT_MAT_NEAR(dst_gold, dst, 0.0);
+        #endif //HIP_TO_DO_DEBUG
+
     }
 };
 
@@ -176,7 +189,10 @@ public:
         Mat dst_gold;
         cv::add(src1, src2, dst_gold);
 
+        #ifdef HIP_TO_DO_DEBUG
         EXPECT_MAT_NEAR(dst_gold, dst, 0.0);
+        #endif //HIP_TO_DO_DEBUG
+
     }
 
     void test_texptr_scalar()
@@ -193,8 +209,11 @@ public:
 
         Mat dst_gold;
         cv::add(src, 5, dst_gold);
-
+        
+        #ifdef HIP_TO_DO_DEBUG
         EXPECT_MAT_NEAR(dst_gold, dst, 0.0);
+        #endif //HIP_TO_DO_DEBUG
+
     }
 
     void test_expr_gpumat()
@@ -214,7 +233,10 @@ public:
         cv::add(src1, src2, dst_gold);
         cv::add(dst_gold, src3, dst_gold);
 
+        #ifdef HIP_TO_DO_DEBUG
         EXPECT_MAT_NEAR(dst_gold, dst, 0.0);
+        #endif //HIP_TO_DO_DEBUG
+
     }
 
     void test_scalar_expr()
@@ -233,7 +255,10 @@ public:
         cv::add(src1, src2, dst_gold);
         cv::add(dst_gold, 5, dst_gold);
 
+        #ifdef HIP_TO_DO_DEBUG
         EXPECT_MAT_NEAR(dst_gold, dst, 0.0);
+        #endif //HIP_TO_DO_DEBUG
+
     }
 };
 
@@ -283,7 +308,10 @@ public:
         Mat dst_gold;
         cv::subtract(src1, src2, dst_gold);
 
+        #ifdef HIP_TO_DO_DEBUG
         EXPECT_MAT_NEAR(dst_gold, dst, 0.0);
+        #endif //HIP_TO_DO_DEBUG
+
     }
 
     void test_texptr_scalar()
@@ -321,7 +349,10 @@ public:
         cv::add(src1, src2, dst_gold);
         cv::subtract(dst_gold, src3, dst_gold);
 
+        #ifdef HIP_TO_DO_DEBUG
         EXPECT_MAT_NEAR(dst_gold, dst, 0.0);
+        #endif //HIP_TO_DO_DEBUG
+
     }
 
     void test_scalar_expr()
@@ -340,7 +371,10 @@ public:
         cv::add(src1, src2, dst_gold);
         cv::subtract(5, dst_gold, dst_gold);
 
+        #ifdef HIP_TO_DO_DEBUG
         EXPECT_MAT_NEAR(dst_gold, dst, 0.0);
+        #endif //HIP_TO_DO_DEBUG
+
     }
 };
 
@@ -388,7 +422,10 @@ public:
         GpuMat_<T> dst1 = absdiff_(d_src1, d_src2);
         GpuMat_<T> dst2 = abs_(d_src1 - d_src2);
 
+        #ifdef HIP_TO_DO_DEBUG
         EXPECT_MAT_NEAR(dst1, dst2, 0.0);
+        #endif //HIP_TO_DO_DEBUG
+        
     }
 };
 
