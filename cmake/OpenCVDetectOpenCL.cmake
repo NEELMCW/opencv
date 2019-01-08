@@ -1,3 +1,6 @@
+FIND_PATH(OPENCL_ROOT_DIR NAMES include/CL/opencl.h PATHS ENV ROCM_PATH PATH_SUFFIXES opencl DOC "OpenCL Root Directory" NO_DEFAULT_PATH)
+
+IF(${OPENCL_ROOT_DIR}  MATCHES OPENCL_ROOT_DIR-NOTFOUND)
 set(OPENCL_FOUND ON CACHE BOOL "OpenCL library is found")
 if(APPLE)
   set(OPENCL_LIBRARY "-framework OpenCL" CACHE STRING "OpenCL library")
@@ -78,3 +81,52 @@ if(OPENCL_FOUND)
     endif()
   endif()
 endif()
+ELSE() # ROCM OpenCL found
+	set(HAVE_OPENCL 1)	
+	set(OPENCL_INCLUDE_DIR ${OPENCL_ROOT_DIR}/include)
+	set(LINK_DIRECTORIES ${LINK_DIRECTORIES} "${OPENCL_ROOT_DIR}/lib/x86_64/" "${OPENCL_ROOT_DIR}/lib64/")
+	set(OPENCL_LIBRARY "${OPENCL_ROOT_DIR}/lib/x86_64/libOpenCL.so"  "${OPENCL_ROOT_DIR}/lib64/libclFFT.so" "${OPENCL_ROOT_DIR}/lib64/libclBLAS.so" )
+  	set(OPENCL_INCLUDE_DIRS ${OPENCL_INCLUDE_DIR})
+    	set(HAVE_OPENCL_STATIC ON)
+    	set(OPENCL_LIBRARIES ${OPENCL_LIBRARY})
+if(WITH_OPENCLAMDFFT)
+    find_path(CLAMDFFT_ROOT_DIR
+              NAMES include/clAmdFft.h
+              PATHS ${OPENCL_ROOT_DIR}
+              PATH_SUFFIXES clAmdFft AMD/clAmdFft
+              DOC "AMD FFT root directory"
+              NO_DEFAULT_PATH)
+
+    find_path(CLAMDFFT_INCLUDE_DIR
+              NAMES clAmdFft.h
+              HINTS ${CLAMDFFT_ROOT_DIR}
+              PATH_SUFFIXES include
+              DOC "clAmdFft include directory")
+
+    if(CLAMDFFT_INCLUDE_DIR)
+      set(HAVE_CLAMDFFT 1)
+      list(APPEND OPENCL_INCLUDE_DIRS "${CLAMDFFT_INCLUDE_DIR}")
+    endif()
+  endif()
+
+  if(WITH_OPENCLAMDBLAS)
+    find_path(CLAMDBLAS_ROOT_DIR
+              NAMES include/clAmdBlas.h
+              PATHS ${OPENCL_ROOT_DIR}
+              PATH_SUFFIXES clAmdBlas AMD/clAmdBlas
+              DOC "AMD FFT root directory"
+              NO_DEFAULT_PATH)
+
+    find_path(CLAMDBLAS_INCLUDE_DIR
+              NAMES clAmdBlas.h
+              HINTS ${CLAMDBLAS_ROOT_DIR}
+              PATH_SUFFIXES include
+              DOC "clAmdFft include directory")
+
+    if(CLAMDBLAS_INCLUDE_DIR)
+      set(HAVE_CLAMDBLAS 1)
+      list(APPEND OPENCL_INCLUDE_DIRS "${CLAMDBLAS_INCLUDE_DIR}")
+    endif()
+  endif()
+
+ENDIF() # ROCM OPENCL FOUND

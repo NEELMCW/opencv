@@ -76,7 +76,7 @@
         static void* h = NULL;
         if (!h)
         {
-            h = dlopen("libclAmdFft.Runtime.so", RTLD_LAZY | RTLD_GLOBAL);
+            h = dlopen("libclFFT.so", RTLD_LAZY | RTLD_GLOBAL);
             if (!h)
                 return NULL;
         }

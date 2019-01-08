@@ -949,7 +949,7 @@ public:
     {
         try
         {
-            clAmdBlasTeardown();
+            clblasTeardown();
         }
         catch (...) { }
     }
@@ -967,7 +967,7 @@ protected:
                 {
                     try
                     {
-                        g_isAmdBlasAvailable = clAmdBlasSetup() == clAmdBlasSuccess;
+                        g_isAmdBlasAvailable = clblasSetup() == clblasSuccess;
                     }
                     catch (...)
                     {
