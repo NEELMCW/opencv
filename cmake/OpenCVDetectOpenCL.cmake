@@ -91,14 +91,14 @@ ELSE() # ROCM OpenCL found
     	set(OPENCL_LIBRARIES ${OPENCL_LIBRARY})
 if(WITH_OPENCLAMDFFT)
     find_path(CLAMDFFT_ROOT_DIR
-              NAMES include/clAmdFft.h
+              NAMES include/clFFT.h
               PATHS ${OPENCL_ROOT_DIR}
               PATH_SUFFIXES clAmdFft AMD/clAmdFft
               DOC "AMD FFT root directory"
               NO_DEFAULT_PATH)
 
     find_path(CLAMDFFT_INCLUDE_DIR
-              NAMES clAmdFft.h
+              NAMES clFFT.h
               HINTS ${CLAMDFFT_ROOT_DIR}
               PATH_SUFFIXES include
               DOC "clAmdFft include directory")
@@ -111,22 +111,24 @@ if(WITH_OPENCLAMDFFT)
 
   if(WITH_OPENCLAMDBLAS)
     find_path(CLAMDBLAS_ROOT_DIR
-              NAMES include/clAmdBlas.h
+              NAMES include/clBLAS.h
               PATHS ${OPENCL_ROOT_DIR}
               PATH_SUFFIXES clAmdBlas AMD/clAmdBlas
-              DOC "AMD FFT root directory"
+              DOC "AMD BLAS root directory"
               NO_DEFAULT_PATH)
 
     find_path(CLAMDBLAS_INCLUDE_DIR
-              NAMES clAmdBlas.h
+              NAMES clBLAS.h
               HINTS ${CLAMDBLAS_ROOT_DIR}
               PATH_SUFFIXES include
-              DOC "clAmdFft include directory")
+              DOC "clBLAS include directory")
 
     if(CLAMDBLAS_INCLUDE_DIR)
       set(HAVE_CLAMDBLAS 1)
       list(APPEND OPENCL_INCLUDE_DIRS "${CLAMDBLAS_INCLUDE_DIR}")
     endif()
   endif()
+
+  MESSAGE(STATUS HAVE_CLAMDBLAS Value is ${HAVE_CLAMDBLAS})
 
 ENDIF() # ROCM OPENCL FOUND
