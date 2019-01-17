@@ -113,6 +113,7 @@ static void* openclamdblas_check_fn(int ID);
 
 static void* openclamdblas_check_fn(int ID)
 {
+    printf("openclamdblas_check_function --------------------------------------------------------------------------------------------------------------------------\n\n\n\n\n\n\n\n\n\n\n\n");
     assert(ID >= 0 && ID < (int)(sizeof(openclamdblas_fn)/sizeof(openclamdblas_fn[0])));
     const struct DynamicFnEntry* e = openclamdblas_fn[ID];
     void* func = CV_CL_GET_PROC_ADDRESS(e->fnName);

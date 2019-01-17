@@ -23,7 +23,7 @@ while True:
     assert isinstance(line, str)
     line = line.strip()
     parts = line.split();
-    if (line.startswith('clAmd') or line.startswith('cl_') or line == 'void') and len(line.split()) == 1 and line.find('(') == -1:
+    if (line.startswith('cl') or line.startswith('cl_') or line == 'void') and len(line.split()) == 1 and line.find('(') == -1:
         fn = {}
         modifiers = []
         ret = []

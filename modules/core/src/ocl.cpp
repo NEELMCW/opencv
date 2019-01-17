@@ -1023,7 +1023,7 @@ public:
     {
         try
         {
-//            clAmdFftTeardown();
+            clfftTeardown();
         }
         catch (...) { }
     }
@@ -1042,10 +1042,10 @@ protected:
                     try
                     {
                         cl_uint major, minor, patch;
-                        CV_Assert(clAmdFftInitSetupData(&setupData) == CLFFT_SUCCESS);
+                        CV_Assert(clfftSetup(setupData) == CLFFT_SUCCESS);
 
                         // it throws exception in case AmdFft binaries are not found
-                        CV_Assert(clAmdFftGetVersion(&major, &minor, &patch) == CLFFT_SUCCESS);
+                        CV_Assert(clfftGetVersion(&major, &minor, &patch) == CLFFT_SUCCESS);
                         g_isAmdFftAvailable = true;
                     }
                     catch (const Exception &)
@@ -1062,12 +1062,12 @@ protected:
     }
 
 private:
-    static clAmdFftSetupData setupData;
+    static clfftSetupData* setupData;
     static bool g_isAmdFftInitialized;
     static bool g_isAmdFftAvailable;
 };
 
-clAmdFftSetupData AmdFftHelper::setupData;
+clfftSetupData* AmdFftHelper::setupData;
 bool AmdFftHelper::g_isAmdFftAvailable = false;
 bool AmdFftHelper::g_isAmdFftInitialized = false;
 

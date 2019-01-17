@@ -85,7 +85,7 @@ ELSE() # ROCM OpenCL found
 	set(HAVE_OPENCL 1)	
 	set(OPENCL_INCLUDE_DIR ${OPENCL_ROOT_DIR}/include)
 	set(LINK_DIRECTORIES ${LINK_DIRECTORIES} "${OPENCL_ROOT_DIR}/lib/x86_64/" "${OPENCL_ROOT_DIR}/lib64/")
-	set(OPENCL_LIBRARY "${OPENCL_ROOT_DIR}/lib/x86_64/libOpenCL.so"  "${OPENCL_ROOT_DIR}/lib64/libclFFT.so" "${OPENCL_ROOT_DIR}/lib64/libclBLAS.so" )
+	set(OPENCL_LIBRARY "OpenCL" "clBLAS" "clFFT")
   	set(OPENCL_INCLUDE_DIRS ${OPENCL_INCLUDE_DIR})
     	set(HAVE_OPENCL_STATIC ON)
     	set(OPENCL_LIBRARIES ${OPENCL_LIBRARY})
@@ -93,7 +93,7 @@ if(WITH_OPENCLAMDFFT)
     find_path(CLAMDFFT_ROOT_DIR
               NAMES include/clFFT.h
               PATHS ${OPENCL_ROOT_DIR}
-              PATH_SUFFIXES clAmdFft AMD/clAmdFft
+              PATH_SUFFIXES lib64 
               DOC "AMD FFT root directory"
               NO_DEFAULT_PATH)
 
@@ -101,7 +101,7 @@ if(WITH_OPENCLAMDFFT)
               NAMES clFFT.h
               HINTS ${CLAMDFFT_ROOT_DIR}
               PATH_SUFFIXES include
-              DOC "clAmdFft include directory")
+              DOC "clFFT include directory")
 
     if(CLAMDFFT_INCLUDE_DIR)
       set(HAVE_CLAMDFFT 1)
@@ -113,7 +113,7 @@ if(WITH_OPENCLAMDFFT)
     find_path(CLAMDBLAS_ROOT_DIR
               NAMES include/clBLAS.h
               PATHS ${OPENCL_ROOT_DIR}
-              PATH_SUFFIXES clAmdBlas AMD/clAmdBlas
+              PATH_SUFFIXES lib64
               DOC "AMD BLAS root directory"
               NO_DEFAULT_PATH)
 
