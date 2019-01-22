@@ -84,50 +84,36 @@ endif()
 ELSE() # ROCM OpenCL found
 	set(HAVE_OPENCL 1)	
 	set(OPENCL_INCLUDE_DIR ${OPENCL_ROOT_DIR}/include)
-	set(LINK_DIRECTORIES ${LINK_DIRECTORIES} "${OPENCL_ROOT_DIR}/lib/x86_64/" "${OPENCL_ROOT_DIR}/lib64/")
-	set(OPENCL_LIBRARY "OpenCL" "clBLAS" "clFFT")
+	set(OPENCL_LIBRARY "OpenCL")
   	set(OPENCL_INCLUDE_DIRS ${OPENCL_INCLUDE_DIR})
     	set(HAVE_OPENCL_STATIC ON)
     	set(OPENCL_LIBRARIES ${OPENCL_LIBRARY})
-if(WITH_OPENCLAMDFFT)
-    find_path(CLAMDFFT_ROOT_DIR
-              NAMES include/clFFT.h
-              PATHS ${OPENCL_ROOT_DIR}
-              PATH_SUFFIXES lib64 
-              DOC "AMD FFT root directory"
-              NO_DEFAULT_PATH)
+	set(CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH}" "${OPENCL_ROOT_DIR}/lib64/clBLAS" "${OPENCL_ROOT_DIR}/lib64/clFFT")
+	if(WITH_OPENCLAMDFFT)
+    		find_package(clFFT REQUIRED)
+    		set(CLAMDFFT_INCLUDE_DIR ${CLFFT_INCLUDE_DIRS})
 
-    find_path(CLAMDFFT_INCLUDE_DIR
-              NAMES clFFT.h
-              HINTS ${CLAMDFFT_ROOT_DIR}
-              PATH_SUFFIXES include
-              DOC "clFFT include directory")
+    		if(CLAMDFFT_INCLUDE_DIR)
+      			set(HAVE_CLAMDFFT 1)
+      			list(APPEND OPENCL_INCLUDE_DIRS "${CLAMDFFT_INCLUDE_DIR}")
+      			list(APPEND OPENCL_LIBRARIES "${CLFFT_LIBRARIES}")
+    		endif()
+  	endif()
 
-    if(CLAMDFFT_INCLUDE_DIR)
-      set(HAVE_CLAMDFFT 1)
-      list(APPEND OPENCL_INCLUDE_DIRS "${CLAMDFFT_INCLUDE_DIR}")
-    endif()
-  endif()
+  	if(WITH_OPENCLAMDBLAS)
+    		find_package(clBLAS REQUIRED)
+    		set(CLAMDBLAS_INCLUDE_DIR ${CLBLAS_INCLUDE_DIRS})
 
-  if(WITH_OPENCLAMDBLAS)
-    find_path(CLAMDBLAS_ROOT_DIR
-              NAMES include/clBLAS.h
-              PATHS ${OPENCL_ROOT_DIR}
-              PATH_SUFFIXES lib64
-              DOC "AMD BLAS root directory"
-              NO_DEFAULT_PATH)
-
-    find_path(CLAMDBLAS_INCLUDE_DIR
-              NAMES clBLAS.h
-              HINTS ${CLAMDBLAS_ROOT_DIR}
-              PATH_SUFFIXES include
-              DOC "clBLAS include directory")
-
-    if(CLAMDBLAS_INCLUDE_DIR)
-      set(HAVE_CLAMDBLAS 1)
-      list(APPEND OPENCL_INCLUDE_DIRS "${CLAMDBLAS_INCLUDE_DIR}")
-    endif()
-  endif()
+    		if(CLAMDBLAS_INCLUDE_DIR)
+      			set(HAVE_CLAMDBLAS 1)
+      			list(APPEND OPENCL_INCLUDE_DIRS "${CLAMDBLAS_INCLUDE_DIR}")
+    		endif()    
+		if(CLAMDBLAS_INCLUDE_DIR)
+      			set(HAVE_CLAMDBLAS 1)
+      			list(APPEND OPENCL_INCLUDE_DIRS "${CLAMDBLAS_INCLUDE_DIR}")
+      			list(APPEND OPENCL_LIBRARIES "${CLBLAS_LIBRARIES}")
+    		endif()
+  	endif()
 
   MESSAGE(STATUS HAVE_CLAMDBLAS Value is ${HAVE_CLAMDBLAS})
 
