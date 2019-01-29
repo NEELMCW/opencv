@@ -2243,7 +2243,7 @@ static bool ocl_dft(InputArray _src, OutputArray _dst, int flags, int nonzero_ro
 
 #endif
 
-#ifdef HAVE_CLAMDFFT
+#ifdef HAVE_CLFFT
 
 namespace cv {
 
@@ -2262,6 +2262,7 @@ class PlanCache
             doubleFP(_doubleFP), inplace(_inplace), flags(_flags), fftType(_fftType),
             context((cl_context)ocl::Context::getDefault().ptr()), plHandle(0)
         {
+            printf("FftPlan function getting invoked\n");
             bool dft_inverse = (flags & DFT_INVERSE) != 0;
             bool dft_scale = (flags & DFT_SCALE) != 0;
             bool dft_rows = (flags & DFT_ROWS) != 0;
@@ -2478,7 +2479,7 @@ static bool ocl_dft_amdfft(InputArray _src, OutputArray _dst, int flags)
 
 }
 
-#endif // HAVE_CLAMDFFT
+#endif // HAVE_CLFFT
 
 namespace cv
 {
@@ -3318,7 +3319,7 @@ void cv::dft( InputArray _src0, OutputArray _dst, int flags, int nonzero_rows )
     CV_INSTRUMENT_REGION();
     printf("Invoking dft function-------------------------------->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> %s\n\n\n\n\n\n\n", ocl::haveAmdFft()?"true":"false");
 
-#ifdef HAVE_CLAMDFFT
+#ifdef HAVE_CLFFT
     CV_OCL_RUN(ocl::haveAmdFft() && ocl::Device::getDefault().type() != ocl::Device::TYPE_CPU &&
             _dst.isUMat() && _src0.dims() <= 2 && nonzero_rows == 0,
                ocl_dft_amdfft(_src0, _dst, flags))
@@ -3326,7 +3327,7 @@ void cv::dft( InputArray _src0, OutputArray _dst, int flags, int nonzero_rows )
 
 #ifdef HAVE_OPENCL
     CV_OCL_RUN(_dst.isUMat() && _src0.dims() <= 2,
-               ocl_dft_amdfft(_src0, _dst, flags))
+               ocl_dft(_src0, _dst, flags, nonzero_rows))
 #endif
 
     Mat src0 = _src0.getMat(), src = src0;

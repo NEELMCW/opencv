@@ -41,7 +41,7 @@
 
 #include "../../precomp.hpp"
 
-#ifdef HAVE_CLAMDFFT
+#ifdef HAVE_CLFFT
 
 #include "opencv2/core/opencl/runtime/opencl_core.hpp"
 #include "opencv2/core/opencl/runtime/opencl_clamdfft.hpp"

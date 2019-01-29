@@ -23,10 +23,10 @@
 #define CUDA_ARCH_PTX "${OPENCV_CUDA_ARCH_PTX}"
 
 /* AMD's Basic Linear Algebra Subprograms Library*/
-#cmakedefine HAVE_CLAMDBLAS
+#cmakedefine HAVE_CLBLAS
 
 /* AMD's OpenCL Fast Fourier Transform Library*/
-#cmakedefine HAVE_CLAMDFFT
+#cmakedefine HAVE_CLFFT
 
 /* Clp support */
 #cmakedefine HAVE_CLP

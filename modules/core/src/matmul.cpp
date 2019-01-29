@@ -695,11 +695,12 @@ static void GEMMStore_64fc( const Complexd* c_data, size_t c_step,
     GEMMStore(c_data, c_step, d_buf, d_buf_step, d_data, d_step, d_size, alpha, beta, flags);
 }
 
-#ifdef HAVE_CLAMDBLAS
+#ifdef HAVE_CLBLAS
 
 static bool ocl_gemm_amdblas( InputArray matA, InputArray matB, double alpha,
                       InputArray matC, double beta, OutputArray matD, int flags )
 {
+    printf("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< ocl amd gemm amdblas invoked <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<\n\n\n");
     int type = matA.type(), esz = CV_ELEM_SIZE(type);
     bool haveC = matC.kind() != cv::_InputArray::NONE;
     Size sizeA = matA.size(), sizeB = matB.size(), sizeC = haveC ? matC.size() : Size(0, 0);
@@ -749,23 +750,28 @@ static bool ocl_gemm_amdblas( InputArray matA, InputArray matB, double alpha,
     clblasOrder order = clblasRowMajor;
     clblasStatus status = clblasSuccess;
 
-    if (type == CV_32FC1)
-        status = clblasSgemmEx(order, transA, transB, M, N, K,
+    if (type == CV_32FC1) {
+        printf("case: CV_32FC1");
+        status = clblasSgemm(order, transA, transB, M, N, K,
                                   (cl_float)alpha, (const cl_mem)A.handle(ACCESS_READ), offa, lda,
                                   (const cl_mem)B.handle(ACCESS_READ), offb, ldb,
                                   (cl_float)beta, (cl_mem)D.handle(ACCESS_RW), offc, ldc,
                                   1, &clq, 0, NULL, NULL);
-    else if (type == CV_64FC1)
-        status = clblasDgemmEx(order, transA, transB, M, N, K,
+    }
+    else if (type == CV_64FC1) {
+        printf("case: CV_64FC1");
+        status = clblasDgemm(order, transA, transB, M, N, K,
                                   alpha, (const cl_mem)A.handle(ACCESS_READ), offa, lda,
                                   (const cl_mem)B.handle(ACCESS_READ), offb, ldb,
                                   beta, (cl_mem)D.handle(ACCESS_RW), offc, ldc,
                                   1, &clq, 0, NULL, NULL);
+    }
     else if (type == CV_32FC2)
     {
+        printf("case: CV_32FC2");
          cl_float2 alpha_2 = { { (cl_float)alpha, 0 } };
          cl_float2 beta_2  = { { (cl_float)beta, 0 } };
-         status = clblasCgemmEx(order, transA, transB, M, N, K,
+         status = clblasCgemm(order, transA, transB, M, N, K,
                                    alpha_2, (const cl_mem)A.handle(ACCESS_READ), offa, lda,
                                    (const cl_mem)B.handle(ACCESS_READ), offb, ldb,
                                    beta_2, (cl_mem)D.handle(ACCESS_RW), offc, ldc,
@@ -773,9 +779,10 @@ static bool ocl_gemm_amdblas( InputArray matA, InputArray matB, double alpha,
     }
     else if (type == CV_64FC2)
     {
+        printf("case: CV_64FC2");
         cl_double2 alpha_2 = { { alpha, 0 } };
         cl_double2 beta_2  = { { beta, 0 } };
-        status = clblasZgemmEx(order, transA, transB, M, N, K,
+        status = clblasZgemm(order, transA, transB, M, N, K,
                                   alpha_2, (const cl_mem)A.handle(ACCESS_READ), offa, lda,
                                   (const cl_mem)B.handle(ACCESS_READ), offb, ldb,
                                   beta_2, (cl_mem)D.handle(ACCESS_RW), offc, ldc,
@@ -1540,7 +1547,7 @@ CV_EXPORTS void cv::hal::gemm64fc(const double* src1, size_t src1_step, const do
 void cv::gemm( InputArray matA, InputArray matB, double alpha,
            InputArray matC, double beta, OutputArray _matD, int flags )
 {
-#ifdef HAVE_CLAMDBLAS
+#ifdef HAVE_CLBLAS
     CV_OCL_RUN(ocl::haveAmdBlas() && matA.dims() <= 2 && matB.dims() <= 2 && matC.dims() <= 2 && _matD.isUMat() &&
         matA.cols() > 20 && matA.rows() > 20 && matB.cols() > 20, // since it works incorrect for small sizes
         ocl_gemm_amdblas(matA, matB, alpha, matC, beta, _matD, flags))

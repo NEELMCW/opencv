@@ -41,7 +41,7 @@
 
 #include "../../precomp.hpp"
 
-#ifdef HAVE_CLAMDBLAS
+#ifdef HAVE_CLBLAS
 
 #include "opencv2/core/opencl/runtime/opencl_core.hpp"
 #include "opencv2/core/opencl/runtime/opencl_clamdblas.hpp"

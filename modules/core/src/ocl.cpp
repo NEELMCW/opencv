@@ -930,7 +930,7 @@ void setUseOpenCL(bool flag)
     }
 }
 
-#ifdef HAVE_CLAMDBLAS
+#ifdef HAVE_CLBLAS
 
 class AmdBlasHelper
 {
@@ -967,7 +967,15 @@ protected:
                 {
                     try
                     {
-                        g_isAmdBlasAvailable = clblasSetup() == clblasSuccess;
+			clblasStatus err = clblasSuccess;
+			if (err != clblasSetup()) {
+				g_isAmdBlasAvailable= false;
+			} else {
+				g_isAmdBlasAvailable= true;
+			}
+			
+			printf("Checked clBLAS setup---------------%d\n", g_isAmdBlasAvailable);
+			
                     }
                     catch (...)
                     {
@@ -992,6 +1000,7 @@ bool AmdBlasHelper::g_isAmdBlasInitialized = false;
 
 bool haveAmdBlas()
 {
+    printf("checking AmdBlas getInstance");
     return AmdBlasHelper::getInstance().isAvailable();
 }
 
@@ -999,12 +1008,13 @@ bool haveAmdBlas()
 
 bool haveAmdBlas()
 {
+    printf("No blas implementation")
     return false;
 }
 
 #endif
 
-#ifdef HAVE_CLAMDFFT
+#ifdef HAVE_CLFFT
 
 class AmdFftHelper
 {
@@ -1073,6 +1083,7 @@ bool AmdFftHelper::g_isAmdFftInitialized = false;
 
 bool haveAmdFft()
 {
+    printf("checking getInstance amdFFT\n");
     return AmdFftHelper::getInstance().isAvailable();
 }
 
@@ -3711,10 +3722,12 @@ struct Program::Impl
         }
 
         errmsg = String(buffer.data());
+	printf("---------------------------------------------------------\n");
         printf("OpenCL program build log: %s/%s\nStatus %d: %s\n%s\n%s\n",
                 sourceModule_.c_str(), sourceName_.c_str(),
                 result, getOpenCLErrorString(result),
                 buildflags.c_str(), errmsg.c_str());
+	printf("---------------------------------------------------------\n");
         fflush(stdout);
     }
 

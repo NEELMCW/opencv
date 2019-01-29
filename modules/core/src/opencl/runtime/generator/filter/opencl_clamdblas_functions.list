@@ -5,7 +5,7 @@
 //clblasCdotu
 //clblasCgbmv
 //clblasCgemm
-clblasCgemmEx
+clblasCgemm
 //clblasCgemv
 //clblasCgemvEx
 //clblasCgerc
@@ -46,7 +46,7 @@ clblasCgemmEx
 //clblasDdot
 //clblasDgbmv
 //clblasDgemm
-clblasDgemmEx
+clblasDgemm
 //clblasDgemv
 //clblasDgemvEx
 //clblasDger
@@ -93,7 +93,7 @@ clblasDgemmEx
 clblasSetup
 //clblasSgbmv
 //clblasSgemm
-clblasSgemmEx
+clblasSgemm
 //clblasSgemv
 //clblasSgemvEx
 //clblasSger
@@ -136,7 +136,7 @@ clblasTeardown
 //clblasZdscal
 //clblasZgbmv
 //clblasZgemm
-clblasZgemmEx
+clblasZgemm
 //clblasZgemv
 //clblasZgemvEx
 //clblasZgerc
