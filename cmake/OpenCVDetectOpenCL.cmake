@@ -1,6 +1,3 @@
-FIND_PATH(OPENCL_ROOT_DIR NAMES include/CL/opencl.h PATHS ENV ROCM_PATH PATH_SUFFIXES opencl DOC "OpenCL Root Directory" NO_DEFAULT_PATH)
-
-IF(${OPENCL_ROOT_DIR}  MATCHES OPENCL_ROOT_DIR-NOTFOUND)
 set(OPENCL_FOUND ON CACHE BOOL "OpenCL library is found")
 if(APPLE)
   set(OPENCL_LIBRARY "-framework OpenCL" CACHE STRING "OpenCL library")
@@ -43,7 +40,7 @@ if(OPENCL_FOUND)
 
   if(WITH_OPENCLFFT)
     find_path(CLFFT_ROOT_DIR
-              NAMES include/clAmdFft.h
+              NAMES include/clFFT.h
               PATHS ENV CLFFT_PATH ENV ProgramFiles
               PATH_SUFFIXES clAmdFft AMD/clAmdFft
               DOC "AMD FFT root directory"
@@ -63,7 +60,7 @@ if(OPENCL_FOUND)
 
   if(WITH_OPENCLBLAS)
     find_path(CLBLAS_ROOT_DIR
-              NAMES include/clAmdBlas.h
+              NAMES include/clBLAS.h
               PATHS ENV CLBLAS_PATH ENV ProgramFiles
               PATH_SUFFIXES clAmdBlas AMD/clAmdBlas
               DOC "AMD FFT root directory"
@@ -81,54 +78,4 @@ if(OPENCL_FOUND)
     endif()
   endif()
 endif()
-ELSE() # ROCM OpenCL found
-	set(HAVE_OPENCL 1)	
-	set(OPENCL_INCLUDE_DIR ${OPENCL_ROOT_DIR}/include)
-	set(LINK_DIRECTORIES ${LINK_DIRECTORIES} "${OPENCL_ROOT_DIR}/lib/x86_64/" "${OPENCL_ROOT_DIR}/lib64/")
-	set(OPENCL_LIBRARY "OpenCL" "clBLAS" "clFFT")
-  	set(OPENCL_INCLUDE_DIRS ${OPENCL_INCLUDE_DIR})
-    	set(HAVE_OPENCL_STATIC ON)
-    	set(OPENCL_LIBRARIES ${OPENCL_LIBRARY})
-if(WITH_OPENCLFFT)
-    find_path(CLFFT_ROOT_DIR
-              NAMES include/clFFT.h
-              PATHS ${OPENCL_ROOT_DIR}
-              PATH_SUFFIXES lib64 
-              DOC "AMD FFT root directory"
-              NO_DEFAULT_PATH)
 
-    find_path(CLFFT_INCLUDE_DIR
-              NAMES clFFT.h
-              HINTS ${CLFFT_ROOT_DIR}
-              PATH_SUFFIXES include
-              DOC "clFFT include directory")
-
-    if(CLFFT_INCLUDE_DIR)
-      set(HAVE_CLFFT 1)
-      list(APPEND OPENCL_INCLUDE_DIRS "${CLFFT_INCLUDE_DIR}")
-    endif()
-  endif()
-
-  if(WITH_OPENCLBLAS)
-    find_path(CLBLAS_ROOT_DIR
-              NAMES include/clBLAS.h
-              PATHS ${OPENCL_ROOT_DIR}
-              PATH_SUFFIXES lib64
-              DOC "AMD BLAS root directory"
-              NO_DEFAULT_PATH)
-
-    find_path(CLBLAS_INCLUDE_DIR
-              NAMES clBLAS.h
-              HINTS ${CLBLAS_ROOT_DIR}
-              PATH_SUFFIXES include
-              DOC "clBLAS include directory")
-
-    if(CLBLAS_INCLUDE_DIR)
-      set(HAVE_CLBLAS 1)
-      list(APPEND OPENCL_INCLUDE_DIRS "${CLBLAS_INCLUDE_DIR}")
-    endif()
-  endif()
-
-  MESSAGE(STATUS HAVE_CLBLAS Value is ${HAVE_CLBLAS})
-
-ENDIF() # ROCM OPENCL FOUND
