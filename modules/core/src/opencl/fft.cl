@@ -536,9 +536,9 @@ __kernel void fft_multi_radix_rows(__global const uchar* src_ptr, int src_step, 
     const int x = get_global_id(0);
     const int y = get_group_id(1);
     const int block_size = LOCAL_SIZE/kercn;
+    __local CT smem[LOCAL_SIZE];
     if (y < nz)
     {
-        __local CT smem[LOCAL_SIZE];
         __global const CT* twiddles = (__global const CT*)(twiddles_ptr + twiddles_offset);
         const int ind = x;
 #ifdef IS_1D
@@ -615,9 +615,9 @@ __kernel void fft_multi_radix_cols(__global const uchar* src_ptr, int src_step, 
     const int x = get_group_id(0);
     const int y = get_global_id(1);
 
+    __local CT smem[LOCAL_SIZE];
     if (x < nz)
     {
-        __local CT smem[LOCAL_SIZE];
         __global const uchar* src = src_ptr + mad24(y, src_step, mad24(x, (int)(sizeof(CT)), src_offset));
         __global const CT* twiddles = (__global const CT*)(twiddles_ptr + twiddles_offset);
         const int ind = y;
@@ -682,9 +682,9 @@ __kernel void ifft_multi_radix_rows(__global const uchar* src_ptr, int src_step,
     const FT scale = (FT) 1/(dst_cols*dst_rows);
 #endif
 
+    __local CT smem[LOCAL_SIZE];
     if (y < nz)
     {
-        __local CT smem[LOCAL_SIZE];
         __global const CT* twiddles = (__global const CT*)(twiddles_ptr + twiddles_offset);
         const int ind = x;
 
@@ -782,10 +782,10 @@ __kernel void ifft_multi_radix_cols(__global const uchar* src_ptr, int src_step,
     const int x = get_group_id(0);
     const int y = get_global_id(1);
 
+    __local CT smem[LOCAL_SIZE];
 #ifdef COMPLEX_INPUT
     if (x < nz)
     {
-        __local CT smem[LOCAL_SIZE];
         __global const uchar* src = src_ptr + mad24(y, src_step, mad24(x, (int)(sizeof(CT)), src_offset));
         __global uchar* dst = dst_ptr + mad24(y, dst_step, mad24(x, (int)(sizeof(CT)), dst_offset));
         __global const CT* twiddles = (__global const CT*)(twiddles_ptr + twiddles_offset);
@@ -820,7 +820,6 @@ __kernel void ifft_multi_radix_cols(__global const uchar* src_ptr, int src_step,
         const int ind = y;
         const int block_size = LOCAL_SIZE/kercn;
 
-        __local CT smem[LOCAL_SIZE];
 #ifdef EVEN
         if (x!=0 && (x!=(nz-1)))
 #else
